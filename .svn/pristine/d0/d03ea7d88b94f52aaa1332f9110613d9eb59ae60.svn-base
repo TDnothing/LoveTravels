@@ -1,0 +1,28 @@
+﻿@model Domain.Entity.tb_User
+@{
+    ViewBag.Title = "会员认证";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 1);}
+    <form id="forms" name="forms">
+    <div class="ur-wall">
+        <h2><span>基本信息-认证</span></h2>
+        <div class="rz-info"><span>认证</span>（请上传真实身份证照片或护照照片）</div>
+        <div class="rz-img">
+            <div id="img">
+                @{
+    if (!string.IsNullOrEmpty(Model.Address))
+    {
+        <img  src="@Model.Address" width="400" height="260" />
+    }
+}
+            </div>
+            <div class="rz-btn"><button type="button" class="btn" id="updoc">点击上传认证资料</button></div>
+            <input type="file" style="display: none" id="fileUrl" name="fileUrl" />
+        </div>
+    </div><!-- end -->
+</form>
+</div>
+<script type="text/javascript" src="/assets/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/lib/js/account.js"></script>

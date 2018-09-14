@@ -1,0 +1,48 @@
+﻿@using FytMsys.Common
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+    .btn {
+        padding: 3px 12px;
+    }
+
+</style>
+@using (Ajax.BeginForm("SaveCustom", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "cusSuccess"
+}, new {@class = "form-horizontal mform tip-wal dig-from", @id = "forms"}))
+{
+    @Html.Hidden("userId",FytRequest.GetQueryInt("userId"))
+     @Html.Hidden("type", FytRequest.GetQueryString("type"))
+    <div style="padding-left: 30px;">
+        <p>添加积分/金额设置积分值为正数，减少积分/金额设置为负数<br />请输入0到10000之间的整数,不允许为0！</p>
+        <input id="returnValues" name="returnValues" value="" style="width: 260px; border: 1px solid #16987e; outline: none; padding: 5px 5px;" />
+    </div>
+    <div style="margin-top: 20px; text-align: right; padding-right: 10px"><button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 确定</button></div>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var dialog = top.dialog.get(window);
+            var datas = dialog.data;
+            $("#returnValues").val(datas);
+        });
+
+        function cusSuccess(res) {
+            if (res.Status == "y") {
+                var dialog = top.dialog.get(window);
+                var val = $('#returnValues').val();
+                dialog.close(val);
+                dialog.remove();
+            } else {
+                dig.alertSuccess("消息", res.Msg);
+            }
+        }
+    </script>
+}

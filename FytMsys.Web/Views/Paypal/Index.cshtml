@@ -1,0 +1,52 @@
+﻿@using FytMsys.Common
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="/lib/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/lib/css/bootstrap-responsive.min.css" rel="stylesheet">
+</head>
+<body>
+    <form action="/Paypal/SetExpressCheckout?ExpressCheckoutMethod=ShorcutExpressCheckout" method="post" name="ExpressCheckoutForm">
+        <div class="row-fluid">
+            <div class="span6 inner-span">
+                <!--Demo Product details -->
+                <table>
+                    <tr><h3>Starbucks Caffe Verona Coffee</h3></tr>
+                    <tr><img src="img/starbucks_caffe_verona_coffee.png" width="300" height="250" /></tr>
+                    <tr><td><p class="lead"> Buyer Credentials:</p></td></tr>
+                    <tr><td>Email-id:&nbsp;&nbsp;&nbsp;<input type="text" id="buyer_email" name="buyer_email" readonly="readonly" value="go51voy-buyer@gmail.com"> </td></tr>
+                    <tr><td>Password:<input type="text" id="buyer_password" name="buyer_password" readonly="readonly" value="12345678"></td></tr>
+                </table>
+            </div>
+            <div class="span6 inner-span">
+                <p class="lead"> Item Specifications:</p>
+                <table>
+                    <tr><td>Item ID:</td><td><input type="text" id="sitem_id" readonly="readonly" value="@FytRequest.GetQueryStringEncode("i")" /></td></tr>
+                    <tr><td>Item Name:</td><td><input type="text" id="sitem_name" readonly="readonly" value="@FytRequest.GetQueryStringEncode("t")" /></td></tr>
+                    <tr><td>Description:</td><td><input type="text" id="sitem_desc" readonly="readonly" value="@FytRequest.GetQueryStringEncode("o")" /></td></tr>
+                    <tr><td>Price:</td><td><input type="text" id="sitem_amount" readonly="readonly" value="@FytRequest.GetQueryStringEncode("m")" /></td></tr>
+                    <tr><td>Total Amount:</td><td><input type="text" id="stotal_amount" readonly="readonly" value="@FytRequest.GetQueryStringEncode("m")" /></td></tr>
+                    <tr><td></td></tr>
+                    <tr>
+                        <td>
+                            <input type="submit" id="mark_ec" class="btn btn-primary btn-large" value="Proceed to Checkout" name="checkout" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <input type="hidden" id="item_id" name="item_id" value="@FytRequest.GetQueryStringEncode("i")">
+        <input type="hidden" id="item_name" name="item_name" value="@FytRequest.GetQueryStringEncode("t")">
+        <input type="hidden" id="item_desc" name="item_desc" value="@FytRequest.GetQueryStringEncode("o")">
+        <input type="hidden" id="item_amount" name="item_amount" value="@FytRequest.GetQueryStringEncode("m")">
+        <input type="hidden" id="total_amount" name="total_amount" value="@FytRequest.GetQueryStringEncode("m")">
+    </form>
+</body>
+</html>

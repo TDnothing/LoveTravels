@@ -1,0 +1,220 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.UI;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 旅程故事
+    /// </summary>
+    /// <returns></returns>
+    public class StoryController : Controller
+    {
+        /// <summary>
+        /// 旅程故事
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            //查询目的地国内
+            ViewBag.gN = OperateContext<tb_AdvList>.SetServer.GetList(m => m.ClassId == 8 && m.Status, m => m.Sort,
+                true).ToList();
+            //查询目的地国外
+            ViewBag.gW = OperateContext<tb_AdvList>.SetServer.GetList(m => m.ClassId == 9 && m.Status, m => m.Sort,
+                true).ToList();
+            return View();
+        }
+
+        /// <summary>
+        /// 通过js根据条件获得全部的故事列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetAll()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                int isTop = FytRequest.GetFormInt("isTop"),  //是否精华
+                    isHit = FytRequest.GetFormInt("isHit", 1),  //是否热门
+                    isTime = FytRequest.GetFormInt("isTime"), //是否最新发表
+                    page = FytRequest.GetFormInt("page"), //当前页
+                    rows = 0, total = 0,
+                    pageSize = 15; //每次加载条数
+
+                var country = FytRequest.GetFormString("country");
+
+                var where = PredicateBuilder.True<lv_Story>();
+                if (isTop != 0)
+                {
+                    where = where.And(m => m.IsTop == "1");
+                }
+                if (country != "")
+                {
+                    where = where.And(m => m.Country.Contains(country));
+                }
+                var orderByExpressions = new IOrderByExpression<lv_Story>[]
+                {
+                     new OrderByExpression<lv_Story,DateTime>(m=>m.UpdateTime,true)
+                };
+                if (isHit != 0)
+                {
+                    orderByExpressions = new IOrderByExpression<lv_Story>[]
+                    {
+                        new OrderByExpression<lv_Story, int>(m => m.Hits, true),
+                        new OrderByExpression<lv_Story, DateTime>(m => m.UpdateTime, true)
+                    };
+                }
+
+                var list = OperateContext<lv_Story>.SetServer.GetPageList(page, pageSize, out rows, out total, where,
+                            orderByExpressions).Select(m => new
+                    {
+                        m.ID,
+                        m.tb_User.NickName,
+                        m.tb_User.HeadPic,
+                        m.Hits,
+                        m.CoverImg,
+                        m.Title,
+                        m.SubTitle,
+                        m.IsTop
+                    });
+                jsonM.Data = list.ToList();
+                jsonM.PageTotal = total;
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "保存过程中发生错误，消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(StoryController), ex);
+            }
+            return Json(jsonM, "");
+        }
+
+        /// <summary>
+        /// 旅程故事
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Detail(int id)
+        {
+            var model = OperateContext<lv_Story>.SetServer.GetModel(m => m.ID == id);
+            model.Hits += 1;
+            OperateContext<lv_Story>.SetServer.Update(model);
+            //根据故事查询多图
+            ViewBag.imgList = OperateContext<tb_ImageLibrary>.SetServer.GetList(m => m.ImgType == 1 && m.ImgID==id, m => m.ID, true).ToList();
+            //查询前5条我等你
+            int pageSize = 15;
+            var lq = from p in OperateSession.SetContext.lv_ProJect
+                     where p.Audit == 1
+                     orderby p.UpdateTime descending
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.ShowImg,
+                         p.CoverImg,
+                         p.Region,
+                         p.tb_User.Types,
+                         p.Hits,
+                         StarNum = (int?)OperateSession.SetContext.tb_Comment.Where(m => m.ClassId == p.ID && m.Option == 1).Sum(m => m.Star) % OperateSession.SetContext.tb_Comment.Count(m => m.ClassId == p.ID) ?? 0,
+                         p.AddTime
+                     };
+            ViewBag.list = JsonConverter.JsonClass(lq.Take(5).ToList());
+            return View(model);
+        }
+
+        /// <summary>
+        /// 发布我等你
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Release()
+        {
+            var model = new lv_Story();
+            if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+            {
+                ViewBag.userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+            }
+            else
+            {
+                ViewBag.userId = "0";
+            }
+            return View(model);
+        }
+
+
+        #region  发布我等你
+        /// <summary>
+        /// 发布我等你
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Release(lv_Story model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+
+                    model.UserId = userId;
+                    model.Hits = 0;
+                    model.UpdateTime = DateTime.Now;
+                    model.AddTime = DateTime.Now;
+                    model.IsTop = "0";
+                    model.SubTitle = UtilsHelper.DropHTML(model.Centents, 30);
+                    model.Tag = model.Tag == "original" ? "原创" : "转载";
+                    OperateContext<lv_Story>.SetServer.Add(model);
+                    jsonM.Msg = model.ID.ToString(CultureInfo.InvariantCulture);
+                    #region 多张图片上传
+                    var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    var listModel = new List<tb_ImageLibrary>();
+                    foreach (string s in reslist)
+                    {
+                        var u = FytRequest.GetFormString("file_name_" + s);
+                        if (u != "")
+                        {
+                            listModel.Add(new tb_ImageLibrary()
+                            {
+                                ImgID = model.ID,
+                                ImgType = 1,
+                                ImgUrl = u,
+                                ImgSmall = u,
+                                IsCover = false
+                            });
+                        }
+                    }
+                    OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                    #endregion
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "您尚未登录,请先登录！";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "保存过程中发生错误，消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(StoryController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}

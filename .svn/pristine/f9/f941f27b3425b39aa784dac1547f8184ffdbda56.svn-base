@@ -1,0 +1,114 @@
+﻿@using System.Diagnostics
+@using Domain.Entity
+@using Domain.ViewModel
+@using FytMsys.Common
+@using FytMsys.Helper
+@model tb_Site
+@{
+    ViewBag.Title = "飞易腾动态_" + Model.SeoTitle;
+    ViewBag.Key = Model.SeoKey;
+    ViewBag.Desc = Model.SeoDescribe;
+    ViewBag.Nav = "5";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var colModel = ViewBag.colModel as tb_Column;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>@(colModel != null ? colModel.Title : "新闻与媒体")<span>]</span></h2>
+        <h3>
+            <a href="/">首页</a><tt>></tt><span>新闻与媒体</span>@{
+                if (colModel != null)
+                {
+                    <tt>></tt><span>@colModel.Title</span>
+                }
+            }
+        </h3>
+    </div>
+</div>
+
+<div class="container f-nw-w">
+    <div class="n-type">
+        <a href="/dynamic/" @(colModel == null ? "class=cur" : "")>全部</a><span></span>@{
+            var dtNav = ViewBag.dtNav as List<tb_Column>;
+            if (dtNav != null && dtNav.Count > 0)
+            {
+                foreach (var item in dtNav)
+                {
+                    if (item.Title.Equals(dtNav[dtNav.Count - 1].Title))
+                    {
+                        <a href="/dynamic/@item.EnTitle" @(colModel != null && colModel.ID == item.ID ? "class=cur" : "") title="@item.Title">@item.Title</a>
+                    }
+                    else
+                    {
+                        <a href="/dynamic/@item.EnTitle" @(colModel != null && colModel.ID == item.ID ? "class=cur" : "") title="@item.Title">@item.Title</a><span></span>
+                    }
+                }
+            }
+        }
+    </div>
+    <div class="animated fadeInLeft  n-it-list">
+        @{
+            var nlist = ViewBag.nlist as List<tb_Article>;
+            if (nlist != null && nlist.Count > 0)
+            {
+                foreach (var item in nlist)
+                {
+                    <div class="item clearfix">
+                        <div class="n-img">
+                            <a href="/dynamic/details/@item.ID" title="@item.Title">
+                                <img src="@item.ImgUrl" alt="@item.Title" />
+                                <div class="black"><i class="glyphicon glyphicon-search"></i></div>
+                            </a>
+                        </div>
+
+                        <div class="right">
+                            <a href="/dynamic/details/@item.ID" title="@item.Title"><p class="title">@item.Title</p></a>
+                            <span id="cat" catid="6">
+                                @{
+                    if (!string.IsNullOrEmpty(item.Tag))
+                    {
+                        if (item.Tag.Contains(","))
+                        {
+                            var sp = item.Tag.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var s in sp)
+                            {
+                                <a href="/search/?key=@s">@s</a>
+                            }
+                        }
+                        else
+                        {
+                            <a href="/search/?key=@item.Tag">@item.Tag</a>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/search/?key=飞易腾">飞易腾</a>
+                    }
+                            }
+                        </span>
+                        <span>@Convert.ToDateTime(@item.EditDate).ToShortDateString().Replace("/", ".")</span>
+                        <span style="border-right:none">@item.Hits</span>
+                        <p class="summary">@UtilsHelper.CutString(item.Summary, 220)</p>
+                            <a href="/dynamic/details/@item.ID" title="@item.Title"><div class="button"><div>查看详情</div><i class="glyphicon glyphicon-search"></i></div></a>
+                    </div>
+                </div><!-- end -->
+                }
+            }
+        }
+
+        <div class="clear"></div>
+        <div class="page">
+            @{
+                Debug.Assert(pageModel != null, "出错啦！！");
+            }
+            @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+        </div>
+
+    </div>
+</div>

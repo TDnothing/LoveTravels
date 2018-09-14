@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6C309F6C-6A30-4D3C-913F-49560B3A7905}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Domain.Entity</RootNamespace>
+    <AssemblyName>Domain.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FytDbContext.cs" />
+    <Compile Include="IOrderByExpression.cs" />
+    <Compile Include="lv_Bank.cs" />
+    <Compile Include="lv_GetMoney.cs" />
+    <Compile Include="lv_GoLookOrder.cs" />
+    <Compile Include="lv_ProJect.cs" />
+    <Compile Include="lv_ProjectOrder.cs" />
+    <Compile Include="lv_Story.cs" />
+    <Compile Include="lv_GoLook.cs" />
+    <Compile Include="lv_Message.cs" />
+    <Compile Include="Migrations\201512040415301_InitialCreate.cs" />
+    <Compile Include="Migrations\201512040415301_InitialCreate.Designer.cs">
+      <DependentUpon>201512040415301_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512040415539_1.cs" />
+    <Compile Include="Migrations\201512040415539_1.Designer.cs">
+      <DependentUpon>201512040415539_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512250448024_2.cs" />
+    <Compile Include="Migrations\201512250448024_2.Designer.cs">
+      <DependentUpon>201512250448024_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="OrderByExpression.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tb_Admin.cs" />
+    <Compile Include="tb_AdminMenu.cs" />
+    <Compile Include="tb_AdminPermission.cs" />
+    <Compile Include="tb_AdminRole.cs" />
+    <Compile Include="tb_AdvClass.cs" />
+    <Compile Include="tb_AdvList.cs" />
+    <Compile Include="tb_Article.cs" />
+    <Compile Include="tb_Attention.cs" />
+    <Compile Include="tb_Blog.cs" />
+    <Compile Include="tb_BlogActicle.cs" />
+    <Compile Include="tb_City.cs" />
+    <Compile Include="tb_Collect.cs" />
+    <Compile Include="tb_Column.cs" />
+    <Compile Include="tb_Comment.cs" />
+    <Compile Include="tb_DownLoad.cs" />
+    <Compile Include="tb_Goods.cs" />
+    <Compile Include="tb_GoodsAddress.cs" />
+    <Compile Include="tb_GoodsAttr.cs" />
+    <Compile Include="tb_GoodsBrand.cs" />
+    <Compile Include="tb_GoodsComment.cs" />
+    <Compile Include="tb_GoodsMess.cs" />
+    <Compile Include="tb_GoodsOrder.cs" />
+    <Compile Include="tb_GoodsOrderDetail.cs" />
+    <Compile Include="tb_GoodsOrderLog.cs" />
+    <Compile Include="tb_GoodsReturn.cs" />
+    <Compile Include="tb_ImageLibrary.cs" />
+    <Compile Include="tb_Job.cs" />
+    <Compile Include="tb_keyTags.cs" />
+    <Compile Include="tb_Message.cs" />
+    <Compile Include="tb_MessageRep.cs" />
+    <Compile Include="tb_MobileLog.cs" />
+    <Compile Include="tb_Picture.cs" />
+    <Compile Include="tb_Product.cs" />
+    <Compile Include="tb_Shop.cs" />
+    <Compile Include="tb_Site.cs" />
+    <Compile Include="tb_SystemLog.cs" />
+    <Compile Include="tb_SysTemp.cs" />
+    <Compile Include="tb_User.cs" />
+    <Compile Include="tb_UserApp.cs" />
+    <Compile Include="tb_UserEmail.cs" />
+    <Compile Include="tb_UserGroup.cs" />
+    <Compile Include="tb_UserLog.cs" />
+    <Compile Include="tb_UserLoginApi.cs" />
+    <Compile Include="tb_UserLoginOauth.cs" />
+    <Compile Include="tb_UserMoneyLog.cs" />
+    <Compile Include="tb_UserPointLog.cs" />
+    <Compile Include="tb_VersionUpdate.cs" />
+    <Compile Include="tb_Vote.cs" />
+    <Compile Include="tb_VoteItem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201512040415301_InitialCreate.resx">
+      <DependentUpon>201512040415301_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512040415539_1.resx">
+      <DependentUpon>201512040415539_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512250448024_2.resx">
+      <DependentUpon>201512250448024_2.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

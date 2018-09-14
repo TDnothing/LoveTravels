@@ -1,0 +1,75 @@
+﻿@model Domain.Entity.tb_SysTemp
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>body{background-color: white}</style>
+<!-- form star -->
+@using (Ajax.BeginForm("TempModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new {@class = "form-horizontal mform tip-wal dig-from", @id = "forms"}))
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.SiteId)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">模型标题</label>
+                                <div class="col-lg-8">
+                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入模型标题", @placeholder = "请输入模型标题" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">模型地址</label>
+                                <div class="col-lg-8">
+                                    @Html.TextBoxFor(model => model.Url, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入模型地址", @placeholder = "请输入模型地址" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">排序大小</label>
+                                <div class="col-lg-8">
+                                    @Html.TextBoxFor(model => model.Sort, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入排序大小", @placeholder = "请输入排序大小,必须为数字，越大越靠前" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">状态</label>
+                                <div class="col-lg-8">
+                                    <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsLock, new { @class = "i-checks" }) 是否启用</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">添加时间</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入添加时间" placeholder="请输入添加时间" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                        
+                            <div class="hr-line-dashed">
+                                <div class="form-group m20">
+                                    <div class="col-sm-2 col-sm-offset-2">
+                                        <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> 确定保存</button>
+                                        <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+        });
+    </script>
+}

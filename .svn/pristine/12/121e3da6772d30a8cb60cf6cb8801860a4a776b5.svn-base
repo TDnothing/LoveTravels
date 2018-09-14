@@ -1,0 +1,61 @@
+﻿@model Domain.Entity.tb_User
+@{
+    ViewBag.Title = "会员认证";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+<style>
+    .a-upload {
+        padding: 7px 35px;
+        position: relative;
+        cursor: pointer;
+        color: #888;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        display: inline-block;
+        *display: inline;
+        *zoom: 1;
+    }
+
+        .a-upload input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            cursor: pointer;
+        }
+
+        .a-upload:hover {
+            color: #444;
+            background: #eee;
+            border-color: #ccc;
+            text-decoration: none;
+        }
+</style>
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 1);}
+    <form id="forms" name="forms">
+    <div class="ur-wall">
+        <h2><span>基本信息-认证</span></h2>
+        <div class="rz-info"><span>认证</span>（请上传真实身份证照片或护照照片）</div>
+        <div class="rz-img">
+            <div id="img">
+                @{
+    if (!string.IsNullOrEmpty(Model.Address))
+    {
+        <img  src="@Model.Address" width="400" height="260" />
+    }
+}
+            </div>
+            <div class="rz-btn"><a class="a-upload" id="updoc"><input type="file" id="fileUrls" name="fileUrls" />点击上传认证资料</a></div>
+            
+        </div>
+    </div><!-- end -->
+</form>
+</div>
+<script type="text/javascript" src="/assets/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript" src="/lib/js/rz.js"></script>

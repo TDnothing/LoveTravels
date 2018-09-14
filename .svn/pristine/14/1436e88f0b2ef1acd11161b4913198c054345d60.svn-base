@@ -1,0 +1,20 @@
+namespace Domain.Entity.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class AddOrderDateTolv_ProjectOrder : DbMigration
+    {
+        public override void Up()
+        {
+            AddColumn("dbo.lv_ProjectOrder", "PeopleNum", c => c.Int(nullable: false));
+            AddColumn("dbo.lv_ProjectOrder", "OrderDate", c => c.String());
+        }
+        
+        public override void Down()
+        {
+            DropColumn("dbo.lv_ProjectOrder", "OrderDate");
+            DropColumn("dbo.lv_ProjectOrder", "PeopleNum");
+        }
+    }
+}

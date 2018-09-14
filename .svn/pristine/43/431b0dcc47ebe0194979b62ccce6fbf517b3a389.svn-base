@@ -1,0 +1,5 @@
+﻿
+FytMsys.IDAL 声明数据操作接口
+
+FytMsys.DALMSSQL  SQLSERVER数据库操作，集成FytMsys.IDAL 并实现相应接口方法
+在里面通过工厂DBContextFactory上下文通过线程读取，操作数据

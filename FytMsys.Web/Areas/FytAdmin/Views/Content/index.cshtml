@@ -1,0 +1,117 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<!-- table star -->
+@Html.Hidden("ClassId", ViewBag.ClassId as string)
+@Html.Hidden("Recyc", ViewBag.Recyc as string)
+<div class="row col-lg-12">
+    <div class="wrapper animated fadeInUp" style="padding: 0px 5px 20px 10px;">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>所有项目</h5>
+                <div class="ibox-tools rboor pr20">
+                    <a href="@Html.Raw(ViewBag.ClassId == 0 ? "javascript:dig.alertError('提示', '请选择左侧分类栏目！');" : "/FytAdmin/Content/ArticleModfiy/0?ClassId=" + ViewBag.ClassId)" class="btn btn-primary btn-xs p310" id="Insert"><i class="im-plus"></i> 添加新文章</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs p310" id="Modfiy"><i class="im-pencil2"></i> 编辑</a>
+                    <a href="javascript:void(0)" onclick="javascript: tb.delRecyc(0)" class="btn btn-primary btn-xs p310"><i class="im-remove4"></i> 删除</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs p310" onclick="tb.BatchCopyOrShift(0)"><i class="im-align-center-vertical"></i> 批量转移</a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-xs p310" onclick="tb.BatchCopyOrShift(1)"><i class="im-enter"></i> 批量复制</a>
+                    <button id="tb-refresh" href="projects.html" class="btn btn-primary btn-xs p310"><i class="im-spinner10 fa-spin"></i> 刷新</button>
+                </div>
+            </div>
+
+            <div class="ibox-content" style="  padding: 15px 0px 10px 0px;">
+                <!-- search star -->
+                <div class="form-horizontal clearfix">
+                    <div class="col-lg-4 col-sm-3 pl0">
+                        <div class="form-group">
+                            <div class="col-lg-8 col-sm-7">
+                                <select id="audit" class="input-sm form-control input-s-sm inline">
+                                    <option value="-1">请选择</option>
+                                    <option value="2">草稿</option>
+                                    <option value="0">待审核</option>
+                                    <option value="1">已审核</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-5">
+                        <div class="form-group">
+                            <label class="col-lg-3  col-sm-3 control-label">日期：</label>
+                            <div class="col-lg-8 col-sm-8 input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="beginTime" placeholder="开始日期" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" class="input-sm form-control">
+                                <span class="input-group-addon">到</span>
+                                <input type="text" id="endTime" class="input-sm form-control" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" name="end" value="" placeholder="截止日期">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-4">
+                        <div class="form-group">
+                            <div class="col-lg-12 col-sm-12 input-group">
+                                <input type="text" id="txtKey" placeholder="请输入关键字" value="" class="input-sm form-control">
+                                <span class="input-group-btn">
+                                    <button type="button" id="btnKey" class="btn btn-sm btn-primary"> 搜索</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- search end -->
+                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <table id="tables" class="table table-striped table-bordered table-hover dataTables-example dataTable" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="tn" style="width: 50px !important"><input id="checkall" name="" type="checkbox" value=""></th>
+                                <th width="30%">标题</th>
+                                <th>审核状态</th>
+                                <th>属性</th>
+                                <th>点击数</th>
+                                <th>作者</th>
+                                <th>编辑日期</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trows"></tbody>
+                        <script id="tlist" type="text/x-jquery-tmpl">
+                            <tr>
+                                <td class="tn"><input class="check" type="checkbox" name="checkbox_name" value="${ID}"></td>
+                                <td>{{html GetImg(ImgUrl)}} [${Cname}] ${Title}</td>
+                                <td>{{html Status(Audit)}}</td>
+                                <td style="font-size:15px">
+                                    {{html IsTop ? '<span class="text-navy" title="已推荐"><i class="im-thumbs-up3"></i></span>' : '<span class="text-warning" title="未推荐"><i class="im-thumbs-up5"></i></span>'}}
+                                    {{html IsHot ? '<span class="text-navy" title="已设置热点"><i class="im-alarm-check"></i></span>' : '<span class="text-warning" title="未设置热点"><i class="im-alarm-check"></i></span>'}}
+                                    {{html IsScroll ? '<span class="text-navy" title="已设置滚动"><i class="im-transmission fa-spin"></i></span>' : '<span class="text-warning" title="未设置滚动"><i class="im-transmission"></i></span>'}}
+                                    {{html IsSlide ? '<span class="text-navy" title="已设置幻灯"><i class="im-lamp3"></i></span>' : '<span class="text-warning" title="未设置幻灯"><i class="im-lamp3"></i></span>'}}
+                                    {{html IsComment ? '<span class="text-navy" title="已设置评论"><i class="im-bubbles"></i></span>' : '<span class="text-warning" title="未设置评论"><i class="im-bubbles"></i></span>'}}
+                                </td>
+                                <td>${Hits}</td>
+                                <td>${Author}</td>
+                                <td>${EditDate}</td>
+                            </tr>
+                        </script>
+                    </table>
+                    <!-- page -->
+                    <div class="bottom">
+                        <div class="dataTables_info" id="tables_info" role="status" aria-live="polite"></div>
+                        <div class="dataTables_length" id="tables_length">
+                            <label>显示 <select id="sel_page" class="form-control input-sm"><option value="10" selected="selected">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> 项结果</label>
+                        </div>
+                        <div class="dataTables_paginate paging_full_numbers" id="tables_paginate"><ul class="pagination"></ul></div>
+                        <div class="clear"></div>
+                    </div>
+                    <!-- page -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- table end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/table/article.js"></script>
+}

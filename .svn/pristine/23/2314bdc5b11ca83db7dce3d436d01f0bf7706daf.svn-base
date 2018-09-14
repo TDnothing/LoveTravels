@@ -1,0 +1,212 @@
+﻿@using FytMsys.Common
+@{
+    ViewBag.Title = "首页";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：banner
+        -->
+<div id="main">
+    <div id="index_b_hero">
+        <div class="hero-wrap">
+            <ul class="heros clearfix">
+                <li class="hero"><a href="" target="_blank" title="第一张图的说明"><img src="lib/img/b1.jpg" class="thumb" alt="" /></a></li>
+                <li class="hero"><a href="" target="_blank" title="第一张图的说明"><img src="lib/img/b2.jpg" class="thumb" alt="" /></a></li>
+                <li class="hero"><a href="" target="_blank" title="第一张图的说明"><img src="lib/img/b3.jpg" class="thumb" alt="" /></a></li>
+                <li class="hero"><a href="" target="_blank" title="第一张图的说明"><img src="lib/img/b4.jpg" class="thumb" alt="" /></a></li>
+            </ul>
+        </div>
+        <div class="helper">
+            <a href="#" class="prev icon-arrow-a-left"></a>
+            <a href="#" class="next icon-arrow-a-right"></a>
+        </div>
+        <div class="b-adv">
+            <a href="" title="" target="_blank"><img alt="" src="lib/img/adv1.jpg" width="265" height="250" /><span></span></a>
+            <a href="" title="" target="_blank"><img alt="" src="lib/img/adv1.jpg" width="265" height="250" /><span></span></a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $.foucs({ direction: 'left' });
+</script>
+
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-07
+    描述：我等你
+-->
+<div class="wdn-w">
+    <div class="i-title"><span>伴迷<samp>·</samp>这片沙和我是你等待的传说，我等你</span><a href="/project/index/-1">more <tt>>></tt></a></div>
+    @{
+        var pjlist = ViewBag.pjlist as dynamic;
+        if (pjlist != null)
+        {
+            var i = 1;
+            foreach (var item in pjlist)
+            {
+                <div class="wdn-item @(i%5==0?"last":"")">
+                    <div class="wdn-img">
+                        <a href="/project/detail/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="215" height="180" /></a>
+                        <div class="u-face"><a href="" title="@item.Title"><img alt="" src="@item.HeadPic" width="62" height="62" /></a></div>
+                    </div>
+                    <div class="wdn-info">
+                        <div class="wdn-l"><span>@item.NickName</span><i class="@(item.Types == 0 ? "no":"")"></i></div>
+                        <div class="wdn-r">@item.Region</div>
+                    </div>
+                    <div class="wdn-p">@item.Title</div>
+                    <div class="wdn-btn">
+                        <div class="star"><span class="s@(item.StarNum)"></span></div>
+                        <div class="btns"><a href="/project/detail/@item.ID">预订</a></div>
+                    </div>
+                </div><!-- end -->
+                i++;
+            }
+        }
+    }
+</div>
+<div class="clear"></div>
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-07
+    描述：我要去看看
+-->
+
+<div class="qkk-w">
+    <div class="i-title"><span>途迷<samp>·</samp>世界辣么大，我要去看看</span><a href="/golook/index/0-1">more <tt>>></tt></a></div>
+    @{
+        var gllist = ViewBag.gllist as dynamic;
+        if (gllist != null)
+        {
+            int i = 0;
+            foreach (var item in gllist)
+            {
+                <div class="qkk-item clearfix">
+                    <div class="qkk-img"><a href="/golook/detail/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="100" height="75" /></a></div>
+                    <div class="qkk-info">
+                        <div><span class="tag">@(item.Flags == 0 ? "求带" : "组团")</span></div>
+                        <div class="qkk-qgo">愿望地：@item.GoAddress　　　人数:@(item.Rsum)人 　　　预计抵达时间：@(item.ArriveTime)　　　发布时间：@Convert.ToDateTime(item.AddTime).ToShortDateString()</div>
+                        <div class="qkk-p">@(UtilsHelper.CutString(UtilsHelper.DropHTML(item.Centents), 100))<a href="/golook/detail/@item.ID">>></a></div>
+                        <div class="qkk-btn @(i==0?"hot":"")">
+                            <span>@(item.IsEffect == Convert.ToInt32(item.Rsum) ? "无效" : "有效")</span>
+                            <samp>
+                                <a href="/golook/detail/@item.ID">报名</a><tt style="display:none"></tt><a style="display:none" href="/golook/detail/@item.ID">预约</a>
+                            </samp>
+                        </div>
+                    </div>
+                </div><!-- end -->
+                i++;
+            }
+        }
+    }
+</div>
+
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-07
+    描述：推荐的旅程故事
+-->
+<div class="hot-lv-w">
+    <div class="hot-lv-bg"></div>
+    <div class="hot-wz">
+        <div class="hot-s-txt">
+            <div class="hot-s-item">
+                <h2>两三事儿</h2>
+                <h3></h3>
+                <div class="hot-s-info">
+                    <p>
+                        此处是旅程故事，用户可以把自己要旅游的路线，出行人数，出行方式，行程天数等需求发布到平台中，平台进行审核，审核通过后将在平台展示。系统可以通过区域，人数，等条件来检索定制旅游的用户。
+                        定制旅游模块的目的是用户发布旅游需求，个人导游和旅行社来找有需求旅游的人群，这样双方可以互相选择。用户可通过条件检索需要去的目的地列表，例如时间，地点，人数，出行方式，行程天数等，
+                        检索结果是个人导游或者旅行社发布的旅游路线，在列表中进入详细，用户可以和导游达成线上合作。
+                    </p>
+                    <div class="hot-s-btn"><a href="">进入旅程故事</a></div>
+                </div>
+            </div><!-- end -->
+            <div class="hot-s-item hidden">
+                <h2>两三事儿1</h2>
+                <h3></h3>
+                <div class="hot-s-info">
+                    <p>
+                        此处是旅程故事，用户可以把自己要旅游的路线，出行人数，出行方式，行程天数等需求发布到平台中，平台进行审核，审核通过后将在平台展示。系统可以通过区域，人数，等条件来检索定制旅游的用户。
+                        定制旅游模块的目的是用户发布旅游需求，个人导游和旅行社来找有需求旅游的人群，这样双方可以互相选择。用户可通过条件检索需要去的目的地列表，例如时间，地点，人数，出行方式，行程天数等，
+                        检索结果是个人导游或者旅行社发布的旅游路线，在列表中进入详细，用户可以和导游达成线上合作。
+                    </p>
+                    <div class="hot-s-btn"><a href="">进入旅程故事</a></div>
+                </div>
+            </div><!-- end -->
+            <div class="hot-s-item hidden">
+                <h2>两三事儿2</h2>
+                <h3></h3>
+                <div class="hot-s-info">
+                    <p>
+                        此处是旅程故事，用户可以把自己要旅游的路线，出行人数，出行方式，行程天数等需求发布到平台中，平台进行审核，审核通过后将在平台展示。系统可以通过区域，人数，等条件来检索定制旅游的用户。
+                        定制旅游模块的目的是用户发布旅游需求，个人导游和旅行社来找有需求旅游的人群，这样双方可以互相选择。用户可通过条件检索需要去的目的地列表，例如时间，地点，人数，出行方式，行程天数等，
+                        检索结果是个人导游或者旅行社发布的旅游路线，在列表中进入详细，用户可以和导游达成线上合作。
+                    </p>
+                    <div class="hot-s-btn"><a href="">进入旅程故事</a></div>
+                </div>
+            </div><!-- end -->
+        </div>
+        <div class="hot-s-img">
+            <a href=""><img src="lib/img/img5.jpg" width="500" height="450" /></a>
+            <a href=""><img src="lib/img/img5.jpg" width="500" height="450" /></a>
+            <a href=""><img src="lib/img/img5.jpg" width="500" height="450" /></a>
+        </div>
+        <div class="hot-ck"></div>
+    </div>
+</div>
+
+
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-07
+    描述：特色旅程
+-->
+<div class="ts-lc-w clearfix">
+    <div class="i-title"><span>特色旅程</span><a href="/" style="padding-top: 25px;">more <tt>>></tt></a></div>
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item last">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+    <div class="ts-item last">
+        <div class="ts-img"><a href="" title=""><img alt="" src="lib/img/img3.jpg" width="240" height="180" /></a></div>
+        <div class="ts-info"><a href="" title="">一起远离城市的喧嚣，去美丽的草原看一看</a></div>
+    </div><!-- end -->
+</div>
+@section scripts{
+    <script type="text/javascript" src="/lib/js/jquery.foucs.js"></script>
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+}

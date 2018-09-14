@@ -1,0 +1,21 @@
+﻿@model Domain.Entity.tb_Blog
+@{
+    Layout = "~/Views/Shared/_LayoutBlog.cshtml";
+}
+<div class="fluid-container">
+
+    <div class="content-wrapper">
+
+        <!-- ABOUT -->
+        <div class="page-section" id="about">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="widget-title">关于 Me</h4>
+                    <div>@Html.Raw(Model.Contents)</div>
+                    <hr>
+                </div>
+            </div> <!-- #about -->
+        </div>
+    </div>
+
+</div>

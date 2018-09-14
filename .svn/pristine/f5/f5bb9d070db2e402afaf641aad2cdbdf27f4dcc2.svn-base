@@ -1,0 +1,169 @@
+﻿@using FytMsys.Helper
+@using FytMsys.Common
+@using Domain.Entity
+@using Domain.ViewModel
+@model lv_GoLook
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="hr"></div>
+<link rel="stylesheet" href="/lib/alert/sweetalert.css">
+<link type="text/css" rel="stylesheet" href="/lib/css/animate.css" />
+
+<div class="mbx w1200"><a href="/">首页</a> > <a href="/golook/index/0-1">迷途</a> > 我要去看看</div>
+
+<div class="w1200 clearfix">
+    <div class="qkk-lw">
+        <div class="pl-uil">
+            <div class="pl-uinfo clearfix">
+                <div class="pu-lw">
+                    <img src="@Model.tb_User.HeadPic" width="150" data-bd-imgshare-binded="1">
+                    <h3>@Model.tb_User.NickName</h3>
+                </div>
+                <div class="pu-bts">
+                    <h2><tt>@(Model.Flags == 0 ? "求带" : "组团")</tt>@Model.Title</h2>
+                    <div class="pu-stad">
+                        <p>愿望地：@Model.GoAddress</p>
+                        <p>人数 : @(Model.Rsum)人 </p>
+                        <p>出发时间：@Model.ArriveTime</p>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="pl-u-sum mt0">
+                        <h3>说明</h3>
+                        @Html.Raw(Model.Centents)
+                        <p>&nbsp;</p>
+                        @{
+                            var imglist = ViewBag.imglist as List<tb_ImageLibrary>;
+                            if (imglist != null && imglist.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in imglist)
+                                {
+                                    <p><img src="@item.ImgUrl" style="width: 100%;@(i == 1 ? "" : "margin-Top:-10px")" data-bd-imgshare-binded="1" /></p>
+                                    i++;
+                                }
+                            }
+                        }
+                        <div class="pl-foot">Post ID: @Model.Number　　Post: @Model.AddTime.ToString("yyyy-MM-dd")　update：@Model.UpdateTime.ToString("yyyy-MM-dd")<a href=""><img src="/lib/img/fxwx.jpg" data-bd-imgshare-binded="1"></a></div>
+                        <div class="wdn-fx clearfix">
+                            <span>分享到：</span>
+                            <div class="bdsharebuttonbox bdshare-button-style0-32" data-bd-bind="1450148509308"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a><a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a></div>
+                            <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["fbook", "twi", "tsina", "weixin", "sqq"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["fbook", "twi", "tsina", "weixin", "sqq"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                        </div>
+
+                        <div class="xssj-w clearfix">
+                            <span>行程时间：</span>
+                            <div class="t-w">
+                                @Model.ArriveTime
+                            </div>
+                            <div class="t-xq">
+                                <p>人数：@(Model.Rsum)人</p><p>行程时长：@(Model.XcTime)天</p><p>价格：$@(Model.Price)/人</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pu-lw">
+                    <h3 style="font-size:16px;">他们已经预约了哦</h3>
+                </div>
+                <div class="pu-bts">
+                    <div class="pu-job">
+                        @{
+                            var peoplelist = ViewBag.peoplelist as List<lv_GoLookOrder>;
+                            if (peoplelist != null && peoplelist.Count > 0)
+                            {
+                                foreach (var item in peoplelist)
+                                {
+                                    <a href=""><img src="@item.tb_User.HeadPic" data-bd-imgshare-binded="1" /><span>@item.tb_User.NickName</span></a>
+                                }
+                            }
+                        }
+                    </div>
+                    @using (Ajax.BeginForm("Join", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        OnSuccess = "fyt.FSuccess",
+                        OnBegin = "fyt.FBegin",
+                    }, new { @id = "forms" }))
+                    {
+                        <div class="pu-btn">
+                            <a id="joinbtn" isexist="@ViewBag.IsExist" class="btn">报名（@(peoplelist == null ? 0 : peoplelist.Count)/@Model.Rsum）</a>
+                            <a class="btn" id="asend" data-id="@Model.tb_User.ID">发消息</a>
+                        </div>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.ID);
+                        <button id="hjoinbtn" hidden="hidden"></button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-rw">
+        <h2><span>最新发布</span></h2>
+        @{
+            var newpublish = ViewBag.newpublish as List<lv_GoLook>;
+            if (newpublish != null && newpublish.Count > 0)
+            {
+                foreach (var item in newpublish)
+                {
+                    <div class="qkk-xqit">
+                        <div class="qkk-us clearfix">
+                            <img src="@item.tb_User.HeadPic" width="56" height="56" />
+                            <span>@item.tb_User.NickName<tt>@(item.Flags == 0 ? "求带" : "组团")</tt></span>
+                            <samp>@CommentHelper.DateStringFromNow(item.UpdateTime)</samp>
+                        </div>
+                        <p>愿望地：@item.GoAddress</p>
+                        <p>人数 : @(item.Rsum)人 </p>
+                        <p>出发时间：@item.ArriveTime<a href="/golook/detail/@item.ID">查看</a></p>
+                        <hr>
+                    </div><!-- end -->
+                }
+            }
+        }
+    </div><!-- end -->
+</div>
+
+@Html.Action("index","lvmess",new{oid=1,nid=2})
+
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}
+
+<script>
+    
+    $("#joinbtn").click(function () {
+        var isexist = $(this).attr("isexist");
+        if (isexist == 0) {
+            $("#hjoinbtn").click();
+        }
+        else {
+            swal('哎呀', "您已经报过名了！", 'error');
+        }
+    });
+
+    var fyt = {
+        FSuccess: function (res) {
+            $("#joinbtn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "报名成功",
+                    text: "您已成功报名!",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $("#joinbtn").attr("disabled", "disabled");
+        }
+    }
+</script>

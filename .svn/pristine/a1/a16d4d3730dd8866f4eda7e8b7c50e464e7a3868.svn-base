@@ -1,0 +1,78 @@
+﻿@model Domain.Entity.tb_User
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-agent" content="format=html5;url=http://www.feiyit.com">
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/css/flexslider.css">
+    <link rel="stylesheet" href="/lib/alert/sweetalert.css">
+    <link type="text/css" rel="stylesheet" href="/lib/css/font-awesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="/lib/css/icons.css" />
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/lib/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/lib/css/animate.css" />
+    <link rel="stylesheet" href="/lib/css/index.css">
+    <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+    <style>
+        body {background-color: #e6e6e6;}
+         .us-inw{ padding:15px 25px;} 
+         .us-inw h3 {font-size: 22px;}
+         .us-inw table td, .us-inw table th{padding: 10px;}
+         .us-inw table th {font-weight: normal;color: #808080;}
+            .us-inw table td>div{ background-color: #ffffff; padding:8px 15px;}
+    </style>
+</head>
+<body>
+    <div class="us-inw">
+        <h3>Tyland 的基本信息</h3>
+        <table style="width: 100%">
+            <tr>
+                <th style="width:20%">头像</th>
+                <td><img src="@Model.HeadPic" width="115" height="115" style="border-radius: 50%" /></td>
+            </tr>
+            <tr>
+                <th>真实姓名</th>
+                <td><div>@Model.TrueName</div></td>
+            </tr>
+            <tr>
+                <th>昵称</th>
+                <td><div>@Model.NickName</div></td>
+            </tr>
+            <tr>
+                <th>性别</th>
+                <td><div>@Model.Sex</div></td>
+            </tr>
+            <tr>
+                <th>个人介绍</th>
+                <td><div>@Model.SafeAnswer</div></td>
+            </tr>
+            <tr>
+                <th>职业</th>
+                <td><div>@Model.SafeQuestion</div></td>
+            </tr>
+            <tr>
+                <th>邮箱</th>
+                <td><div>@Model.Email</div></td>
+            </tr>
+            <tr>
+                <th>微信号</th>
+                <td><div>@Model.QQ</div></td>
+            </tr>
+            <tr>
+                <th>电话</th>
+                <td><div>@Model.Mobile</div></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

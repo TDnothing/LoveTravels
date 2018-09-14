@@ -1,0 +1,84 @@
+﻿@model Domain.Entity.tb_UserLoginApi
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<!-- form star -->
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">接口标识</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Key, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入接口标识", @placeholder = "请输入接口标识" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">接口名称</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入接口名称", @placeholder = "请输入接口名称" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">ApiID</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.ApiID, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入ApiID", @placeholder = "请输入ApiID" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">ApiKey</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.ApiKey, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入ApiKey", @placeholder = "请输入ApiKey" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">回调地址</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.BackUrl, new { @class = "form-control", @placeholder = "回调地址是登录成功转到的地址" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">选项</label>
+                            <div class="col-lg-8">
+                                <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsEnable, new { @class = "i-checks" }) 是否启用</label>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <label class="col-lg-3 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+        });
+    </script>
+}

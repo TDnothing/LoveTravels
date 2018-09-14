@@ -1,0 +1,207 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@using FytMsys.Helper
+
+<script>
+    $(document).ready(function() {
+        var test;
+        $.getJSON("http://jsonip.com/?callback=?", function (data) {
+            test = data.ip;
+            //test = '58.214.254.46';
+            var uri = 'http://ip-api.com/json/' + test;
+            $.getJSON(uri).done(function (data) {
+                // On success, 'data' contains a list of products.
+                $.each(data, function (key, item) {
+                    // Add a list item for the product.
+                   
+                    if (key == 'country') {
+                        if (item == "United States") {
+                            checkmenutoEng();
+                            
+                        }
+                      
+                    }
+                });
+            });
+            function checkmenutoEng() {
+                //$("#fabu").href = "/releaseEng/";
+                // $("#fabu").attr("href", "/releaseEng/");
+                // $("#fabu").text('Publish');
+
+                $("a:contains('发布')").prop("href", "/releaseEng/");
+                $("a:contains('发布')").text('Publish');
+               
+                $("a:contains('注册')").prop("href", "/users/regEng/");
+                $("a:contains('注册')").text('Register');
+                $("a:contains('Register')").css('padding', '0 5px');
+                $("a:contains('登录')").prop("href", "/users/loginEng/");
+                $("a:contains('登录')").text('Login');
+                $("a:contains('Login')").css('padding', '0 5px');
+                $("a:contains('退出')").text('log out');
+                $("a:contains('首页')").text('Home');
+                $("a:contains('我等你')").text('Guides');
+                $("a:contains('去看看')").text('Travelers');
+                $("a:contains('旅程故事')").text('Stories');
+                $("a:contains('帮助中心')").text('Help Center');
+                
+            }
+        });
+
+    });
+   
+</script>
+
+<header>
+    <nav class="navbar" role="navigation" style="height: 120px">
+        <div class="navbar-header" style="max-width: 450px">
+            <div class="logo">
+                <a href="/" title=""><img alt="" src="/lib/img/logo.png" width="240" height="90" /></a>
+            </div>
+            <div class="sup-btn">
+                @{
+                    if (UtilsHelper.GetCookie("FytUserId") != "")
+                    {
+                        if (HttpContext.Current.Session["FytUser"] == null)
+                        {
+                            var uId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                            var model = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == uId);
+                            HttpContext.Current.Session["FytUser"] = model;
+                            @Html.Raw("欢迎 <a href='/account/'><font style='color:#337ab7'>" + model.NickName + "！</font></a>")
+                        }
+                        else
+                        {
+                            var model = HttpContext.Current.Session["FytUser"] as tb_User;
+                            @Html.Raw("欢迎 <a href='/account/'><font style='color:#337ab7'>" + model.NickName + "！</font></a>")
+                        }
+                        <div class="u-exit">
+                            <a href="/account/signout"><i class="im-exit"></i>退出</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <span><a href="/users/reg" class="reg">注册</a><a href="/users/login">登录</a> </span>
+                    }
+                }
+                <a id="fabu" href="/release/" class="sup-fb">发布</a>
+            </div>
+            <div class="button">
+                <button type="button" class="navbar-toggle" style="margin: 0; padding: 0" data-toggle="modal" data-target="#myModal">
+                    <span class="sr-only">Toggle navigation</span><span class="icon-bar" style="background-color: black"></span><span class="icon-bar" style="background-color: black"></span><span class="icon-bar" style="background-color: black"></span>
+                </button>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal" role="dialog">
+
+
+            <div class="col-xs-12 navmodal" style="padding: 0">
+
+                <ul class="unorderlistmodal">
+                    <li class="col-xs-12"><a href="/">首页</a></li>
+                    <li class="col-xs-12"><a href="/project/index/0-1">我等你</a></li>
+                    <li class="col-xs-12"><a href="/golook/index/0-1">去看看</a></li>
+                    <li class="col-xs-12"><a href="/story">旅程故事</a></li>
+                    <li class="col-xs-12"><a href="/category/help/shouce">帮助中心</a></li>
+                </ul>
+
+                <div class="search">
+                    <form action="/search/" method="GET">
+                        <input type="text" class="searchinput" name="key" placeholder="输入你想要参加的活动" />
+                        <select name="city">
+                            <option value="all">想要去的地方</option>
+                            @{
+
+                                #region 首页幻灯片 ==缓存
+
+                                List<tb_AdvList> advBigListmodal;
+                                if (CacheHelper.Get("SechSelectList") != null)
+                                {
+                                    advBigListmodal = CacheHelper.Get("SechSelectList") as List<tb_AdvList>;
+                                }
+                                else
+                                {
+                                    advBigListmodal = OperateContext<tb_AdvList>.SetServer.GetList(
+                                                                    PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1005).And(m => m.Status),
+                                                                    m => m.Sort, true).ToList();
+                                    CacheHelper.Insert("SechSelectList", advBigListmodal, 10000);
+                                }
+                                if (advBigListmodal != null && advBigListmodal.Count > 0)
+                                {
+                                    foreach (var item in advBigListmodal)
+                                    {
+                                        <option value="@item.Title">@item.Title</option>
+                                    }
+                                }
+
+                                #endregion
+
+                            }
+                        </select>
+                        <button><i class="icon-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="originalnavbar" class="collapse navbar-collapse" style="height: 120px;padding: 0">
+            <div class="col-md-6 col-xs-12" style="padding: 0;float: right">
+                <div class="nav-w">
+                    <ul class="unorderlist">
+                        <li class="col-md-2 col-xs-12" style="padding: 0;"><a href="/" style="padding: 0; float: right">首页</a></li>
+                        <li class="col-md-2 col-xs-12" style="padding: 0;"><a href="/project/index/0-1" style="padding: 0; float: right">我等你</a></li>
+                        <li class="col-md-2 col-xs-12" style="padding: 0;"><a href="/golook/index/0-1" style="padding: 0; float: right">去看看</a></li>
+                        <li class="col-md-3 col-xs-12" style="padding: 0;"><a href="/story" style="padding: 0; float: right">旅程故事</a></li>
+                        <li class="col-md-3 col-xs-12" style="padding: 0;"><a href="/category/help/shouce" style="padding: 0; float: right">帮助中心</a></li>
+                    </ul>
+
+                    <div class="search">
+                        <form action="/search/" method="GET">
+                            <input type="text" class="" name="key" placeholder="输入你想要参加的活动" />
+                            <select name="city">
+                                <option value="all">想要去的地方</option>
+                                @{
+
+                                    #region 首页幻灯片 ==缓存
+
+                                    List<tb_AdvList> advBigList;
+                                    if (CacheHelper.Get("SechSelectList") != null)
+                                    {
+                                        advBigList = CacheHelper.Get("SechSelectList") as List<tb_AdvList>;
+                                    }
+                                    else
+                                    {
+                                        advBigList = OperateContext<tb_AdvList>.SetServer.GetList(
+                                            PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1005).And(m => m.Status),
+                                            m => m.Sort, true).ToList();
+                                        CacheHelper.Insert("SechSelectList", advBigList, 10000);
+                                    }
+                                    if (advBigList != null && advBigList.Count > 0)
+                                    {
+                                        foreach (var item in advBigList)
+                                        {
+                                            <option value="@item.Title">@item.Title</option>
+                                        }
+                                    }
+
+                                    #endregion
+
+                                }
+                            </select>
+                            <button><i class="icon-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </nav>
+</header>
+<script type="text/javascript">
+            $(function() {
+                $(".sup-btn").hover(function() {
+                    $(".u-exit").show();
+                },function() {
+                    $(".u-exit").hide();
+                });
+            });
+</script>

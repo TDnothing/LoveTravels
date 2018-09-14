@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-agent" content="format=html5;url=http://www.feiyit.com">
+    <title>@ViewBag.Title</title>
+    <meta name="keywords" content="@ViewBag.Key" />
+    <meta name="description" content="@ViewBag.Desc" />
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="/lib/css/icons.css" />
+    <link type="text/css" rel="stylesheet" href="/lib/css/loaders.css" />
+    @Styles.Render("~/indexs/css")
+    <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/js/jquery.flexslider-min.js"></script>
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript" src="/lib/js/site.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/" title=""><img src="/lib/img/logo.jpg" height="50" alt="" /></a>
+            </div>
+            <!--
+                作者：北京飞易腾科技有限公司
+                时间：2015-11-02
+                描述：begin
+            -->
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="@(ViewBag.Nav=="0" ? "active" : "")"><a href="/">　首页　</a></li>
+                    <li class="@(ViewBag.Nav=="1" ? "active" : "")"><a href="/service/">我们的服务</a></li>
+                    <li class="@(ViewBag.Nav=="2" ? "active" : "")"><a href="/solution/">解决方案</a></li>
+                    <li class="dropdown @(ViewBag.Nav=="3" ? "active" : "")">
+                        <a href="/cases/" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我们的作品 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/cases/responsive-site/">响应式网站</a></li>
+                            <li><a href="/cases/web-design/">企业品牌官网</a></li>
+                            <li><a href="/cases/weixin-site/">手机微官网</a></li>
+                            <li><a href="/cases/b2c-development/">电子商务</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/cases/wapapp/">移动APP</a></li>
+                            <li><a href="/cases/webdeveloper/">软件开发</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="@(ViewBag.Nav=="4" ? "active" : "")"><a href="/aboutus/">关于飞易腾</a></li>
+                    <li class="@(ViewBag.Nav=="5" ? "active" : "")"><a href="/dynamic/">新闻与媒体</a></li>
+                    <li class="@(ViewBag.Nav=="6" ? "active" : "")"><a href="/contactus/">联系我们</a></li>
+                    <li><a href="javascript:void(0)" id="in-search"><i class="glyphicon glyphicon-search"></i></a></li>
+                </ul>
+            </div>
+            <!--
+                作者：北京飞易腾科技有限公司
+                时间：2015-11-02
+                描述：end
+            -->
+        </div>
+    </nav>
+    <!--
+        作者：715515390@qq.com
+        时间：2015-11-02
+        描述：搜索
+    -->
+    <div class="search" align="center">
+        <form action="/search/" method="get">
+            <input type="text" placeholder="请输入要搜索的内容" name="key">
+            <button type="submit"></button>
+        </form>
+    </div>
+    @RenderBody()
+    @Html.Action("Footer", "Home")
+</body>
+</html>

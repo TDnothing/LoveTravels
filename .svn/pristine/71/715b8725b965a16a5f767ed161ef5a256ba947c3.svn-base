@@ -1,0 +1,211 @@
+﻿@using System.Net.Mime
+@using System.Web.UI.HtmlControls
+@using Domain.Entity
+@model Domain.Entity.tb_Vote
+@{
+    Layout = "../shared/_Layout.cshtml";
+    var tnList = Model.tb_VoteItem;
+    var isEx = 0;
+    var hsumV = "|";
+    if (tnList != null && tnList.Count > 0) {isEx = 1;}
+}
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)@Html.HiddenFor(model => model.ClassId)@Html.Hidden("isEx",isEx)
+    <!-- head star -->
+    <div class="tnav row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2 class="fl">项目</h2>
+            <ol class="breadcrumb fl">
+                <li><a href="/FytAdmin/Vote/Index?ClassId=@Model.ClassId">主页</a></li>
+                <li><strong>编辑投票</strong></li>
+            </ol>
+        </div>
+    </div>
+	<!-- head end -->
+	<!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">投票主题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入投票主题", @placeholder = "请输入投票主题" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">副主题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.SubTitle, new { @class = "form-control", @placeholder = "100字范围的副标题" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">投票类型</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.RadioButtonFor(model => model.VoteType, 0) 文字投票</label>
+                                    <label class="checkbox-inline">@Html.RadioButtonFor(model => model.VoteType, 1) 图片投票</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">宣传图</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.ImgUrl, new { @class = "input-sm form-control" })
+                                    <span class="input-group-btn"><button type="button" data-text="ImgUrl" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">投票项</label>
+                                <div class="col-sm-5 col-md-5  input-group pl15">
+                                    @Html.TextBoxFor(model => model.ItemSum, new { @class = "input-sm form-control", @placeholder = "投票项" })
+                                    <span class="input-group-btn"><button type="button" class="btn btn-sm btn-primary" id="additem"> 增加选项</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">投票项目</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
+                                        <tr>
+                                            <td>项目名称</td>
+                                            <td>投票数</td>
+                                        </tr>
+                                        <tbody id="vbody">
+                                            @{
+                                                if (tnList != null && tnList.Count > 0)
+                                                {
+                                                    var index = 0;
+                                                    foreach (tb_VoteItem item in tnList)
+                                                    {
+                                                        index++;
+                                                        hsumV += index + "|";
+                                                        <tr id="tr@index">
+                                                            <td><input class="input-sm form-control" name="itemTitle_@index" placeholder="" type="text" value="@item.Title"></td>
+                                                            <td><input class="input-sm form-control" style="width:80px;float:left;" name="itemNum_@index" placeholder="" type="text" value="@item.VoteSum"><a style="display: table-cell;float: left;margin: 7px 0 0 10px;  color: #1ab394;" onclick="delitem(@index)" href="javascript:void(0)">删除</a>
+                                                                <input type="hidden" name="itemScale_@index" value="@item.Scale" />
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">时间限制</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline" data-toggle="tooltip" data-placement="top" title="超过此期限,将不能投票">@Html.CheckBoxFor(model => model.IsTime, new { @class = "i-checks" }) 是否启用时间限制</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">开始时间</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <input class="form-control" id="BeginTime" name="BeginTime" type="text" value="@Model.BeginTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">结束时间</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <input class="form-control" id="EndTime" name="EndTime" type="text" value="@Model.EndTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">发布日期</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入发布日期" placeholder="请输入发布日期" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">投票简介</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Summary" name="Summary" type="text/plain" style="width:100%;height:150px;">
+                                        @Html.Raw(Model.Summary)
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<!-- form end -->
+    @Html.Hidden("hsum", @hsumV)
+}
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#forms").initValidform();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            UE.getEditor('Summary', {
+                toolbars: fyt.uEditors(),
+                elementPathEnabled: false
+            });
+            if ($("#isEx").val() == 0) {
+                initVote();
+            }
+            
+
+            $("#additem").click(function() {
+                var htmls = '';
+                var tm = $("#ItemSum").val();
+                tm = parseInt(tm) + 1;
+                htmls += '<tr id="tr' + tm + '">';
+                htmls += '<td><input class="input-sm form-control" name="itemTitle_' + tm + '" placeholder="" type="text" value=""></td>';
+                htmls += '<td><input class="input-sm form-control" style="width:80px;float:left;" name="itemNum_' + tm + '" placeholder="" type="text" value="0"><a style="display: table-cell;float: left;margin: 7px 0 0 10px;  color: #1ab394;" onclick="delitem(' + tm + ')" href="javascript:void(0)">删除</a></td>';
+                htmls += '</tr>';
+                $("#hsum").val($("#hsum").val() + tm + "|");
+                $("#ItemSum").val(tm);
+                $("#vbody").append(htmls);
+            });
+        });
+
+        function delitem(t) {
+            $("#ItemSum").val((parseInt($("#ItemSum").val()) - 1));
+            $("#tr" + t).remove();
+            var tmH = $("#hsum").val();
+            if (tmH.indexOf(t + '|') > 0) {
+                $("#hsum").val(tmH.replace(t + '|', ""));
+            }
+        }
+
+        function initVote() {
+            var vsum = $("#ItemSum").val();
+            var htmls = '';
+            for (var i = 0; i < parseInt(vsum); i++) {
+                htmls += '<tr id="tr' + (i + 1) + '">';
+                htmls += '<td><input class="input-sm form-control" name="itemTitle_' + (i + 1) + '" placeholder="" type="text" value=""></td>';
+                htmls += '<td><input class="input-sm form-control" style="width:80px;float:left;" name="itemNum_' + (i + 1) + '" placeholder="" type="text" value="0"><a style="display: table-cell;float: left;margin: 7px 0 0 10px;  color: #1ab394;" onclick="delitem(' + (i + 1) + ')" href="javascript:void(0)">删除</a></td>';
+                htmls += '</tr>';
+                $("#hsum").val($("#hsum").val() + (i + 1) + "|");
+            }
+            $("#vbody").html(htmls);
+        }
+
+    </script>
+}

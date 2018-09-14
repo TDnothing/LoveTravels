@@ -1,0 +1,219 @@
+﻿@using System.Net.Mime
+@using System.Web.UI.HtmlControls
+@model Domain.Entity.tb_DownLoad
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+@using (Ajax.BeginForm("DownLoadModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.AddDate)
+    @Html.HiddenFor(model => model.SiteID)
+    @Html.HiddenFor(model => model.ThumImg)
+    @Html.HiddenFor(model => model.FileSize)
+    @Html.HiddenFor(model => model.FileType)
+    <!-- head star -->
+    <div class="tnav row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2 class="fl">项目</h2>
+            <ol class="breadcrumb fl">
+                <li><a href="/FytAdmin/DownLoad/Index?ClassId=@Model.ClassId">主页</a></li>
+                <li><strong>添加新软件</strong></li>
+            </ol>
+        </div>
+    </div>
+	<!-- head end -->
+	<!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">其它选项</a></li>
+                </ul>
+            </div>
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入标题", @placeholder = "请输入标题" })
+                                </div>
+                            </div>
+                            <div class="form-group hidden">
+                                <label class="col-sm-1 control-label">副标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.SubTitle, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">所属栏目</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.ClassId, ViewBag.pardrop as IEnumerable<SelectListItem>, new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">上传文件</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.FileUrl, new { @class = "input-sm form-control" })
+                                    <span class="input-group-btn"><button type="button" data-text="FileUrl" class="btn btn-sm btn-primary select-img"> 选择文件</button> </span>
+                                    <span class="input-group-btn"><a href="@Html.Raw(string.IsNullOrEmpty(Model.FileUrl) ? "javascript:alert('无文件可下载')" : Model.FileUrl)" target="_blank" class="btn btn-sm btn-primary"> 点击下载</a> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">特殊属性</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsTop, new { @class = "i-checks" }) 推荐</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsHot, new { @class = "i-checks" }) 热点</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsScroll, new { @class = "i-checks" }) 滚动</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsSlide, new { @class = "i-checks" }) 幻灯</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsComment, new { @class = "i-checks" }) 是否评论</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsWap, new { @class = "i-checks" }) 发布到移动端</label>
+                                    <label class="checkbox-inline"> @Html.CheckBoxFor(model => model.IsLink, new { @class = "i-checks" }) 使用转向链接</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">转向链接</label>
+                                <div class="col-sm-10 col-md-6"><input type="text" placeholder="http://" class="form-control"></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">关键字TAGS</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Tag, new { @class = "form-control" })
+                                    <span><a href="javascript:void(0)">根据简短标题自动获取Tags</a></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">更新时间</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="EditDate" name="EditDate" nullmsg="请输入添加时间" placeholder="请输入添加时间" type="text" value="@Model.EditDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">摘要</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">内容</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Content" name="Content" type="text/plain" style="width:100%;height:200px;">
+                                        @Html.Raw(Model.Content)                                    
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">图片</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.ImgUrl, new { @class = "input-sm form-control" })
+                                    <span class="input-group-btn"><button type="button" data-text="ImgUrl" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">优先级别</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.Sort, new List<SelectListItem>()
+                                    {
+                                        new SelectListItem{Text = "默认级别",Value = "0"},
+                                        new SelectListItem{Text = "1级",Value = "1"},
+                                        new SelectListItem{Text = "2级",Value = "2"},
+                                        new SelectListItem{Text = "3级",Value = "3"},
+                                        new SelectListItem{Text = "4级",Value = "4"},
+                                        new SelectListItem{Text = "5级",Value = "5"},
+                                        new SelectListItem{Text = "6级",Value = "6"},
+                                        new SelectListItem{Text = "7级",Value = "7"},
+                                        new SelectListItem{Text = "8级",Value = "8"},
+                                        new SelectListItem{Text = "9级",Value = "9"},
+                                        new SelectListItem{Text = "10级",Value = "10"}
+                                    }, new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">试用系统</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.IsSystem, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">软件类型</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.IsCharge, new List<SelectListItem>()
+                                    {
+                                        new SelectListItem{Text = "免费软件",Value = "免费软件"},
+                                        new SelectListItem{Text = "收费软件",Value = "收费软件"},
+                                        new SelectListItem{Text = "共享软件",Value = "共享软件"}
+                                    }, new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">页面关键</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.KeyWord, new { @class = "form-control", @rows = "3", @placeholder = "留空则默认显示文章里设置的KeyWords" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">下载量</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.DownSum, new { @class = "form-control", @placeholder = "下载数作弊", @datatype = "n", @nullmsg = "请输入下载数" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">点击量</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Hits, new { @class = "form-control", @placeholder = "点击数作弊", @datatype = "n", @nullmsg = "请输入点击量" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">审核状态</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Audit, 2) 草稿</label>
+                                    <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Audit, 0) 未审核</label>
+                                    <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Audit, 1) 已审核</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+	<!-- form end -->
+
+}
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $('.select2').select2();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            UE.getEditor('Content');
+        })
+    </script>
+}

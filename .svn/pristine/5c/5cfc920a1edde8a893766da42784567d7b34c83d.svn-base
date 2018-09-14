@@ -1,0 +1,162 @@
+﻿@using Domain.Entity
+@model Domain.Entity.tb_Vote
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: #ffffff;
+    }
+     .tb-row th {
+         background-color: #f3f3f4;
+     }
+
+    .tb-row th, .tb-row td {
+        padding: 5px 15px;
+    }
+    .skillbar {
+        position: relative;
+        display: block;
+        margin-bottom: 5px;
+        width: 100%;
+        background: #eee;
+        height: 15px;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        -webkit-transition: 0.4s linear;
+        -moz-transition: 0.4s linear;
+        -ms-transition: 0.4s linear;
+        -o-transition: 0.4s linear;
+        transition: 0.4s linear;
+        -webkit-transition-property: width, background-color;
+        -moz-transition-property: width, background-color;
+        -ms-transition-property: width, background-color;
+        -o-transition-property: width, background-color;
+        transition-property: width, background-color;
+    }
+
+    .skillbar-title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 110px;
+        font-weight: bold;
+        font-size: 13px;
+        color: #ffffff;
+        background: #6adcfa;
+        -webkit-border-top-left-radius: 3px;
+        -webkit-border-bottom-left-radius: 4px;
+        -moz-border-radius-topleft: 3px;
+        -moz-border-radius-bottomleft: 3px;
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
+        .skillbar-title span {
+            display: block;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 0 20px;
+            height: 15px;
+            line-height: 15px;
+            -webkit-border-top-left-radius: 3px;
+            -webkit-border-bottom-left-radius: 3px;
+            -moz-border-radius-topleft: 3px;
+            -moz-border-radius-bottomleft: 3px;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+
+    .skillbar-bar {
+        height: 15px;
+        width: 0px;
+        background: #6adcfa;
+        border-radius: 3px;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+    }
+
+    .skill-bar-percent {
+        position: absolute;
+        right: 10px;
+        top: 0;
+        font-size: 11px;
+        height: 15px;
+        line-height: 15px;
+        color: #ffffff;
+        color: rgba(0, 0, 0, 0.4);
+    }
+</style>
+<!-- table star -->
+<div class="row col-lg-12">
+    <div class="wrapper animated fadeInUp">
+        <div class="ibox">
+            <div class="ibox-title">
+                <table width="100%" class="tb-row f12">
+                    <tr>
+                        <th width="120">投票</th>
+                        <th>值</th>
+                    </tr>
+                    <tr>
+                        <td>调查主题：</td>
+                        <td>@Model.Title</td>
+                    </tr>
+                    <tr>
+                        <td>总投票数：</td>
+                        <td>@Model.VoteSum</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="ibox-content">
+                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <table id="tables" class="table table-striped table-bordered table-hover dataTables-example dataTable" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>投票选项</th>
+                                <th width="40">票数</th>
+                                <th width="50%">百分比</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trows">
+                            @{
+                                var tlist = Model.tb_VoteItem;
+                                if (tlist != null && tlist.Count > 0)
+                                {
+                                    foreach (tb_VoteItem item in tlist)
+                                    {
+                                        <tr>
+                                            <td>@item.Title</td>
+                                            <td>@item.VoteSum</td>
+                                            <td>
+                                                <div class="skillbar clearfix " data-percent="@item.Scale%">
+                                                    <div class="skillbar-bar" style="background: #27ae60;"></div>
+                                                    <div class="skill-bar-percent">@item.Scale%</div>
+                                                </div> <!-- End Skill Bar -->
+</td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- table end -->
+@section scripts
+{
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('.skillbar').each(function () {
+            $(this).find('.skillbar-bar').animate({
+                width: $(this).attr('data-percent')
+            }, 3000);
+        });
+    });
+</script>
+
+}

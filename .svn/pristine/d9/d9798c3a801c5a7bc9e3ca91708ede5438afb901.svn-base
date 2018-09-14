@@ -1,0 +1,146 @@
+﻿using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 我等你管理
+    /// </summary>
+    public class ProJectController : Controller
+    {
+        #region 1、[我等你] 列表页 + Index()
+        /// <summary>
+        /// 列表页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(int orderinfo, int page)
+        {
+            int pageSize = 15;
+            var lq = from p in OperateSession.SetContext.lv_ProJect
+                     orderby p.AddTime descending
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.CoverImg,
+                         p.Region,
+                         p.Hits,
+                         StarNum = (int?)OperateSession.SetContext.tb_Comment.Where(m => m.ClassId == p.ID).Sum(m => m.Star) % OperateSession.SetContext.tb_Comment.Count(m => m.ClassId == p.ID) ?? 0,
+                         p.AddTime
+                     };
+            switch (orderinfo)
+            {
+                case 0: lq.OrderByDescending(m => m.AddTime); break;
+                case 1: lq.OrderBy(m => m.AddTime); break;
+                case 2: lq.OrderByDescending(m => m.Hits); break;
+                case 3: lq.OrderBy(m => m.Hits); break;
+            }
+            ViewBag.list = JsonConverter.JsonClass(lq.Skip(pageSize * (page - 1)).Take(pageSize).ToList());
+            //分页控件
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = page,
+                Rows = lq.Count(),
+                Counts = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize)),
+                Urls = "/project/index/" + orderinfo + "-" + page
+            };
+            //网站信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            return View(siteModel);
+        }
+        #endregion
+
+        #region 2、[我等你] 发布我等你信息 + Publish()
+        /// <summary>
+        /// 发布我等你信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Publish()
+        {
+            return View();
+        }
+        #endregion
+
+        #region 3、[我等你] 发布我等你信息 + Publish() ---缺少当前用户信息
+        /// <summary>
+        /// 发布我等你信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Publish(lv_ProJect model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                model.Number = UtilsHelper.GetRamCode();
+                model.UserId = 1012;
+                model.AddTime = DateTime.Now;
+                if (ModelState.IsValid)
+                {
+                    //保存我等你信息
+                    OperateContext<lv_ProJect>.SetServer.Add(model);
+                    //保存我等你参与记录
+                    var po = new lv_ProjectOrder()
+
+                    {
+                        ProJectId = model.ID,
+                        UserId = model.UserId,
+                        PayPrice = Convert.ToDecimal(model.Price),
+                        PayAccount = "",
+                        PayName = "",
+                        PayStatus = 1,
+                        AddTime = DateTime.Now
+                    };
+                    OperateContext<lv_ProjectOrder>.SetServer.Add(po);
+                    #region 多张图片上传
+                    var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    var listModel = new List<tb_ImageLibrary>();
+                    foreach (string s in reslist)
+                    {
+                        var u = FytRequest.GetFormString("file_name_" + s);
+                        if (u != "")
+                        {
+                            listModel.Add(new tb_ImageLibrary()
+                            {
+                                ImgID = model.ID,
+                                ImgType = 2,
+                                ImgUrl = u,
+                                ImgSmall = u,
+                                IsCover = false
+                            });
+                        }
+                    }
+                    OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                    #endregion
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "有问题了，刷新试试吧~";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}

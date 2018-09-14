@@ -1,0 +1,60 @@
+﻿@using Domain.Entity
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- box star -->
+<div class="row pt10  animated fadeInUp">
+    <div class="col-lg-3 col-sm-3 pr0">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <a class="btn btn-block btn-primary compose-mail" href="/FytAdmin/SiteSet/Modfiy/0" target="DeployBase">新建</a>
+                <div class="space-25"></div>
+                <h5>站点列表</h5>
+                <ul class="folder-list category-list m-b-md boxs" style="padding: 0">
+                    @{
+                        var list = ViewBag.list as List<tb_Site>;
+                        if (list != null && list.Count > 0)
+                        {
+                            foreach (var site in list)
+                            {
+                                <li>
+                                    <a href="/FytAdmin/SiteSet/Modfiy/@site.ID" target="DeployBase"> <i class="fa fa-circle text-navy"></i> @site.SiteName <span class="label label-warning pull-right sp-del" data-id="@site.ID">删除</span>                                            </a>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9 col-sm-9 animated fadeInRight">
+        <iframe src="/FytAdmin/SiteSet/Modfiy/@Html.Raw(ViewBag.SiteId)" width="100%" height="100%" style="position:static;left:-22in;top:-11in;" id="DeployBase" name="DeployBase" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
+    </div>
+</div>
+<!-- box end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            var H = $(window).height();
+            $("#DeployBase").css({ 'height': H - 20 });
+            $(".sp-del").each(function() {
+                $(this).unbind();
+                var sid = $(this).attr("data-id");
+                $(this).click(function () {
+                    dig.confim("提示", "确定要删除该站点吗？", function () {
+                        $.post("/FytAdmin/SiteSet/Delete", { id: sid }, function (res) {
+                            if (res.Status == "y") {
+                                dig.alertSuccess("提示", res.Msg, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                dig.alertError("提示", res.Msg);
+                            }
+                        }, "json");
+                    });
+                });
+            });
+        })
+    </script>
+}

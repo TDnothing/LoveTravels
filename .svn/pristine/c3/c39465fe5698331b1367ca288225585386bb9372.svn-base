@@ -1,0 +1,42 @@
+﻿@using System.Text
+@model Domain.Entity.tb_Message
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<link href="/assets/message/semantic.css" rel="stylesheet" />
+<link href="/assets/message/zyComment.css" rel="stylesheet" />
+<div id="articleComment"></div>
+@Html.HiddenFor(model=>model.MessId)
+@Html.HiddenFor(model => model.ID)
+@section scripts
+{
+    <script type="text/javascript" src="/assets/message/AdminComment.js"></script>
+    <script type="text/javascript">
+        var id=@Ajax.JavaScriptStringEncode(Model.ID.ToString());
+        $.post("/FytAdmin/Message/Detail", { id: id }, function (res) {
+            if (res.Status == "y") {
+                $("#articleComment").zyComment({
+                    "width": "355",
+                    "height": "33",
+                    "title": "@Ajax.JavaScriptStringEncode(Model.Title)",
+                    "summary": "@Ajax.JavaScriptStringEncode(Model.Content)",
+                    "agoComment": res.Data,
+                    "callback": function (comment) {
+                        console.info("填写内容返回值：");
+                        console.info(comment);
+                        // 添加新的评论
+                        $("#articleComment").zyComment("setCommentAfter", { "ID": comment.id, "UserName": comment.name, "Content": comment.content, "RepDate": comment.time });
+
+                    }
+                });
+            }
+        }, 'json');
+
+    </script>
+
+}

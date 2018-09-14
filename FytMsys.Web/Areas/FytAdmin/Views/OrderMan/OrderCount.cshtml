@@ -1,0 +1,185 @@
+﻿@{
+    ViewBag.Title = "订单统计图表";
+    Layout = "../shared/_Layout.cshtml";
+}
+<div class="row col-lg-12">
+    <div class="wrapper animated fadeInUp">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>订单统计图表</h5>
+                <div class="ibox-tools rboor pr20"></div>
+            </div>
+            <div class="ibox-content">
+                <div style="width:90%">
+                    <div><span><b>按年统计</b></span></div>
+                    <form action="OrderCount" method="get">
+                        <select id="yearSelect" name="yearSelect">
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                        </select>
+                        <button class="btn btn-primary btn-xs p310">查询</button>
+                    </form>
+                    <div style="padding-top:10px;">
+                        <div id="qz_container_year" style="height:190px;"></div>
+                    </div>
+                </div>
+                <div style="width:90%">
+                    <div><span><b>总统计</b></span></div>
+                    <div style="padding-top:10px;">
+                        <div id="qz_container_tyear" style="height:190px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/Scripts/echarts-all.js"></script>
+<script type="text/javascript">
+    var myChart_tyear = echarts.init(document.getElementById("qz_container_tyear"));
+    var myChart_year = echarts.init(document.getElementById("qz_container_year"));
+    //按年统计
+    var option_tyear = {
+        tooltip: {
+            trigger: 'axis',
+            show:
+                true
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['line', 'bar']
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            data: ['订单数']
+        },
+        calculable: true,
+        xAxis:
+        [
+            {
+                type: 'category',
+                data: [@Html.Raw(ViewBag.category_tyear)]
+            }
+        ],
+        yAxis:
+        [
+            {
+                type: 'value'
+            }
+        ],
+        series:
+        [
+            {
+                "name": "订单数",
+                "type": "line",
+                "data": [@ViewBag.data_tyear],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            }
+        ]
+    };
+    myChart_tyear.setOption(option_tyear);
+    //按月统计
+    var option_year = {
+        tooltip: {
+            trigger: 'axis',
+            show:
+                true
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['line', 'bar']
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            data: ['订单数']
+        },
+        calculable: true,
+        xAxis:
+        [
+            {
+                type: 'category',
+                data: [@Html.Raw(ViewBag.category_year)]
+            }
+        ],
+        yAxis:
+        [
+            {
+                type: 'value'
+            }
+        ],
+        series:
+        [
+            {
+                "name": "订单数",
+                "type": "line",
+                "data": [@ViewBag.data_year],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            }
+        ]
+    };
+    myChart_year.setOption(option_year);
+</script>

@@ -1,0 +1,186 @@
+namespace Domain.Entity.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class _2 : DbMigration
+    {
+        public override void Up()
+        {
+            CreateTable(
+                "dbo.lv_Bank",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        UserId = c.Int(nullable: false),
+                        BankName = c.String(maxLength: 100),
+                        BankAccont = c.String(maxLength: 100),
+                        BankAddress = c.String(maxLength: 100),
+                        UserName = c.String(maxLength: 100),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_GetMoney",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Number = c.String(maxLength: 50),
+                        UserId = c.Int(nullable: false),
+                        Price = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        Account = c.String(maxLength: 50),
+                        BankId = c.Int(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_GoLook",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Number = c.String(maxLength: 50),
+                        UserId = c.Int(nullable: false),
+                        Title = c.String(maxLength: 500),
+                        Hits = c.Int(nullable: false),
+                        CoverImg = c.String(maxLength: 500),
+                        GoAddress = c.String(maxLength: 500),
+                        Rsum = c.String(maxLength: 10),
+                        XcTime = c.String(maxLength: 10),
+                        Flags = c.Int(nullable: false),
+                        ArriveTime = c.String(maxLength: 50),
+                        Price = c.String(maxLength: 10),
+                        Centents = c.String(),
+                        UpdateTime = c.DateTime(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_GoLookOrder",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        LookId = c.Int(nullable: false),
+                        UserId = c.Int(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_Message",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        GoUserId = c.Int(nullable: false),
+                        SendUserId = c.Int(nullable: false),
+                        Centents = c.String(maxLength: 500),
+                        IsRead = c.Boolean(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.SendUserId, cascadeDelete: true)
+                .Index(t => t.SendUserId);
+            
+            CreateTable(
+                "dbo.lv_ProJect",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Number = c.String(maxLength: 50),
+                        UserId = c.Int(nullable: false),
+                        Title = c.String(maxLength: 500),
+                        Hits = c.Int(nullable: false),
+                        CoverImg = c.String(maxLength: 500),
+                        Rsum = c.String(maxLength: 10),
+                        Price = c.String(maxLength: 10),
+                        Centents = c.String(),
+                        IsTcjs = c.Boolean(nullable: false),
+                        IsJcjs = c.Boolean(nullable: false),
+                        IsApzs = c.Boolean(nullable: false),
+                        Flags = c.Int(nullable: false),
+                        UpdateTime = c.DateTime(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_ProjectOrder",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Number = c.String(maxLength: 50),
+                        UserId = c.Int(nullable: false),
+                        ProJectId = c.Int(nullable: false),
+                        PayStatus = c.Int(nullable: false),
+                        PayName = c.String(maxLength: 50),
+                        PayPrice = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        PayAccount = c.String(maxLength: 50),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.lv_Story",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        UserId = c.Int(nullable: false),
+                        Author = c.String(maxLength: 50),
+                        Title = c.String(maxLength: 500),
+                        SubTitle = c.String(maxLength: 1000),
+                        Tag = c.String(maxLength: 200),
+                        Hits = c.Int(nullable: false),
+                        CoverImg = c.String(maxLength: 500),
+                        Centents = c.String(),
+                        UpdateTime = c.DateTime(nullable: false),
+                        AddTime = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.tb_User", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
+        }
+        
+        public override void Down()
+        {
+            DropForeignKey("dbo.lv_Story", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_ProjectOrder", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_ProJect", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_Message", "SendUserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_GoLookOrder", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_GoLook", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_GetMoney", "UserId", "dbo.tb_User");
+            DropForeignKey("dbo.lv_Bank", "UserId", "dbo.tb_User");
+            DropIndex("dbo.lv_Story", new[] { "UserId" });
+            DropIndex("dbo.lv_ProjectOrder", new[] { "UserId" });
+            DropIndex("dbo.lv_ProJect", new[] { "UserId" });
+            DropIndex("dbo.lv_Message", new[] { "SendUserId" });
+            DropIndex("dbo.lv_GoLookOrder", new[] { "UserId" });
+            DropIndex("dbo.lv_GoLook", new[] { "UserId" });
+            DropIndex("dbo.lv_GetMoney", new[] { "UserId" });
+            DropIndex("dbo.lv_Bank", new[] { "UserId" });
+            DropTable("dbo.lv_Story");
+            DropTable("dbo.lv_ProjectOrder");
+            DropTable("dbo.lv_ProJect");
+            DropTable("dbo.lv_Message");
+            DropTable("dbo.lv_GoLookOrder");
+            DropTable("dbo.lv_GoLook");
+            DropTable("dbo.lv_GetMoney");
+            DropTable("dbo.lv_Bank");
+        }
+    }
+}

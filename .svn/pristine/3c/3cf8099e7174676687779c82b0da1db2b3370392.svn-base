@@ -1,0 +1,294 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 博客
+    /// </summary>
+    public class BlogController : Controller
+    {
+        /// <summary>
+        /// 博客主页
+        /// </summary>
+        /// <returns></returns>
+        [AccountFilter]
+        public ActionResult Index()
+        {
+            if (HttpContext.Session == null) return View();
+            var model = HttpContext.Session["FytBlog"] as tb_Blog;
+            return View(model);
+        }
+
+
+        #region 编辑/添加博客 + Edit()
+        /// <summary>
+        /// 编辑/添加博客
+        /// </summary>
+        /// <returns></returns>
+        [AccountFilter]
+        public ActionResult Edit(int id)
+        {
+            var model = OperateContext<tb_BlogActicle>.SetServer.GetModel(m => m.ID == id);
+            if (model == null)
+            {
+                model=new tb_BlogActicle();
+            }
+            return View(model);
+        } 
+        #endregion
+
+        #region 关于Me  +About()
+        /// <summary>
+        /// 关于Me
+        /// </summary>
+        /// <returns></returns>
+        [AccountFilter]
+        public ActionResult About()
+        {
+            if (HttpContext.Session == null) return View();
+            var model = HttpContext.Session["FytBlog"] as tb_Blog;
+            return View(model);
+        } 
+        #endregion
+
+
+        #region 联系我吧  +ContactUs()
+        /// <summary>
+        /// 关于Me
+        /// </summary>
+        /// <returns></returns>
+        [AccountFilter]
+        public ActionResult ContactUs()
+        {
+            if (HttpContext.Session == null) return View();
+            var model = HttpContext.Session["FytBlog"] as tb_Blog;
+            return View(model);
+        }
+        #endregion
+
+        /// <summary>
+        /// 左侧导航
+        /// </summary>
+        /// <returns></returns>
+        [AccountFilter]
+        public ActionResult LeftNav()
+        {
+            if (HttpContext.Session == null) return View();
+            var model = HttpContext.Session["FytBlogUser"] as tb_User; 
+            ViewBag.blogModel= HttpContext.Session["FytBlog"] as tb_Blog;
+            return View(model);
+        }
+
+        #region 登录页面加载 +Login()
+        /// <summary>
+        /// 登录页面加载
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Login()
+        {
+            if (Session["FytBlogUser"]!=null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        /// <summary>
+        /// 登录页面
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(tb_User model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success",BackUrl = "/blog"};
+            try
+            {
+                model.LoginPwd = UtilsHelper.MD5(model.LoginPwd, true);
+                var uModel = OperateContext<tb_User>.SetServer.GetModel(
+                PredicateBuilder.True<tb_User>().And(m => m.LoginName == model.LoginName)
+                .And(m => m.LoginPwd.Equals(model.LoginPwd))
+                );
+                if (uModel != null)
+                {
+                    //判断账号是否冻结
+                    if (!uModel.Status)
+                    {
+                        //冻结提示
+                        jsonM.Status = "err";
+                        jsonM.Msg = "您的账号被冻结，请联系客服。";
+                    }
+                    else
+                    {
+                        uModel.LoginDate = DateTime.Now;
+                        OperateContext<tb_User>.SetServer.Update(uModel);
+                        if (HttpContext.Session != null)
+                        {
+                            HttpContext.Session["FytBlogUser"] = uModel;
+                            HttpContext.Session["FytBlog"] = uModel.tb_Blog.FirstOrDefault();
+                        }
+                        UtilsHelper.WriteCookie("FytBlogUser", uModel.LoginName);
+                        UtilsHelper.WriteCookie("FytBlogUserId", DES3Encrypt.EncryptString(uModel.ID.ToString(CultureInfo.InvariantCulture)));
+                    }
+                }
+                else
+                {
+                    //错误
+                    jsonM.Status = "err";
+                    jsonM.Msg = "用户名或密码错误！";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(BlogController), ex);
+                throw;
+            }
+            return Json(jsonM);
+        }
+
+        #endregion
+
+
+        #region 注册加载 +Reg()
+        /// <summary>
+        /// 注册加载
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult Reg()
+        {
+            if (Session["FytBlogUser"] != null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reg(tb_User models)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success",BackUrl = "/blog"};
+            try
+            {
+                if (models != null)
+                {
+                    //判断验证码是否正确
+                    if (Session[KeyHelper.SESSION_CODE] != null && Session[KeyHelper.SESSION_CODE].ToString().ToUpper() != models.SafeAnswer.Trim().ToUpper())
+                    {
+                        jsonM.Status = "err";
+                        jsonM.Msg = "验证码输入错误";
+                        return Json(jsonM);
+                    }
+                    //判断用户名是否存在
+                    var isLoginName = OperateContext<tb_User>.SetServer.Exist(m => m.LoginName == models.LoginName);
+                    if (isLoginName)
+                    {
+                        jsonM.Status = "err";
+                        jsonM.Msg = "用户名已存在，请更换注册！";
+                        return Json(jsonM);
+                    }
+                    //判断手机号码是否存在
+                    var isExs = OperateContext<tb_User>.SetServer.Exist(m => m.Mobile == models.Mobile);
+                    if (isExs)
+                    {
+                        jsonM.Status = "err";
+                        jsonM.Msg = "手机号码已存在，请更换注册！";
+                        return Json(jsonM);
+                    }
+                    models.GroupId = 1;
+                    models.LoginPwd = UtilsHelper.MD5(models.LoginPwd, true);
+                    models.NickName = models.LoginName;
+                    models.HeadPic = "/lib/blog/img/default.jpg";
+                    models.Status = true;
+                    models.Types = 0;
+                    models.RegDate = DateTime.Now;
+                    models.RegIp = UtilsHelper.GetIP();
+                    models.LoginDate = DateTime.Now;
+                    OperateContext<tb_User>.SetServer.Add(models);
+
+                    //注册开通博客
+                    var bModel = new tb_Blog()
+                    {
+                        UserId = models.ID,
+                        Title = models.LoginName+" 的博客",
+                        Summary = models.LoginName + " 的博客描述",
+                        Level = 1,
+                        Integrate = 0,
+                        Hits = 0,
+                        Contents = "内容"
+                    };
+                    OperateContext<tb_Blog>.SetServer.Add(bModel);
+
+                    if (HttpContext.Session != null)
+                    {
+                        HttpContext.Session["FytBlogUser"] = models;
+                        HttpContext.Session["FytBlog"] = bModel;
+                    }
+                    UtilsHelper.WriteCookie("FytBlogUser", models.LoginName);
+                    UtilsHelper.WriteCookie("FytBlogUserId", DES3Encrypt.EncryptString(models.ID.ToString(CultureInfo.InvariantCulture)));
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "请输入正确的内容提交";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(BlogController), ex);
+            }
+            return Json(jsonM);
+        }
+
+        #endregion
+
+
+        #region 退出登录 +SignOut()
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SignOut()
+        {
+            if (HttpContext.Session != null) HttpContext.Session["FytBlogUser"] = null;
+            UtilsHelper.WriteCookie("FytBlogUser", "");
+            UtilsHelper.WriteCookie("FytBlogUserId", "");
+            return RedirectToAction("Login");
+        } 
+        #endregion
+
+
+        #region 3.0 登录页面使用验证码+Codes()
+        /// <summary>
+        /// 使用验证吗
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Codes()
+        {
+            string code;
+            byte[] bytes = ValidateHelper.CreateValidateCode(4, out code);
+            Session[KeyHelper.SESSION_CODE] = code;
+            return File(bytes, @"image/Png");
+        }
+        #endregion
+    }
+}

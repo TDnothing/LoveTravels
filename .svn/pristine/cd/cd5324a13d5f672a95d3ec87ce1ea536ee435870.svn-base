@@ -1,0 +1,87 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@using FytMsys.Helper
+<header>
+    <div class="logo"><a href="/" title=""><img alt="" src="/lib/img/logo.png" width="240" height="90"/></a>
+    </div>
+    <div class="sup-btn">
+        @{
+            if (UtilsHelper.GetCookie("FytUserId") != "")
+            {
+                if (HttpContext.Current.Session["FytUser"] == null)
+                {
+                    var uId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    var model = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == uId);
+                    HttpContext.Current.Session["FytUser"] = model;
+                    @Html.Raw("欢迎 <font style='color:#337ab7'>" + model.NickName + "！</font> <a href='/account/'>个人中心</a>")
+                }
+                else
+                {
+                    var model = HttpContext.Current.Session["FytUser"] as tb_User;
+                    @Html.Raw("欢迎 <font style='color:#337ab7'>" + model.NickName + "！</font> <a href='/account/'>个人中心</a>")
+                }
+                <div class="u-exit"><a href="/account/signout"><i class="im-exit"></i>退出</a>
+                </div>
+            }
+            else
+            {
+                <span><a href="/users/reg" class="reg">注册</a><a href="/users/login">登录</a> </span>
+            }
+        }
+        <a href="/release/" class="sup-fb">发布</a>
+    </div>
+    <div class="nav-w">
+        <nav>
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/project/index/0-1">我等你</a></li>
+                <li><a href="/golook/index/0-1">去看看</a></li>
+                <li><a href="/story">旅程故事</a></li>
+                <li><a href="/category/help/shouce" class="last">帮助中心</a></li>
+            </ul>
+        </nav>
+        <div class="search">
+            <form action="/search/" method="GET">
+                <input type="text" class="" name="key" placeholder="输入你想要参加的活动"/>
+                <select name="city"><option value="all">想要去的地方</option>
+                    @{
+
+                        #region 首页幻灯片 ==缓存
+
+                        List<tb_AdvList> advBigList;
+                        if (CacheHelper.Get("SechSelectList") != null)
+                        {
+                            advBigList = CacheHelper.Get("SechSelectList") as List<tb_AdvList>;
+                        }
+                        else
+                        {
+                            advBigList = OperateContext<tb_AdvList>.SetServer.GetList(
+                                PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1005).And(m => m.Status),
+                                m => m.Sort, true).ToList();
+                            CacheHelper.Insert("SechSelectList", advBigList, 10000);
+                        }
+                        if (advBigList != null && advBigList.Count > 0)
+                        {
+                            foreach (var item in advBigList)
+                            {
+                                <option value="@item.Title">@item.Title</option>
+                            }
+                        }
+
+                        #endregion
+
+                    }</select>
+                <button><i class="icon-search"></i></button>
+            </form>
+        </div>
+    </div>
+</header>
+<script type="text/javascript">
+    $(function() {
+        $(".sup-btn").hover(function() {
+            $(".u-exit").show();
+        },function() {
+            $(".u-exit").hide();
+        });
+    });
+</script>

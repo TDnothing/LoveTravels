@@ -1,0 +1,40 @@
+namespace Domain.Entity.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class InitialCreate : DbMigration
+    {
+        public override void Up()
+        {
+            CreateTable(
+                "dbo.tb_GoodsReturn",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        OrderNum = c.String(maxLength: 50),
+                        GoodsId = c.Int(nullable: false),
+                        UserId = c.Int(nullable: false),
+                        UserName = c.String(maxLength: 50),
+                        UserMobile = c.String(maxLength: 50),
+                        UserAddress = c.String(maxLength: 200),
+                        Summary = c.String(maxLength: 500),
+                        AuditSummary = c.String(maxLength: 3000),
+                        Status = c.Int(nullable: false),
+                        AddDate = c.DateTime(nullable: false),
+                        AuditDate = c.DateTime(),
+                    })
+                .PrimaryKey(t => t.ID);
+            
+            AlterColumn("dbo.tb_BlogActicle", "LastHitDate", c => c.DateTime());
+            AlterColumn("dbo.tb_BlogActicle", "DelDate", c => c.DateTime());
+        }
+        
+        public override void Down()
+        {
+            AlterColumn("dbo.tb_BlogActicle", "DelDate", c => c.DateTime(nullable: false));
+            AlterColumn("dbo.tb_BlogActicle", "LastHitDate", c => c.DateTime(nullable: false));
+            DropTable("dbo.tb_GoodsReturn");
+        }
+    }
+}

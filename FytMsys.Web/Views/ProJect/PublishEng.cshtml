@@ -1,0 +1,242 @@
+﻿@using FytMsys.Common
+@using Domain.Entity
+@using System.Web.UI.WebControls
+@model lv_ProJect
+@{
+    Layout = "~/Views/Shared/_LayoutRelease.cshtml";
+    var user = ViewBag.user as tb_User;
+    ViewBag.isEnglish = true;
+    var imglist = ViewBag.imglist as List<tb_ImageLibrary>;
+    var tl = "";
+}
+
+<div class="gs-rest">
+    <div class="mbx"><a href="/">我爱旅途</a>><a href="/project/index/0-1">我等你</a>><span>Publish</span>
+        <button type="button" class="btn btn-primary" style="float: right"><a href="/project/publish">中文版</a></button>
+    </div>
+    
+    @Html.Action("TreatyEng", "Home")
+    <hr style="border-top: 1px solid #CCCCCC; margin-bottom: 10px;">
+    @Html.Hidden("isValidate", (user != null && user.Types == 1 ? "1" : "0"))
+    <div class="rg-par">Publish><strong>Filling the form</strong>>Preview>Published
+    </div>
+    @using (Ajax.BeginForm("Publish", null, new AjaxOptions()
+    {
+        HttpMethod = "post",
+        OnSuccess = "fyt.FSuccess",
+        OnBegin = "fyt.FBegin",
+    }, new { @id = "forms" }))
+    {
+        <div class="row" style="padding-left: 10px">
+            <div class="col-md-5  publishtitle">
+                Title：@Html.TextBoxFor(model => model.Title, new { required = "required", style = "" })
+            </div>
+           
+                <div class="col-md-4 col-xs-7" style="padding-right: 0">
+                    <select id="pricetype" name="pricetype" style="display: inline-block; outline: none; padding: 2px; border: 1px solid #CCCCCC;">
+                        <option value="人民币">Chinese Yuan</option>
+                        <option value="美元">US Dollar</option>
+                    </select>
+                    Price：@Html.TextBoxFor(model => model.Price, new { type = "number", required = "required", placeholder = "", style = "width:90px" })
+                </div>
+
+
+                <div class="col-md-3 col-xs-5" style="padding-bottom: 15px">
+                    Number：@Html.TextBoxFor(model => model.Rsum, new { type = "number", required = "required" })
+                </div>
+            </div>
+            <div class="col-md-12 col-xl-12">
+                <p>Details（2000 words Max）</p>
+
+                @Html.TextAreaFor(model => model.Centents, new { style = " width: 100%;height: 350px" })
+            </div>
+      		<br/>
+                    <div> 
+			@{var listItems = new List<ListItem>
+                        {
+                              new ListItem { Text = "Same Price", Value="1" },
+                              new ListItem { Text = "90% Off", Value="0.1" },
+                              new ListItem { Text = "80% Off", Value="0.2" },
+                              new ListItem { Text = "70% Off", Value="0.3" },
+                              new ListItem { Text = "60% Off", Value="0.4" },
+                              new ListItem { Text = "50% Off", Value="0.5" },
+                              new ListItem { Text = "40% Off", Value="0.6" },
+                              new ListItem { Text = "30% Off", Value="0.7" },
+                              new ListItem { Text = "20% Off", Value="0.8" },
+                              new ListItem { Text = "10% Off", Value="0.9" }
+                        };
+                        }
+                        Ladies Discount
+                        @Html.DropDownListFor(model => model.LadyDiscount, new SelectList(listItems, "Value", "Text"))</div>
+            <div class="col-md-6 col-xl-12" style="padding: 10px">
+                Destination：@Html.TextBoxFor(model => model.Region, new { required = "required", style = "width:70%" })
+            </div>
+            <div class="col-md-6 col-xl-12" style="padding: 10px">
+                @Html.CheckBoxFor(model => model.IsTcjs, new { style = "width:15px;" }) Same City PickUp&nbsp;&nbsp;&nbsp;&nbsp;
+                @Html.CheckBoxFor(model => model.IsJcjs, new { style = "width:15px" }) Airport PickUp&nbsp;&nbsp;&nbsp;&nbsp;
+                @Html.CheckBoxFor(model => model.IsApzs, new { style = "width:15px" }) Provide Housing&nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+            <div class="col-md-12 col-xl-12" style="padding-left: 10px">
+                <span style="float: left">Add/Edit： </span>
+                <div class="col-md-5 col-xl-12" style="padding: 0">
+                    <span class="bannt"><a href="javascript:void(0)" id="bshow" class="btn">Banner Picture</a>（sugguested size 19:5 ）</span><br>
+                    <input type="file" id="bannerfile" name="bannerfile" style="display: none" />
+                    <p id="sb-img" style="; @(string.IsNullOrEmpty(Model.CoverImg) ? "display:none" : "")">
+                        <img src="@Model.CoverImg" width="200" height="100" />
+                    </p>
+                    @Html.HiddenFor(model => model.CoverImg)
+                    <span class="bannt"><a href="javascript:void(0)" id="ashow" class="btn">Display Picture</a>（sugguested size 300*300 ）</span><br>
+                    <input type="file" id="showfile" name="showfile" style="display: none" />
+                    <p id="sh-img" style="@(string.IsNullOrEmpty(Model.ShowImg) ? "display:none" : "")">
+                        <img src="@Model.ShowImg" width="200" height="100" />
+                    </p>
+                    @Html.HiddenFor(model => model.ShowImg)
+                    <span class="bannt mt10"><a href="javascript:void(0)" id="filePicker" class="btn" style="position: relative">Detail Picture</a>（No more than 10）</span>
+                </div>
+                <div id="fileList" class="clearfix">
+                    @{
+                        if (imglist != null && imglist.Count > 0)
+                        {
+                            var i = 9;
+                            foreach (var item in imglist)
+                            {
+                                tl += i + "|";
+                                <div id="WU_FILE_@item.ID" class="file-item thumbnail" style="width: 150px; float: left; margin-right: 10px;">
+                                    <img src="@item.ImgUrl">
+                                    <div class="info"></div>
+                                    <a href="javascript:void(0)" data-src="" data-file-id="WU_FILE_@item.ID" onclick="delFile(@i, 'WU_FILE_@item.ID')" data-id="@item.ID" class="pldel">×</a>
+                                    <input type="hidden" name="file_name_@i" value="@item.ImgUrl" />
+                                </div>
+                                i--;
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div class="col-md-7 col-xs-12 jixubut">
+                <button class="btn btn-primary" @(user != null && user.Types == 1 ? "" : "disabled='disabled'") id="savebtn">Continue>></button>
+            </div>
+
+            @Html.Hidden("imlist", tl)
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.ID)
+            ;
+            }
+
+        </div>
+
+<link href="/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<link href="/webuploader/webuploader.css" type="text/css" rel="stylesheet">
+
+<style>
+    .gs-rest table td input[type="file"] {
+        display: none;
+    }
+
+    .file-item .info {
+        bottom: 3px;
+    }
+
+    .webuploader-pick {
+        background: none;
+        padding: 0;
+        color: #333333;
+        overflow: inherit;
+    }
+</style>
+@section scripts
+{
+    <!-- 配置文件 -->
+    <script type="text/javascript" charset="utf-8" src="/umeditor/umeditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" charset="utf-8" src="/umeditor/umeditor.min.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/webuploader/webuploader.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/webuploader/moreup.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+    <script type="text/javascript" src="/lib/js/up.js"></script>
+}
+
+<script type="text/javascript">
+    $(function () {
+        var iv = $("#isValidate").val();
+        if (iv == 0) {
+            swal({
+                title: "Sorry！",
+                text: "Please Log in",
+                type: "warning",
+                showCancelButton: false,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Log In",
+                closeOnConfirm: false
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    window.location.href = '/Users/LoginEng';
+                } else {
+                    window.location.reload();
+                }
+            });
+        }
+    });
+
+    var um = UM.getEditor('Centents');
+    var fyt = {
+        FSuccess: function (res) {
+            $("#savebtn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "Success!",
+                    text: "Your information has been submitted",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Review",
+                    cancelButtonText: "OK",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        window.location.href = '/project/detail/' + res.Msg;
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                swal('Whoop', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            if (!$("#Title").val()) {
+                swal('Reminder', "Please enter title", 'error');
+                return false;
+            }
+            if (!$("#Price").val()) {
+                swal('Reminder', "Please enter price", 'error');
+                return false;
+            }
+            if (!$("#Rsum").val()) {
+                swal('Reminder', "Please enter number", 'error');
+                return false;
+            }
+            if (!$("#Region").val()) {
+                swal('Reminder', "Please enter destination", 'error');
+                return false;
+            }
+            if (!UM.getEditor('Centents').hasContents()) {
+                swal('Reminder', "Please describe detail", 'error');
+                return false;
+            }
+            if (!$("#CoverImg").val()) {
+                swal('Reminder', "Please upload Banner picture", 'error');
+                return false;
+            }
+            if (!$("#imlist").val()) {
+                swal('Reminder', "Please upload detail picture", 'error');
+                return false;
+            }
+            $("#savebtn").attr("disabled", "disabled");
+        }
+    };
+</script>

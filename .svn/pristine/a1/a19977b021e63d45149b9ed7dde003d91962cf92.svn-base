@@ -1,0 +1,114 @@
+﻿using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 我等你管理
+    /// </summary>
+    public class ProJectController : Controller
+    {
+        #region 1、[我等你] 列表页 + Index()
+        /// <summary>
+        /// 列表页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(int orderby, int page)
+        {
+            int pageSize = 15;
+            string key = FytRequest.GetQueryString("key"),//关键字
+                   place = FytRequest.GetQueryString("place"),//地区
+                   Url = "/project/index/" + orderby + "-" + page;
+            var lq = from p in OperateSession.SetContext.lv_ProJect
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.CoverImg,
+                         p.Region,
+                         p.Hits,
+                         StarNum="",
+                         p.AddTime
+                     };
+            if (!string.IsNullOrEmpty(key))
+            {
+                lq = lq.Where(m => m.Title.Contains(key));
+                Url += "?key=" + key;
+            }
+            if (!string.IsNullOrEmpty(place))
+            {
+                if (!string.IsNullOrEmpty(key))
+                {
+                    Url += "&place=" + place;
+                }
+                else
+                {
+                    Url += "?place=" + place;
+                }
+            }
+            switch (orderby)
+            {
+                case 0: lq.OrderByDescending(m => m.AddTime); break;
+                case 1: lq.OrderBy(m => m.AddTime); break;
+                case 2: lq.OrderByDescending(m => m.Hits); break;
+                case 3: lq.OrderBy(m => m.Hits); break;
+            }
+            ViewBag.list = lq.Skip(pageSize * (page - 1)).Take(pageSize).ToList();
+            //分页控件
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = page,
+                Rows = lq.Count(),
+                Counts = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize)),
+                Urls = Url
+            };
+            //网站信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            return View(siteModel);
+        }
+        #endregion
+
+        #region 3、[我等你] 发布我等你信息 + Publish()
+        /// <summary>
+        /// 发布我等你信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Publish()
+        {
+            return View();
+        }
+        #endregion
+
+        #region 3、[我等你] 发布我等你信息 + Publish()
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Publish(lv_ProJect model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}

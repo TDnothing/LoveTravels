@@ -1,0 +1,464 @@
+﻿@model Domain.ViewModel.SysBasicConfig
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">主页</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="javascript:void(0)">系统基本设置</a></li>
+            <li><strong>编辑</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+<!-- form star -->
+@using (Ajax.BeginForm("Index", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">功能权限设置</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">邮件发送设置</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-3">文件上传设置</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-4">其它设置</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-5">版本设置</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">网站安装目录</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.webpath, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">*根目录下，输入“/”；如：http://abc.com/web，输入“web/”</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">网站管理目录</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.webmanagepath, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">开启统计功能</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.staticstatus, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.staticstatus, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">开启评论审核</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.commentstatus, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.commentstatus, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">后台管理日志</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.logstatus, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.logstatus, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">是否关闭网站</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.webstatus, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.webstatus, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">关闭原因描述</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.webclosereason, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">网站统计代码</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.webcountcode, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">STMP服务器</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailsmtp,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "发送邮件的SMTP服务器地址"}
+                                        })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">SMTP端口</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailport,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "SMTP服务器的端口"}
+                                        })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">发件人地址</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailfrom, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">邮箱账号</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailusername, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">邮箱密码</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailpassword, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">发件人昵称</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.emailnickname,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "显示发件人的昵称"}
+                                        })
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">附件上传目录</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.filepath,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "上传图片或附件的目录，自动创建在网站根目录下"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">附件上传类型</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.fileextension,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "以英文的逗号分隔开，如：“jpg,gif,rar”"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">附件保存方式</label>
+                            <div class="col-sm-10 col-md-6">
+                                <select name="filesave" id="filesave" class="form-control">
+                                    <option value="1">按年月日每天一个目录</option>
+                                    <option value="2">按年月/日/存入不同目录</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">文件上传大小</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.attachsize,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "KB超过设置的文件大小不予上传，0不限制，自动创建在网站根目录下"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片上传大小</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.imgsize,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "KB超过设置的图片大小不予上传，0不限制"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片最大尺寸</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.imgmaxheight,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"style", "width:80px"}, {"class", "form-control fl"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "px=像素"}
+                                    })
+                                @Html.TextBoxFor(model => model.imgmaxwidth,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"style", "width:80px"}, {"class", "form-control fl"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "px=像素"}
+                                    })
+                                <span style="display: block" class="pt10">*设置图片高和宽，超出自动裁剪，0为不受限制</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">生成缩略图大小</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.thumbnailheight,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"style", "width:80px"}, {"class", "form-control fl"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "px=像素"}
+                                    })
+                                @Html.TextBoxFor(model => model.thumbnailwidth,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"style", "width:80px"}, {"class", "form-control fl"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "px=像素"}
+                                    })
+                                <span style="display: block" class="pt10">*图片生成缩略图高和宽，0为不生成</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片水印类型</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarktype, 0) 关闭水印</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarktype, 1) 文字水印</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarktype, 2) 图片水印</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片水印位置</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 0) 不使用</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 1) 左上</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 2) 中上</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 3) 右上</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 4) 左中</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 5) 居中</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 6) 右中</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 7) 左下</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 8) 中下</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.watermarkposition, 9) 右下</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片生成质量</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.watermarkimgquality,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "只适用于加水印的jpeg格式图片.取值范围 0-100, 0质量最低, 100质量最高, 默认80"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">图片水印文件</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.watermarkpic,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "需存放在站点目录下，如图片不存在将使用文字水印"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">水印透明度</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.watermarktransparency,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "取值范围1--10 (10为不透明)"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">水印文字</label>
+                            <div class="col-sm-5 col-md-6">
+                                @Html.TextBoxFor(model => model.watermarktext,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "文字水印的内容"}
+                                    })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">文字字体</label>
+                            <div class="col-sm-5 col-md-6">
+                                <select name="watermarkfont" id="watermarkfont" class="form-control fl select2" style="width: 300px">
+                                    <option value="Arial">Arial</option>
+                                    <option value="Arial Black">Arial Black</option>
+                                    <option value="Batang">Batang</option>
+                                    <option value="BatangChe">BatangChe</option>
+                                    <option value="Comic Sans MS">Comic Sans MS</option>
+                                    <option value="Courier New">Courier New</option>
+                                    <option value="Dotum">Dotum</option>
+                                    <option value="DotumChe">DotumChe</option>
+                                    <option value="Estrangelo Edessa">Estrangelo Edessa</option>
+                                    <option value="Franklin Gothic Medium">Franklin Gothic Medium</option>
+                                    <option value="Gautami">Gautami</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Gulim">Gulim</option>
+                                    <option value="GulimChe">GulimChe</option>
+                                    <option value="Gungsuh">Gungsuh</option>
+                                    <option value="GungsuhChe">GungsuhChe</option>
+                                    <option value="Impact">Impact</option>
+                                    <option value="Latha">Latha</option>
+                                    <option value="Lucida Console">Lucida Console</option>
+                                    <option value="Lucida Sans Unicode">Lucida Sans Unicode</option>
+                                    <option value="Mangal">Mangal</option>
+                                    <option value="Marlett">Marlett</option>
+                                    <option value="Microsoft Sans Serif">Microsoft Sans Serif</option>
+                                    <option value="MingLiU">MingLiU</option>
+                                    <option value="MS Gothic">MS Gothic</option>
+                                    <option value="MS Mincho">MS Mincho</option>
+                                    <option value="MS PGothic">MS PGothic</option>
+                                    <option value="MS PMincho">MS PMincho</option>
+                                    <option value="MS UI Gothic">MS UI Gothic</option>
+                                    <option value="MV Boli">MV Boli</option>
+                                    <option value="Palatino Linotype">Palatino Linotype</option>
+                                    <option value="PMingLiU">PMingLiU</option>
+                                    <option value="Raavi">Raavi</option>
+                                    <option value="Shruti">Shruti</option>
+                                    <option value="Sylfaen">Sylfaen</option>
+                                    <option value="Symbol">Symbol</option>
+                                    <option selected="selected" value="Tahoma">Tahoma</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Trebuchet MS">Trebuchet MS</option>
+                                    <option value="Tunga">Tunga</option>
+                                    <option value="Verdana">Verdana</option>
+                                    <option value="Webdings">Webdings</option>
+                                    <option value="Wingdings">Wingdings</option>
+                                    <option value="仿宋_GB2312">仿宋_GB2312</option>
+                                    <option value="宋体">宋体</option>
+                                    <option value="新宋体">新宋体</option>
+                                    <option value="楷体_GB2312">楷体_GB2312</option>
+                                    <option value="黑体">黑体</option>
+                                </select>
+                                @Html.TextBoxFor(model => model.watermarkfontsize, new { @class = "form-control fl", @style = "width:60px" })
+                                <span style="display: block" class="fl pt10">px *文字水印的字体和大小</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-4" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">微信二维码</label>
+                            <div class="col-sm-5 col-md-5 input-group pl15">
+                                @Html.TextBoxFor(model => model.wxewcode,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "input-sm form-control"}
+                                    })
+                                <span class="input-group-btn"><button type="button" data-text="wxewcode" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">客服电话</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.serverline, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">推广地址</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.shareaddress, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">推广图片</label>
+                            <div class="col-sm-5 col-md-5 input-group pl15">
+                                @Html.TextBoxFor(model => model.sharepic,
+                                    new Dictionary<string, object>()
+                                    {
+                                        {"class", "input-sm form-control"}
+                                    })
+                                <span class="input-group-btn"><button type="button" data-text="sharepic" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">推广描述</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.sharesummary, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">VIP所需金额</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.vipmoney, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">VIP介绍</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.vipSummary, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-5" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">IOS版本号</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.iosverison, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">IOS隐藏版本号</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.iosverison, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">IOS版本介绍</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.iossummary, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">Android版本号</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.androidversion, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">Android文件</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.androidfile, new { @class = "input-sm form-control", @placeholder = "视频文件flv,mp4" })
+                                <span class="input-group-btn"><button type="button" class="btn btn-sm btn-primary"> 选择文件</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">Android版本介绍</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.androidsummary, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                    </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 确定保存</button>
+                                    <button class="btn btn-warning" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts{
+<script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#watermarkfont").select2();
+            $("#watermarkfont").val("@Model.watermarkfont");
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+        })
+    </script>
+}

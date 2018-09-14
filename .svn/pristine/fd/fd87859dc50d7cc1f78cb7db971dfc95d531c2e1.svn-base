@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+
+    .cbktb {
+        margin-left: 0px !important;
+        position: relative;
+        top: -2px;
+    }
+    .icon-xuxian {
+        width: 24px;
+        height: 22px;
+        background: url(/assets/images/admin/sprites_tree.gif) no-repeat 0 0;
+        background-position: -25px -150px;
+        margin-left: 0px;
+        display: inline-block;
+        vert-align: middle;
+        position: relative;
+        top: 6px;
+        margin-right: 5px;
+    }
+    .leaf-last {
+        background-position: 0 -175px;
+    }
+    .f16{font-size:16px;}
+    .ibox dl{margin:0; font-weight: normal;}
+    .ibox dl dt{font-weight: normal}
+    dt.pthy{ display: block; height: 25px; line-height: 25px;}
+        dt.pthy a{ margin-top: -3px; display:inline-block;}
+         dt.pthy.selected {
+            background-color: #e6e7e8;
+        }
+</style>
+<!-- box star -->
+@Html.Hidden("Flag", ViewBag.flag as string)
+<div class="row pt10  animated fadeInUp">
+    <table id="ad_tab" width="100%">
+        <tr valign="top">
+            <td style="width:255px;">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" style="padding: 0px 0px 10px 0px;">
+                            <div class="ibox-title" style="border-top: 4px solid #fff; padding: 14px 0px 7px; border-bottom: 1px solid #e7eaec; margin-bottom: 15px; ">
+                                <div class="ibox-tools rboor pr20" style="float: left">
+                                    <a href="javascript:void(0)" style="margin-left: 0px;" class="btn btn-primary btn-xs p310" id="Insert"><i class="im-plus"></i> 新建</a>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-xs p310" id="Modfiy"><i class="im-pencil2"></i> 编辑</a>
+                                    <a href="javascript:void(0)" onclick="javascript:tb.deletes()" class="btn btn-primary btn-xs p310"><i class="im-remove4"></i> 删除</a>
+                                </div>
+                            </div>
+                            <input type="hidden" id="hdel" value="0"/>
+                            <dt treenodetype="root" level="0" id="tree1__TreeRoot" parentid="" lazy="0" class="selected"><i class="im-numbered-list text-navy"></i> 角色列表</dt>
+                            <dd id="aDrow"></dd>
+                            <script id="tlist" type="text/x-jquery-tmpl">
+                                <dl><dt class="pthy" data-id="${ID}"><a href="/FytAdmin/Member/GroupIndex/?classId=${ID}" target="DeployBase" style="color: gray;" class="f12"><i class="icon-xuxian"></i><i class="im-users f16 text-navy"></i>&nbsp;${Name}(角色名)</a></dt></dl>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div id="splitter1" class="z-splitter-v shadow-v"></div>
+                <div class="col-lg-12 animated fadeInRight" style="padding: 0px 10px 20px 10px;">
+                    <iframe src="/FytAdmin/Member/GroupIndex/?classId=0" width="100%" height="100%" style="position:static;left:-22in;top:-11in;" id="DeployBase" name="DeployBase" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- box end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/table/member-group.js"></script>
+}

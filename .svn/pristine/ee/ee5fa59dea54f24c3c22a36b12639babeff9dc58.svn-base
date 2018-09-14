@@ -1,0 +1,113 @@
+﻿@using Domain.Entity
+@model lv_Story
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+@using (Ajax.BeginForm("Modify", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    <!-- form star -->
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">旅程故事</a></li>
+                </ul>
+            </div>
+            @Html.HiddenFor(model => model.ID)
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">发布用户</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Model.tb_User.TrueName
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">作者</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Author)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">标题</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Title)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">副标题</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.SubTitle)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">标签</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.SubTitle)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">访问量</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Hits)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">展示图</label>
+                            <div class="col-sm-10 col-md-6">
+                                <img src="@Model.CoverImg" width="200" height="200" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">更新时间</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.UpdateTime)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">更新时间</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.AddTime)
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">旅程故事详情</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Centents)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#ClassID").select2();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+        })
+    </script>
+}

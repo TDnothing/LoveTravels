@@ -1,0 +1,28 @@
+﻿header{ width: 1000px;padding-top: 20px;}
+header .sup-btn{    width: 254px;}
+header .logo {width: 200px;padding-top: 20px;}
+header .logo img{ width: 90%;height: 65px;}
+.w1200{ width: 1000px;}
+footer .lan-fa{ width: 300px;}
+footer .fnav{ width: 200px;}
+.ts-lc-w{ width: 1000px;}
+.ts-lc-w .ts-item{ width: 249px;}
+.hot-lv-w{ height: 450px;}
+.hot-lv-bg{ height: 450px;}
+.hot-wz{ width: 1000px;height: 450px;    margin-left: -500px;}
+.hot-s-txt{ width: 530px;}
+.hot-s-img{ width: 400px;height: 350px;    margin-top: 50px;}
+.hot-ck{bottom: 15px;}
+
+.qkk-w{ width: 1000px;}
+.qkk-info{width: 880px;}
+
+.wdn-w{ width: 1000px;}
+.wdn-item{ width: 226px;}
+
+#main{ margin-top: 0px;}
+#index_b_hero{ width: 1000px;height: 450px;}
+#index_b_hero .heros{width: 1000px;height: 450px;}
+#index_b_hero .mask-left, #index_b_hero .mask-right, #index_b_hero .hero{width: 1000px;height: 450px;}
+.b-adv{ height: 417px;right: 0px;}
+.helper{ bottom: 40px;}

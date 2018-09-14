@@ -1,0 +1,64 @@
+﻿@using Domain.Entity
+@model Domain.Entity.lv_Story
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="hr"></div>
+<div class="w1200 clearfix">
+    <div class="lcgs-lu">
+        <div class="lcgs-uw clearfix bdsharebuttonbox bdshare-button-style0-32">
+            <div class="fl"><img src="@Model.tb_User.HeadPic" width="100" /></div>
+            <div class="fr">
+                <h4>@Model.Title</h4>
+                <p>51vov.com　　作者： <span>@Model.Author</span>　　发表于：@Convert.ToDateTime(Model.UpdateTime).ToShortDateString().Replace("/", "-")　|　浏览数：@Model.Hits</p>
+            </div>
+        </div>
+        <div class="lcgs-ntext clearfix">
+            <p>&nbsp;</p>
+            @Html.Raw(Model.Centents)
+            <p style="display: none"><img src="@Model.CoverImg" style="width:100%" /></p>
+            @{
+                var ilist = ViewBag.imgList as List<tb_ImageLibrary>;
+                if (ilist != null && ilist.Count > 0)
+                {
+                    foreach (var item in ilist)
+                    {
+                        <img src="@item.ImgUrl" style="width:100%" />
+                    }
+                }
+            }
+            <p>&nbsp;</p>
+            <div class="clear"></div>
+            <div class="bdsharebuttonbox" style=" float: right;"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a><a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a></div>
+            <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["fbook", "twi", "tsina", "weixin", "sqq"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["fbook", "twi", "tsina", "weixin", "sqq"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+        </div>
+    </div><!-- END -->
+    <div class="lcgs-reg">
+        <a href="/release/" target="_blank">写下你的旅程故事</a>
+        @{
+            var list = ViewBag.list as dynamic;
+            if (list != null)
+            {
+                foreach (var item in list)
+                {
+                    <div class="wdn-item last">
+                        <div class="wdn-img">
+                            <a href="/project/detail/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.ShowImg" width="215" height="180" /></a>
+                            <div class="u-face"><a href="" title="@item.NickName"><img alt="@item.NickName" src="@item.HeadPic" width="62" height="62" /></a></div>
+                        </div>
+                        <div class="wdn-info">
+                            <div class="wdn-l"><span>@item.NickName</span><i @Html.Raw(item.Types == 0 ? "class=no" : "")></i></div>
+                            <div class="wdn-r">@item.Region</div>
+                        </div>
+                        <div class="wdn-p">@item.Title</div>
+                        <div class="wdn-btn">
+                            <div class="star"><span class="s@item.StarNum"></span></div>
+                            <div class="btns"><a href="/project/detail/@item.ID">预订</a></div>
+                        </div>
+                    </div><!-- end -->
+                }
+            }
+        }
+    </div><!-- end -->
+</div>

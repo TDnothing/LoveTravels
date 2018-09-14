@@ -1,0 +1,180 @@
+﻿@using Domain.Entity
+@model Domain.Entity.tb_AdvList
+@{
+    var classModel = ViewBag.classModel as tb_AdvClass;
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+@using (Ajax.BeginForm("ImageModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ClassId)
+    @Html.HiddenFor(model => model.Sort)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="clearfix f-hafl">
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">广告名称</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入广告名称", @placeholder = "请输入广告名称" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">广告类型</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.Types, new List<SelectListItem>() {
+                                            new SelectListItem() { Text = "图片", Value = "0" },
+                                            new SelectListItem() { Text = "动画", Value = "1" },
+                                            new SelectListItem() { Text = "文字", Value = "2" }}
+                                   , new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">权重</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Sort,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "数字越大，越靠前"},
+                                            {"datatype", "n"},{"nullmsg", "请输入权重"},{"disabled","disabled"}
+                                        })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">所属版位</label>
+                                    <div class="col-lg-8">
+                                        @if (classModel != null)
+                                        {
+                                            <label class="control-label">
+                                                <span class="text-warning">@classModel.Title</span> [@classModel.Types]
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">链接方式</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.Target, new List<SelectListItem>() {
+                                       new SelectListItem() {  Text = "新窗口", Value = "_blank" },
+                                       new SelectListItem() {Text = "_原窗口", Value = "_self" } }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">点击量</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Hits, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入点击量", @placeholder = "请输入点击量" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">选项</label>
+                            <div class="col-lg-8">
+                                <label class="checkbox-inline" data-toggle="tooltip" data-placement="top" title="注：禁用后，前台将不显示">@Html.CheckBoxFor(model => model.Status, new { @class = "i-checks" }) 是否有效</label>
+                                <label class="checkbox-inline" data-toggle="tooltip" data-placement="top" title="广告位可设置时间显示和关闭">@Html.CheckBoxFor(model => model.IsTimeLimit, new { @class = "i-checks" }) 是否启用时间限制</label>
+                            </div>
+                        </div>
+                        <div class="clearfix f-hafl hidden" id="div_time">
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">上线日期</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control" id="BeginTime" name="BeginTime" placeholder="请选择上线日期" type="text" value="@Model.BeginTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">下线日期</label>
+                                    <div class="col-lg-8">
+                                        <input class="form-control" id="EndTime" name="EndTime" placeholder="请选择下线日期" type="text" value="@Model.EndTime" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">图片</label>
+                            <div class="col-lg-8 input-group pl15">
+                                @Html.TextBoxFor(model => model.ImgUrl,
+                                new Dictionary<string, object>()
+                                        {
+                                            {"class", "input-sm form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "图片大小为"+@Html.Raw(classModel.Width+"×"+classModel.Height)}
+                                        })
+                                <span class="input-group-btn"><button type="button" data-text="ImgUrl" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">文字描述</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.AdvCode, new { @class = "form-control", @rows = "3" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">链接地址</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.LinkUrl, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入链接地址", @placeholder = "请输入链接地址" })
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: none;">
+                            <label class="col-lg-3 control-label">链接说明</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.LinkSummary, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-8 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            $("#IsTimeLimit").click(function () {
+                if ($(this).is(':checked')) {
+                    $("#div_time").removeClass("hidden");
+                } else {
+                    $("#div_time").addClass("hidden");
+                }
+            });
+            if ("@Ajax.JavaScriptStringEncode(Model.IsTimeLimit.ToString())" == "True") {
+                $("#div_time").removeClass("hidden");
+            }
+        });
+    </script>
+}

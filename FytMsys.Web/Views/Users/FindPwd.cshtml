@@ -1,0 +1,67 @@
+﻿@using FytMsys.Helper
+
+@{
+    var basicSite = WebSiteHelper.GetSite(1);
+    ViewBag.Title = "找回密码-" + basicSite.SeoTitle;
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    ViewBag.isEnglish = false;
+}
+<div class="log-wall">
+    <div class="u-bg-w clearfix">
+        <div class="ul-uw ul-ureg ul-f-pwd">
+            <div class="ul-type"><span>重置密码</span></div>
+            @using (Ajax.BeginForm("findpwd", null, new AjaxOptions()
+            {
+                HttpMethod = "post",
+                OnSuccess = "fyt.FSuccess",
+                OnBegin = "fyt.FBegin",
+            }, new {@id = "findpwd"}))
+            {
+                <div class="ul-form">
+                    <div class="ul-cell clearfix">
+                        <label>输入邮箱</label><input type="email" id="Email" name="Email" value="" placeholder="" datatype="e" nullmsg="请输入您的邮箱地址" /><span class="Validform_checktip">输入注册时的邮箱</span>
+                    </div>
+                    <div class="ul-else"><samp>请提交后登录邮箱点击跳转链接，重置密码</samp></div>
+                    <div class="ul-btns"><button class="btn">提交</button></div>
+                </div>
+                @Html.AntiForgeryToken()
+            }
+        </div><!-- end -->
+    </div>
+    @{ Html.RenderPartial("Footer");}
+</div>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#findpwd").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "邮件发送成功",
+                    text: "您的找回密码邮件已经发送到您的邮箱，请注意查收!",
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定到首页",
+                    closeOnConfirm: false
+                }, function () { window.location.href = '/'; });
+
+                
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+
+</script>
+

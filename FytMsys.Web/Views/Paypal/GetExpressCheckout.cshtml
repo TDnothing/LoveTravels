@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "我爱旅游网";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    h3 {
+        text-align: center;
+        margin-top: 80px;
+        color: #ff7200;
+        font-weight: 800;
+    }
+
+    td {
+        background-color: #eaeaea;
+        padding-left: 20px;
+        height: 40px;
+    }
+
+    #pay-bar {
+        margin-bottom: 40px;
+        text-align: right;
+    }
+
+    span {
+        color: #ff7200;
+        font-weight: 600;
+    }
+
+    #pay_now_button {
+        width: 120px;
+        background-color: #719CC9;
+        color: white;
+        margin-left: 36px;
+    }
+</style>
+<div class="w1200 clearfix">
+    <h3>请您支付</h3>
+    <form id="GetExpressCheckoutDetailsForm" action="/paypal/callDoExpressCheckout">
+        <div class="span5">
+            <table style="width:100%;margin-top:40px;">
+                <tr>
+                    <td>
+                        @Session["Product_Name"]
+                    </td>
+                    <td style="text-align: center;">
+                        $@Session["Order_Total"]
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br /><br />
+            <div id="pay-bar">总价：<span>$@Session["Order_Total"]</span> <input id="pay_now_button" type="submit" class="btn" value="支付" /></div>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,126 @@
+﻿@model Domain.Entity.tb_User
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+    .col-lg-3{ float: left; font-size:12px;}
+    label.col-lg-3{width:120px; text-align: right}
+    .us-level{position: absolute; right:100px; top:5px; width:200px; font-size:12px;}
+        .us-level h3 {
+            border-bottom: 1px solid #16987e;
+            font-size: 14px;
+            line-height: 33px;
+            color: #16987e;
+        }
+    .us-level p a{ color: #16987e; text-decoration:underline}
+    
+</style>
+<div class="row white-bg animated fadeInUp">
+    <div class="wrapper-content">
+        <div class="panel-body" style="position: relative">
+            <div class="tab-content">
+                <div id="tab-1" class="tab-pane active">
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">会员类型：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Html.Raw(Model.Types==0 ? "普通会员" : "商家会员")
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">用户名：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.LoginName
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label"></label>
+                        <div class="col-lg-3 col-md-3">
+                            <img src="@Model.HeadPic" width="80" height="80" />
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">真实姓名：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.TrueName
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">邮箱：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.Email
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">联系方式：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.Mobile
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">QQ：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.QQ
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">状态：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Html.Raw(Model.Status ? "<span class='text-navy'>正常</span>" : "<span class='text-warning'>冻结</span>")
+                        </div>
+                    </div>                    
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">归属地址：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Html.Raw(Model.Province + Model.City + Model.Address)
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">注册IP：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.RegIp
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <label class="col-lg-3 control-label">注册时间：</label>
+                        <div class="col-lg-3 col-md-3">
+                            @Model.RegDate
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="us-level">
+                <h3>会员积分</h3>
+                <p>默认会员等级类型：@Model.tb_UserGroup.Name</p>
+                <p>经验值：<span id="exp">@Model.Exp</span>　<a href="javascript:void(0)" onclick="UserCustom('exp')">人工干预</a></p>
+                <p>积分类型：<span id="point">@Model.Point</span>　<a href="javascript:void(0)" onclick="UserCustom('point')">人工干预</a></p>
+                <p>余额：<span id="amount">@Model.Amount</span>　<a href="javascript:void(0)" onclick="UserCustom('amount')">人工干预</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        function UserCustom(s) {
+            top.dialog({
+                url: "/FytAdmin/Member/UserCustom?userId="+@Model.ID+"&type="+s,
+                title: '人工干预',
+                width: 365,
+                height: 130,
+                data: $('#' + s).html(), // 给 iframe 的数据
+                onclose: function () {
+                    this.returnValue && $('#' + s).html(this.returnValue);
+                    //dialog.focus();
+                },
+                oniframeload: function () {
+                    //console.log('iframe ready')
+                }
+            })
+            .showModal();
+            return false;
+        }
+    </script>
+}

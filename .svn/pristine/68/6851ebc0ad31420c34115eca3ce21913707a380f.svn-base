@@ -1,0 +1,246 @@
+﻿@using FytMsys.Helper
+@using FytMsys.Common
+@using Domain.Entity
+@using Domain.ViewModel
+@model lv_GoLook
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="hr"></div>
+<link rel="stylesheet" href="/lib/alert/sweetalert.css">
+
+<div class="mbx w1200"><a href="/">首页</a> > <a href="/golook/index/0-1">迷途</a> > 我要去看看</div>
+
+<div class="w1200 clearfix">
+    <div class="qkk-lw">
+        <div class="pl-uil">
+            <div class="pl-uinfo clearfix">
+                <div class="pu-lw">
+                    <img src="@Model.tb_User.HeadPic" width="150" data-bd-imgshare-binded="1">
+                    <h3>@Model.tb_User.NickName</h3>
+                </div>
+                <div class="pu-bts">
+                    <h2><tt>@(Model.Flags == 0 ? "求带" : "组团")</tt>@Model.Title</h2>
+                    <div class="pu-stad">
+                        <p>愿望地：@Model.GoAddress</p>
+                        <p>人数 : @(Model.Rsum)人 </p>
+                        <p>出发时间：@Model.ArriveTime</p>
+                        <p>行程时长：@(Model.XcTime)天</p>
+                        <p>价格：￥@(Model.Price)/人</p>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="pl-u-sum mt0">
+                        <h3>说明</h3>
+                        @Html.Raw(Model.Centents)
+                        <p>&nbsp;</p>
+                        @{
+                            var imglist = ViewBag.imglist as List<tb_ImageLibrary>;
+                            if (imglist != null && imglist.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in imglist)
+                                {
+                                    <p><img src="@item.ImgUrl" style="width: 100%;@(i == 1 ? "" : "margin-Top:-10px")" data-bd-imgshare-binded="1" /></p>
+                                    i++;
+                                }
+                            }
+                        }
+                        <div class="pl-foot">Post ID: @Model.Number　　Post: @Model.AddTime.ToString("yyyy-MM-dd")　update：@Model.UpdateTime.ToString("yyyy-MM-dd")<a href="" class="hidden"><img src="/lib/img/fxwx.jpg" data-bd-imgshare-binded="1"></a></div>
+                        <div class="wdn-fx clearfix">
+                            <span>分享到：</span>
+                            <div class="bdsharebuttonbox bdshare-button-style0-32" data-bd-bind="1450148509308"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a><a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a></div>
+                            <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["fbook", "twi", "tsina", "weixin", "sqq"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["fbook", "twi", "tsina", "weixin", "sqq"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                        </div>
+
+                        @*<div class="xssj-w clearfix">
+                                <span>出发时间：</span>
+                                <div id="atime" class="t-w">
+                                    @Model.ArriveTime
+                                </div>
+                                <div class="t-xq">
+                                    <p>人数：@(Model.Rsum)人</p><p>行程时长：@(Model.XcTime)天</p><p>价格：￥@(Model.Price)/人</p>
+                                </div>
+                            </div>*@
+                    </div>
+                </div>
+                <div class="pu-lw">
+                    @{
+                        <h3 style="font-size:16px;">
+                            @if (Model.Flags != 0)
+                            {
+                                <span>他们已经预约了哦</span>
+                            }
+                        </h3>
+                    }
+                </div>
+                <div class="pu-bts">
+                    <div class="pu-job @(Model.Flags==0 ? "hidden" : "")">
+                        @{
+                            var peoplelist = ViewBag.peoplelist as List<lv_GoLookOrder>;
+                            if (peoplelist != null && peoplelist.Count > 0)
+                            {
+                                foreach (var item in peoplelist.FindAll(m => m.PayStatus == 1))
+                                {
+                                    <a href="javascript:void(0)" data-uid="@item.tb_User.ID" class="look-users"><img src="@item.tb_User.HeadPic" data-bd-imgshare-binded="1" /><span>@item.tb_User.NickName</span></a>
+                                }
+                            }
+                        }
+                    </div>
+                    @using (Ajax.BeginForm("Join", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        OnSuccess = "fyt.FSuccess",
+                        OnBegin = "fyt.FBegin",
+                    }, new { @id = "forms" }))
+                    {
+                        <div class="pu-btn">
+                            @{
+                        if (Model.Flags != 0)
+                        {
+                            <a @(Convert.ToDateTime(Model.ArriveTime) < DateTime.Now ? "style=display:none" : "") data-isexist="@ViewBag.IsExist" class="btn btn-yy">报名（@(peoplelist == null ? 0 : peoplelist.FindAll(m => m.PayStatus == 1).Count)/@Model.Rsum）</a>
+                        }
+                            }
+
+                            <a class="btn" id="asend" data-id="@Model.tb_User.ID">发消息</a>
+                        </div>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.ID);
+                        <button id="hjoinbtn" hidden="hidden"></button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-rw">
+        <h2><span>最新发布</span></h2>
+        @{
+            var newpublish = ViewBag.newpublish as List<lv_GoLook>;
+            if (newpublish != null && newpublish.Count > 0)
+            {
+                foreach (var item in newpublish)
+                {
+                    <div class="qkk-xqit">
+                        <div class="qkk-us clearfix">
+                            <img src="@item.tb_User.HeadPic" width="56" height="56" />
+                            <span>@item.tb_User.NickName<tt>@(item.Flags == 0 ? "求带" : "组团")</tt></span>
+                            <samp>@CommentHelper.DateStringFromNow(item.UpdateTime)</samp>
+                        </div>
+                        <p>愿望地：@item.GoAddress</p>
+                        <p>人数 : @(item.Rsum)人 </p>
+                        <p>出发时间：@item.ArriveTime<a href="/golook/detail/@item.ID">查看</a></p>
+                        <hr>
+                    </div><!-- end -->
+                }
+            }
+        }
+    </div><!-- end -->
+</div>
+
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-14
+    描述：弹出支付窗口
+-->
+<div class="cover"></div>
+<div class="tc-pay clearfix">
+    <div class="tc-pl">
+        @using (Ajax.BeginForm("GoLookOrder", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+}, new { @id = "forms" }))
+        {
+            @Html.Hidden("golookId", Model.ID);
+            @Html.Hidden("payType", "zfb");
+            <h2>请选择支付方式</h2>
+            <div class="tc-ckb">
+                <a href="javascript:void(0)" class="zfb"><i class="cur"></i><span></span></a>
+                <a href="javascript:void(0)" class="paypal"><i></i><span></span></a>
+                <a href="javascript:void(0)" class="xyk"><i></i><span></span></a>
+            </div>
+            <p>点击“支付”即表示您同意支付页面显示的总金额作为本次预约的订金。</p>
+            <input type="hidden" id="husd" name="husd" value="0" />
+            <button id="paybtn" data-isexist="@ViewBag.IsExist" class="btn">支付</button>
+        }
+    </div><!-- end -->
+    <div class="tc-pject">
+        <div class="wdn-item">
+            <div class="wdn-img">
+                <a href="/project/detail/@Model.ID" title="@Model.Title"><img alt="@Model.Title" src="@Model.ShowImg" width="215" height="180" /></a>
+                <div class="u-face"><a href="/" title=""><img alt="" src="@Model.tb_User.HeadPic" width="62" height="62" /></a></div>
+            </div>
+            <div class="wdn-info">
+                <div class="wdn-l"><span>@Model.tb_User.NickName</span><i></i></div>
+                <div class="wdn-r">@Model.GoAddress</div>
+            </div>
+            <div class="wdn-p">@(UtilsHelper.CutString(UtilsHelper.DropHTML(Model.Centents), 100))</div>
+            <div class="wdn-btn">
+                <div class="star"><span class="s@(ViewBag.starnum)"></span></div>
+            </div>
+        </div><!-- end -->
+        <div class="clear"></div>
+        <div class="tc-pm">
+            旅程费用：￥<a id="tp">@Model.Price</a><span style="display: inline-block; margin-left: 20px;"></span>$<a id="usd-span"></a>
+            <br /><input type="hidden" id="htp" value="@Model.Price" />
+        </div>
+    </div><!-- end -->
+    <a href="javascript:void(0)" class="close"><i class="im-close2"></i></a>
+</div>
+
+@Html.Action("index", "lvmess", new { nid = ViewBag.userId, oid = Model.tb_User.ID })
+
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}
+
+<script>
+    //去看看报名
+    window.onload=function() {
+        $.ajax({
+            type:"GET",
+            url:"http://apis.baidu.com/apistore/currencyservice/currency",
+            data:{ fromCurrency: "CNY", toCurrency: "USD", amount: @Model.Price},
+            dataType:"json",
+            success:function(res) {
+                //alert(Math.round(res.retData.convertedamount));
+                var usd = Math.round(res.retData.convertedamount);
+                $("#usd-span").html(usd);
+                $("#husd").val(usd);
+            },
+            headers: {
+                "apikey":"cd9bba0554732c99a7541a07dadd0f5e"
+            }
+        });
+    }
+    var fyt = {
+        FSuccess: function (res) {
+            $("#paybtn").attr("disabled", false);
+            if (res.Status == "y") {
+                window.location.href = '/golook/suborder/?o=' + res.Data;
+            }
+            else if (res.Status == "warning") {
+                swal({
+                    title: "提示",
+                    text: res.Msg,
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: "取消",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "去登录",
+                    closeOnConfirm: false
+                }, function () { window.location.href = '/users/login/?backurl=' + window.location; });
+            }
+            else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $("#paybtn").attr("disabled", "disabled");
+        }
+    }
+</script>

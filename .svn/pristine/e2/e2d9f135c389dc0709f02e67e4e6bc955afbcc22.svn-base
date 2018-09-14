@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+
+        public ActionResult Footers()
+        {
+            //根据父标题查询二级栏目列表
+            ViewBag.aboutList = OperateContext<tb_Column>.SetServer.GetList(m => m.ParentId == 27, m => m.Sort, true).ToList();
+            //根据父标题查询二级栏目列表
+            ViewBag.helpList = OperateContext<tb_Column>.SetServer.GetList(m => m.ParentId == 26, m => m.Sort, true).ToList();
+            return View();
+        }
+
+        /// <summary>
+        /// 发布按钮初始化
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Release()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 发布的条约
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Treaty()
+        {
+            var model = OperateContext<tb_Column>.SetServer.GetModel(m => m.ID == 1025);
+            return View(model);
+        }
+    }
+}

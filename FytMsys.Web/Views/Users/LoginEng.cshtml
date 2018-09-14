@@ -1,0 +1,107 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@using FytMsys.Helper
+
+@{
+    var advModel = ViewBag.adv as tb_AdvList;
+    var basicSite = WebSiteHelper.GetSite(1);
+    ViewBag.Title = "登录-"+basicSite.SeoTitle;
+    ViewBag.isEnglish = true;
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<div class="log-wall">
+    <div class="u-bg-w clearfix">
+        <div class="col-sm-6 col-xs-12">
+            <div class="ul-type"><a href="javascript:void(0)" class="cur">Log In</a><span>|</span><a href="javascript:void(0)" onclick="javascript: fyt.WinxinOAuth();">WeChat</a></div>
+            @using (Ajax.BeginForm("login", null, new AjaxOptions()
+            {
+                HttpMethod = "post",
+                OnSuccess = "fyt.FSuccess",
+                OnBegin = "fyt.FBegin",
+            }, new { @id = "login" }))
+            {
+                <div class="ul-form">
+                    <div class="ul-cell clearfix">
+                        <label>email</label><input name="LoginName" id="LoginName" type="email" value="" placeholder="username or email" datatype="e" nullmsg="username or email" />
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>Password</label><input type="password" value="" id="LoginPwd" name="LoginPwd" placeholder="Enter Password" datatype="*6-20" nullmsg="Enter Password" /><i class="im-eye3"></i>
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>Code</label>
+                        <div class="col-sm-4 col-xs-12" style="padding: 0">
+                            <input type="text" id="code" name="code" datatype="*4-8" nullmsg="Verification code" value="" ajaxurl="/users/iscode" placeholder="verification Code" style="width: 100%;max-width: 260px"/>
+                        </div>
+                        <city class="city"><img id="imgVerify" src="/lib/img/img7.jpg"/> <a href="javascript:void(0)">another</a></city>
+                    </div>
+                    <div class="ul-jzpwd"><label><input type="checkbox" name="isjz" /> Remember me</label><a href="/users/findpwd">Forget password</a></div>
+                    <div class="ul-else"><span>New User？<a href="/users/reg">Register now>></a></span></div>
+                    <div class="ul-btns"><button class="btn">Log In</button></div>
+                </div>
+                @Html.AntiForgeryToken()
+            }
+        </div><!-- end -->
+        <div class="col-sm-6 col-xs-12">
+            <div class="ul-adv">
+                <a href="@advModel.LinkUrl" title="@advModel.Title" target="_blank"><img class="login-img"src="@advModel.ImgUrl" alt="@advModel.Title"  /></a>
+            </div><!-- end -->
+        </div>
+    </div>
+    @{ Html.RenderPartial("Footer");}
+</div>
+<input type="hidden" id="backurl" value="@FytRequest.GetQueryString("backurl")" />
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#login").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+        fyt.initCode();
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                var burl = $("#backurl").val();
+                if (!burl) {
+                    window.location = res.BackUrl;
+                } else {
+                    window.location = burl;
+                }
+               
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        },
+        initCode: function () {
+            $.ajax({
+                type: "post",
+                url: "/users/getvaildatecode?t=" + (new Date()).getTime(),
+                data: null,
+                beforeSend: function () { $("#imgVerify").attr("src", "/assets/images/login/loading.gif"); },
+                success: function (data) {
+                    $("#imgVerify").attr("src", "/fytadmin/login/GetVaildateCode?t=" + (new Date()).getTime());
+                },
+                error: function (e) {
+                }
+            });
+            $("#imgVerify").click(function () {
+                this.src = "/users/getvaildatecode?t=" + (new Date()).getTime();
+            });
+            $(".city a").click(function () {
+                $("#imgVerify").attr("src","/users/getvaildatecode?t=" + (new Date()).getTime());
+            });
+        },
+        WinxinOAuth:function() {
+            window.location = '/WeiXinOAuth/';
+        }
+    };
+
+</script>
+

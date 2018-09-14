@@ -1,0 +1,99 @@
+﻿@model Domain.Entity.tb_UserLog
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<form class="form-horizontal mform tip-wal dig-from">
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="clearfix f-hafl">
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">收件人</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.ToUser, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">发件人</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.tb_User.LoginName, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">消息类型</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.LogType, new List<SelectListItem>()
+                                        {
+                                            new SelectListItem() { Text = "Email", Value = "Email" },
+                                            new SelectListItem() { Text = "短信", Value = "短信" }
+                                        }, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">业务类型</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.BusType, new List<SelectListItem>()
+                                        {
+                                            new SelectListItem() { Text = "重设密码", Value = "重设密码" },
+                                            new SelectListItem() { Text = "安全中心-邮箱校验码", Value = "安全中心-邮箱校验码" },
+                                            new SelectListItem() { Text = "忘记密码-找回密码", Value = "忘记密码-找回密码" },
+                                            new SelectListItem() { Text = "订单成功提交", Value = "订单成功提交" },
+                                            new SelectListItem() { Text = "其它", Value = "其它" }
+                                        }, new { @class = "form-control", @disabled = "disabled" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">标题</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">内容</label>
+                            <div class="col-lg-8" style="width: 82.5% !important;">
+                                <script id="Content" name="Content" type="text/plain" style="width:100%;height:160px;">
+                                    @Html.Raw(Model.Content)
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-8 col-sm-offset-2">
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 关闭</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript">
+        var ue;
+        $(function () {
+            ue = UE.getEditor('Content', {
+                toolbars: fyt.uEditors(),
+                elementPathEnabled: false
+            });
+        });
+    </script>
+}

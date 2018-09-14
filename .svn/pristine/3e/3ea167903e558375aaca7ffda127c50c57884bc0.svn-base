@@ -1,0 +1,24 @@
+namespace Domain.Entity.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class AddNumberTolv_GoLookOrder : DbMigration
+    {
+        public override void Up()
+        {
+            AddColumn("dbo.lv_GoLookOrder", "Number", c => c.String(maxLength: 50));
+            AddColumn("dbo.lv_GoLookOrder", "PayStatus", c => c.Int(nullable: false));
+            AddColumn("dbo.lv_GoLookOrder", "PayName", c => c.String(maxLength: 50));
+            AddColumn("dbo.lv_GoLookOrder", "PayPrice", c => c.Decimal(nullable: false, precision: 18, scale: 2));
+        }
+        
+        public override void Down()
+        {
+            DropColumn("dbo.lv_GoLookOrder", "PayPrice");
+            DropColumn("dbo.lv_GoLookOrder", "PayName");
+            DropColumn("dbo.lv_GoLookOrder", "PayStatus");
+            DropColumn("dbo.lv_GoLookOrder", "Number");
+        }
+    }
+}

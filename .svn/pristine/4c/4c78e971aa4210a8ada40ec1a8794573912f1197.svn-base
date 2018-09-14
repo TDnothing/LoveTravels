@@ -1,0 +1,131 @@
+﻿@using System.Net.Mime
+@using System.Web.UI.HtmlControls
+@model Domain.Entity.tb_Product
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)@Html.HiddenFor(model => model.ClassId)
+    <!-- head star -->
+    <div class="tnav row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2 class="fl">项目</h2>
+            <ol class="breadcrumb fl">
+                <li><a href="/FytAdmin/FytProduct/Index?ClassId=@Model.ClassId">主页</a></li>
+                <li><strong>编辑新招聘信息</strong></li>
+            </ol>
+        </div>
+    </div>
+	<!-- head end -->
+	<!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入商品标题", @placeholder = "请输入商品标题" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品副标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.SubTitle, new { @class = "form-control", @rows = "2", @placeholder = "最多200字的商品副标题" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品类型</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.ShopType, new { @class = "form-control", @placeholder = "请输入商品类型" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品品牌</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.ShopBanks, new { @class = "form-control", @placeholder = "商品品牌" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品原价</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.MarkPrice, new { @class = "form-control", @placeholder = "商品原价" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品现价</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.SellPrice, new { @class = "form-control", @placeholder = "商品现价" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">商品图片</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.ShopImg, new { @class = "input-sm form-control" })
+                                    <span class="input-group-btn"><button type="button" data-text="ShopImg" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">发布日期</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入发布日期" placeholder="请输入发布日期" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">摘要</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">内容</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Content" name="Content" type="text/plain" style="width:100%;height:200px;">
+                                        @Html.Raw(Model.Content)
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+	<!-- form end -->
+
+}
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            UE.getEditor('Content');
+        })
+    </script>
+}

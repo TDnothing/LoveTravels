@@ -1,0 +1,75 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@{
+    ViewBag.Title = "修改银行卡信息";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var bank = ViewBag.bank as lv_Bank;
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 12);}
+    <div class="col-md-9 col-xs-12 ur-wall">
+        <h2><span>修改银行卡信息</span></h2>
+        <div class="ul-uw ul-ureg" style="padding-left: 30px;">
+            @using (Ajax.BeginForm("UserEditBankcard", null, new AjaxOptions()
+                {
+                    HttpMethod = "post",
+                    OnSuccess = "fyt.FSuccess",
+                    OnBegin = "fyt.FBegin",
+                }, new { @id = "eb" }))
+            {
+                @Html.Hidden("bankId", bank.ID)
+                <div class="ul-form">
+                    <div class="ul-cell clearfix">
+                        <label>用户名</label>
+                        @Html.TextBox("UserName", bank.UserName, new { datatype = "*2-20" })
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>提现方式</label>
+                        <select style="display:initial;width:41%;" class="form-control" id="BankName" name="BankName">
+                            <option value="支付宝">支付宝</option>
+                            <option value="PayPal">PayPal</option>
+                        </select>
+                    </div>                    
+                    <div class="ul-cell clearfix">
+                        <label>提现账号</label>
+                        @Html.TextBox("BankAccont", bank.BankAccont , new { datatype = "*" })
+                    </div>                   
+                    <div class="ul-btns"><button class="btn">保存</button></div>
+                </div>
+                @Html.AntiForgeryToken()
+            }
+        </div>
+    </div><!-- end -->
+</div>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#eb").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "修改成功",
+                    text: "您已成功修改提现信息!",
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确认",
+                    closeOnConfirm: false
+                }, function () { window.location = res.BackUrl; });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+
+</script>

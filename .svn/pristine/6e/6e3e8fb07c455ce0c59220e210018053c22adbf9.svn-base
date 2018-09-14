@@ -1,0 +1,23 @@
+$(window).load(function () {
+	$(window).scroll(is_scroll);
+})
+
+function is_scroll()
+{
+	if($(window).scrollTop()>$('.team_c').offset().top-500)
+		$('.item img').css('opacity','1');
+	if($(window).scrollTop()>$('.big').offset().top-700 )
+	{
+		$('.big .green').animate({width:'850px'},3000);
+		list=$('.big .day1');
+		list1=$('.big .day2');
+		setTimeout(function(){$(list[0]).animate({opacity:'1'},300);},800);
+		setTimeout(function(){$(list1[0]).animate({opacity:'1'},300);},1000);
+		setTimeout(function(){$(list1[1]).animate({opacity:'1'},300);},1200);
+		setTimeout(function(){$(list[1]).animate({opacity:'1'},300);},1600);
+		setTimeout(function(){$(list1[2]).animate({opacity:'1'},300);},1800);
+		setTimeout(function(){$(list[2]).animate({opacity:'1'},300);},2000);
+		setTimeout(function(){$(list1[3]).animate({opacity:'1'},300);},2500);
+		setTimeout(function(){$(list1[4]).animate({opacity:'1'},300);},3000);
+	}
+}

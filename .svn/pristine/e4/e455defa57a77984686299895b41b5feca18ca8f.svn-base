@@ -1,0 +1,72 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>飞易腾内容管理系统</title>
+    @Styles.Render("~/login/css")
+    <link href="/assets/css/fonts.css" rel="stylesheet" />
+    <link href="/assets/css/icons.css" rel="stylesheet" />
+</head>
+    <body>
+        <!--[if lt IE 9]>
+        <div class='ie-warn alert alert-block'>
+            <br/><br/><br/>
+            <a class="close" data-dismiss="alert">x</a>
+            <h4>飞易腾 温馨提示：</h4>
+
+            <p>
+                本站不支持 IE 8 及以下版本浏览器。
+                为了获得更好的浏览体验，我们强烈建议您
+                <a href="http://browsehappy.com" target="_blank">升级</a>
+                到最新版本的IE浏览器，或者使用较新版本的 Google Chrome、Firefox、Safari 等。
+                如果您使用的是 IE 9 或以上版本，请关闭“兼容性视图”。
+            </p>
+        </div>
+        <![endif]-->
+        <div class="container">
+            @using (Ajax.BeginForm("Index", null, new AjaxOptions()
+            {
+                HttpMethod = "post",
+                OnSuccess = "log.Success",
+                OnBegin = "log.Begin"
+            }, new { @class = "form-signin", @id = "login-form", @role = "form" }))
+            {
+                <div class="form-signin-heading text-center">
+                    <h1 class="sign-title">飞易腾后台OS</h1>
+                    <img src="/assets/images/login/login-logo.png" alt="">
+                </div>
+                <div class="login-wrap">
+                    <label id="eMsg" class="Validform_checktip"></label>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p0 mb10">
+                        <input type="text" id="loginName" name="loginName" class="form-control" placeholder="管理员账号" autofocus="" datatype="*6-18" nullmsg="请输入登录账号" errormsg="登录名至少6个字符,最多18个字符！" />
+                        <i class="im-user3 s16 left-input-icon"></i>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p0 mb10">
+                        <input type="password" id="loginPwd" name="loginPwd" class="form-control" placeholder="管理员密码" datatype="*6-18" nullmsg="请输入登录密码" errormsg="密码至少6个字符,最多18个字符！" />
+                        <i class="im-lock2 s16 left-input-icon"></i>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 p0 mb10">
+                        <input type="text" name="loginCode" id="loginCode" maxlength="10" class="form-control left-icon" value="" placeholder="请输入验证码" datatype="*" nullmsg="请输入验证码！">
+                        <cite class="yzm"><img id="imgVerify" src="/assets/images/login/loading.gif" alt="看不清？点击更换" title="看不清？点击更换" style="vertical-align: middle;" /></cite>
+                        <i class="im-spell-check s16 left-input-icon"></i>
+                    </div>
+                    <button class="btn btn-lg btn-login btn-block" type="submit">
+                        <i class="fa im-checkmark"></i>
+                    </button>
+                    <div class="ids"></div>
+                </div>
+            }
+        </div>
+
+        <div class="log_foot">
+            <div class="log_fback"><p>Copyright © <a href="http://www.feiyit.com/" target="_blank">北京飞易腾科技有限公司</a></p></div>
+        </div>
+        <div class="popo_msg"><span></span></div>
+        <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+        @Scripts.Render("~/login/js")
+    </body>
+</html>

@@ -1,0 +1,75 @@
+﻿@using Domain.Entity
+@model tb_Article
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.Key = Model.KeyWord;
+    ViewBag.Desc = Model.Summary;
+    ViewBag.Nav = "5";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dtNav = ViewBag.dtNav as List<tb_Column>;
+    var pModel = dtNav.Find(m => m.ID == Model.ClassID);
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>@pModel.Title<span>]</span></h2>
+        <h3><a href="/">首页</a><tt>></tt><a href="/dynamic/" style="color: #f0a116">新闻与媒体</a>
+        <tt>></tt><span>@pModel.Title</span></h3>
+    </div>
+</div>
+
+<div class="container f-nw-w">
+    <div class="n-type">
+        <a href="/dynamic/">全部</a><span></span>
+        @{
+            if (dtNav != null && dtNav.Count > 0)
+            {
+                foreach (var item in dtNav)
+                {
+                    if (item.Title.Equals(dtNav[dtNav.Count - 1].Title))
+                    {
+                        <a href="/dynamic/@item.EnTitle" @(Model.ClassID == item.ID ? "class=cur" : "") title="@item.Title">@item.Title</a>
+                    }
+                    else
+                    {
+                        <a href="/dynamic/@item.EnTitle" @(Model.ClassID == item.ID ? "class=cur" : "") title="@item.Title">@item.Title</a><span></span>
+                    }
+                }
+            }
+        }
+    </div>
+    <div class="animated fadeInLeft n-detail">
+        <h1>@Html.Raw(Model.Title)</h1>
+        <span class="rel">
+            @Model.Source<u>•</u>@Convert.ToDateTime(Model.EditDate).ToShortDateString().Replace("/", ".")<u>•</u>
+            @{
+                if (!string.IsNullOrEmpty(Model.Tag))
+                {
+                    if (Model.Tag.Contains(","))
+                    {
+                        var sp = Model.Tag.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var s in sp)
+                        {
+                            <a href="/search/?key=@s">@s</a>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/search/?key=@Model.Tag">@Model.Tag</a>
+                    }
+                }
+                else
+                {
+                    <a href="/search/?key=飞易腾">飞易腾</a>
+                }
+            }<u>•</u><span class="" title="浏览次数"></span>@Model.Hits
+        </span>
+        <div class="words">
+            @Html.Raw(Model.Content)
+        </div>
+    </div>
+</div>

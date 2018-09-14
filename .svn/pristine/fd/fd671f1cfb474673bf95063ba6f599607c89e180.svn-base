@@ -1,0 +1,73 @@
+﻿@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@using FytMsys.Common
+@{
+    ViewBag.Title = Model.SeoTitle;
+    ViewBag.key = Model.SeoKey;
+    ViewBag.desc = Model.SeoDescribe;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+    var banner = ViewBag.banner as tb_AdvList;
+}
+
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：去看看
+        -->
+<div class="hr"></div>
+@{
+    if (banner != null)
+    {
+        <div class="adv-1"><a href="@banner.LinkUrl" title="@banner.Title" target="_blank"><img src="@banner.ImgUrl" alt="@banner.Title" /></a></div>
+    }
+}
+
+<div class="wdn-w wdn-ui-w">
+    <div class="i-title">
+        <span>途迷行程</span>
+        <div class="pub-order clearfix">
+            <span>排列：</span>
+            <div class="pub-o-wall">
+                <ul class="clearfix">
+                    <li><a href="/golook/index/1-1">旧</a><span><tt>发布日期</tt></span><a href="/golook/index/0-1">新</a></li>
+                    <li class="hidden"><a href="/golook/index/3-1">少</a><span><tt>人气</tt></span><a href="/golook/index/2-1">多</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @{
+        if (list != null && list.Length > 0)
+        {
+            foreach (var item in list)
+            {
+                <div class="qkk-item clearfix">
+                    <div class="qkk-img"><a href="/golook/detail/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="100" height="75" /></a></div>
+                    <div class="qkk-info">
+                        <div><span class="tag">@(item.Flags == 0 ? "求带" : "组团")</span></div>
+                        <div class="qkk-qgo">愿望地：@item.GoAddress　　　人数:@(item.Rsum)人 　　　出发时间：@(item.ArriveTime)　　　发布时间：@Convert.ToDateTime(item.UpdateTime).ToShortDateString()</div>
+                        <div class="qkk-p">@(UtilsHelper.CutString(UtilsHelper.DropHTML(item.Centents), 100))<a href="/golook/detail/@item.ID">>></a></div>
+                        <div class="qkk-btn">
+                            <span>有效</span>
+                            <samp>
+                                <a href="/golook/detail/@item.ID">@(item.Flags == 0 ? "查看" : "报名")</a><tt style="display:none"></tt><a style="display:none" href="/golook/detail/@item.ID">预约</a>
+                            </samp>
+                        </div>
+                    </div>
+                </div><!-- end -->
+            }
+        }
+        else
+        {
+            <p style="padding-top:20px;text-align: center">暂无数据</p>
+        }
+    }
+</div>
+
+
+<div class="page">
+    @Html.Raw(WebSiteHelper.GetPage(pageModel.PageSize, pageModel.PageIndex, pageModel.Rows, pageModel.Urls))
+</div>
+

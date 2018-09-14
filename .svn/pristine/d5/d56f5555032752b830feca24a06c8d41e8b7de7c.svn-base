@@ -1,0 +1,44 @@
+﻿@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@using FytMsys.Common
+@model tb_Site
+@{
+    ViewBag.Title = Model.SeoTitle;
+    ViewBag.key = Model.SeoKey;
+    ViewBag.desc = Model.SeoDescribe;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：特色旅程
+        -->
+<div class="hr"></div>
+
+<div class="ts-lc-w clearfix">
+    <div class="i-title">
+        <span>特色旅程</span>
+    </div>
+    @{
+        if (list != null)
+        {
+            foreach (var item in list)
+            {
+                <div class="ts-item">
+                    <div class="ts-img"><a href="@(item.Types == 0 ? "/project/detail/" + item.ID : "/golook/detail/"+item.ID)" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="240" height="180" /></a></div>
+                    <div class="ts-info"><a href="@(item.Types == 0 ? "/project/detail/" + item.ID : "/golook/detail/"+item.ID)" title="@item.Title">@item.Title</a></div>
+                </div><!-- end -->
+            }
+        }
+    }
+</div>
+
+
+<div class="page">
+    @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+</div>
+

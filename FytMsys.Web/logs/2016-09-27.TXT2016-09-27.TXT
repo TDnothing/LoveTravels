@@ -1,0 +1,21 @@
+????:2016-09-27 21:00:06,188 
+??ID:[14] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-09-27 21:00:43,304 
+??ID:[14] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-09-27 21:01:05,394 
+??ID:[7] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:Object reference not set to an instance of an object.
+---------------------------------------------------------------
+

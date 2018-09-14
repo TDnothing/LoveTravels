@@ -1,0 +1,89 @@
+$(window).load(function () { // makes sure the whole site is loaded
+	
+	$('.f_contact #ph').hover(p_show,null);
+	$('.f_contact .ph').hover(null,p_hide);
+	
+	$(window).scroll(function () {
+            if ($(window).scrollTop() >= 100) {
+                $('.actGotop').fadeIn(300);
+            } else {
+                $('.actGotop').fadeOut(300);
+            }
+        });
+        $('.actGotop').click(function () {
+            $('html,body').animate({ scrollTop: '0px' }, 800);
+        });
+
+	$('#in-search').click(function(){
+		$('.search').stop();
+		$('.search').animate({height:'100px',opacity:'1'},500);
+		$('.search input').focus();
+		if($('.search').css('opacity')==0)
+			event.stopPropagation();
+	});
+	
+	$('body').click(function(){
+		$('.search').stop();
+		$('.search').animate({height:'0',opacity:'0'},500);
+		$('.search input').val(null);
+	});
+	$('.search').click(function(){
+		if($('.search input').val()=='请输入要搜索的内容')
+		{
+			$('.search input').css('color','#ccc');
+			$('.search input').val(null);
+		}
+		event.stopPropagation();
+	});
+
+	var slide = getUrlParam('slide');
+	if (slide) {
+	    $('html,body').animate({ scrollTop: slide }, 800);
+	}
+})
+
+function p_show()
+{
+	$('.f_contact .ph').css({'opacity':'1','width':'271px'});
+	$('.f_contact .c img#phone').css('-webkit-animation','none');
+}
+function p_hide()
+{
+	$('.f_contact .ph').css({'opacity':'0','width':'66px'});
+}
+
+function bnshow()
+{
+	$('.xcy-fyt a span').css('left','170px');
+	$('.xcy-fyt a i').css('left','75px');
+}
+function bnhide()
+{
+	$('.xcy-fyt a span').css('left','0px');
+	$('.xcy-fyt a i').css('left','-113px');
+}
+function weixinclk()
+{
+	$('.erweima').css('position','fixed').css('z-index','9').animate({opacity:'1'},200,function(){
+		$('.erweima img').css({'width':'320px'});
+		setTimeout(function(){$('.erweima .close').css({'left':'35px','top':'30px','opacity':'1','z-index':'9'});},500);
+	});
+}
+function weixinclose()
+{
+	$('.erweima').animate({opacity:'0'},500,function(){
+		$('.erweima').css('z-index','-1').css('position','absolute');
+		$('.erweima img').css({'width':'0'});
+		setTimeout(function(){$('.erweima .close').css({'left':'0px','top':'55px','opacity':'0','z-index':'0'});},500);
+	});
+}
+
+function getUrlParam(name) {
+    //构造一个含有目标参数的正则表达式对象  
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    //匹配目标参数  
+    var r = window.location.search.substr(1).match(reg);
+    //返回参数值  
+    if (r != null) return unescape(r[2]);
+    return null;
+}

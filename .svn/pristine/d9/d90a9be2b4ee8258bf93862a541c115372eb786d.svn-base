@@ -1,0 +1,129 @@
+﻿@using System.Diagnostics
+@using Domain.Entity
+@using Domain.ViewModel
+@model tb_Site
+@{
+    Layout = null;
+    var sysModel = ViewBag.sysModel as SysBasicConfig;
+}
+<!--
+        作者：北京飞易腾科技有限公司
+        时间：2015-11-02
+        描述：左侧快捷导航
+    -->
+<div class="f_contact">
+    <div class="ph"><p>免费咨询电话：</p><span>@Model.SiteTel</span></div>
+    <div class="c" align="center" id="ph"><img src="/lib/img/phone_g.png" id="phone"></div>
+
+</div>
+
+
+
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：底部
+-->
+<footer>
+    <div class="link-w">
+        <div class="container">
+            <a href="javascript:void(0)" class="first">友情链接</a>
+            @{
+                var list = ViewBag.LinksList as List<tb_AdvList>;
+                if (list != null && list.Count > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <a href="@item.LinkUrl" target="_blank" title="@item.Title">@item.Title</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="container">
+        <div class="foot-nav clearfix">
+            <a href="/aboutus/"><span>About</span>关于我们</a>
+            <a href="/service/"><span>Service</span>我们的服务</a>
+            <a href="/cases/" class="last"><span>Case</span>我们的作品</a>
+            <a href="/dynamic/"><span>News</span>新闻与媒体</a>
+            <a href="/contactus/"><span>Contact</span>联系我们</a>
+        </div>
+    </div>
+
+    <nav class="pc-foot container clearfix">
+        <dl>
+            <dd>关于我们</dd>
+            <dt><a href="/aboutus/">关于我们</a></dt>
+            <dt><a href="/aboutus/?slide=700">公司历程</a></dt>
+            <dt><a href="/aboutus/?slide=1200">我们的团队</a></dt>
+            <dt><a href="/aboutus/?slide=1950">公司环境</a></dt>
+            <dt><a href="/aboutus/?slide=2700">我们的客户</a></dt>
+        </dl>
+        <dl>
+            <dd>我们的服务</dd>
+            <dt><a href="/service/?slide=780">网站建设</a></dt>
+            <dt><a href="/service/?slide=1620">移动APP开发</a></dt>
+            <dt><a href="/service/?slide=2460">手机微网站</a></dt>
+            <dt><a href="/service/?slide=3320">HTML5</a></dt>
+            <dt><a href="/service/?slide=4160">电商平台</a></dt>
+        </dl>
+        <dl>
+            <dd>我们的作品</dd>
+            <dt><a href="/cases/responsive-site/">响应式网站</a></dt>
+            <dt><a href="/cases/web-design">企业品牌官网</a></dt>
+            <dt><a href="/cases/weixin-site">手机微官网</a></dt>
+            <dt><a href="/cases/b2c-development">电子商务</a></dt>
+            <dt><a href="/cases/wapapp">移动APP</a></dt>
+        </dl>
+        <dl>
+            <dd>新闻与媒体</dd>
+            <dt><a href="/dynamic/company-dynamic/">公司动态</a></dt>
+            <dt><a href="/dynamic/industry/">行业新闻</a></dt>
+            <dt><a href="/dynamic/support/">技术支持</a></dt>
+            <dt><a href="/dynamic/marketing/">网络营销</a></dt>
+        </dl>
+        <dl>
+            <dd>联系我们</dd>
+            <dt><a href="/contactus/">联系地址</a></dt>
+            <dt><a href="/contactus/?slide=300">付款方式</a></dt>
+            <dt><a href="/contactus/">需求提交</a></dt>
+        </dl>
+        <div class="i-lxwm">
+            <p>地址：@Model.SiteAddress</p>
+            <p>电话：@Model.SiteTel　　13511084034</p>
+            <p>QQ：715515390　　邮编：100000</p>
+            <p>邮箱：@Model.SiteEmail</p>
+            <!-- Baidu Button BEGIN -->
+            <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                <span class="bds_more">分享到：</span>
+                <a class="bds_tsina"></a>
+                <a class="bds_qzone"></a>
+                <a class="bds_tqq"></a>
+                <a class="bds_sqq"></a>
+                <a class="bds_mail"></a>
+                <a class="bds_baidu" title="分享到百度搜藏" href="#"></a>
+            </div>
+            <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=496179"></script>
+            <script type="text/javascript" id="bdshell_js"></script>
+            <script type="text/javascript">
+                document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date() / 3600000)
+            </script>
+            <!-- Baidu Button END -->
+        </div>
+    </nav>
+    <div class="foot">
+        <div class="container clearfix">
+            <p class="fl">@Html.Raw(Model.SiteCopyright)</p>
+            <p class="fr"><a href="/aboutus/">关于我们</a><a href="/contactus/">联系我们</a></p>
+        </div>
+    </div>
+</footer>
+
+<div class="actGotop"><a href="javascript:void(0)" title="返回顶部"></a></div>
+<div style="display: none">
+    @{
+        Debug.Assert(sysModel != null, "sysModel != null");
+    }
+    @Html.Raw(sysModel.webcountcode)
+</div>

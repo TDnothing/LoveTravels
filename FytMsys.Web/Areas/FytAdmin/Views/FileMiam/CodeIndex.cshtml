@@ -1,0 +1,73 @@
+﻿@using FytMsys.Common
+@{
+    Layout = "../shared/_Layout.cshtml";
+    var htype = ViewBag.type as string;
+    var filename = FytRequest.GetQueryString("filename");
+    var ext = FytRequest.GetQueryString("ext").ToLower().Replace(".","");
+    var path = FytRequest.GetQueryString("path");
+}
+<link href="/assets/lib/codemirror/codemirror.css" rel="stylesheet" />
+<style>body{ background-color: #ffffff}</style > 
+<form action="/fytadmin/filemiam/codeindex" method="POST">
+    @{
+        if (htype == "html")
+        {
+            <textarea id="code" name="code">@Html.Raw(ViewBag.content)</textarea>
+        }
+        if (htype == "图片")
+        {
+            <div style="text-align: center; padding-top: 20px;"><img src="@ViewBag.content" style="max-width: 600px;" /></div>
+        }
+        if (htype == "下载")
+        {
+            <div style="padding:150px 0 0 350px;">
+                <ul class="flist">
+                    <a href="@ViewBag.content" title="点击下载" target="_blank">
+                        <li style="width:200px; height: 200px;">
+                            <div class="file-wrapper" style="width:190px; height: 190px;">
+                                <i class="file-type-@ext file-preview" style="margin-top: 20px"></i>
+                                <span class="file-title" style="width:auto; padding:0; height: 30px; line-height: 30px">@filename</span>
+                                <i class="im-cloud-download" style="margin-left: 80px; margin-top: 10px; color: #1bbc9b; font-size:40px;"></i>
+
+                            </div>
+                            <span class="icon" style="width:200px; height: 200px;" title="点击下载"></span>
+                        </li>
+                    </a>
+                </ul>
+            </div>
+        }
+    }
+    @{
+        if (htype == "html")
+        {
+            <div style="padding:20px 0 0 0; text-align: right"><button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> 确定保存</button></div>
+        }
+    }
+    @Html.Hidden("path", path) @Html.Hidden("ext", ext) @Html.Hidden("filename", filename)
+</form>
+
+@section scripts {
+    <script type="text/javascript" src="/assets/lib/codemirror/codemirror.js"></script>
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        styleActiveLine: true,
+        matchBrackets: true
+    });
+    function selectTheme() {
+        var theme = "default";
+        editor.setOption("theme", theme);
+        location.hash = "#" + theme;
+    }
+    var choice = (location.hash && location.hash.slice(1)) ||
+                 (document.location.search &&
+                  decodeURIComponent(document.location.search.slice(1)));
+    if (choice) {
+        editor.setOption("theme", choice);
+    }
+    CodeMirror.on(window, "hashchange", function () {
+        var theme = location.hash.slice(1);
+        if (theme) { selectTheme(); }
+    });
+</script>
+}

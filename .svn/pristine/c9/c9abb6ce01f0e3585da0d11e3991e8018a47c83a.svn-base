@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<appSettings>
+  <!--数据库链接字符串 -->
+  <add key="ConnectionString" value="server=192.168.1.133;database=sq_FytLoveLY;uid=sa;pwd=sa;MultipleActiveResultSets=true" />
+  <add key="Configpath" value="~/XmlConfig/WebSet.config"/>
+  <add key="Userpath" value="~/XmlConfig/user.config"/>
+  <add key="ApnsUrl" value="http://localhost:8066/Push/Post"/>
+  <add key="AndRoidApnsUrl"  value="http://android.dgbingo.com/Index.aspx"/>
+
+  <!--支付宝 begin -->
+  <add key="partner" value="2088121879695002" />
+  <add key="seller_email" value="nyr.tec@hotmail.com" />
+  <add key="aliapy_key" value="6wppiwg1zepokavfwrk5brn5w6ju49yd" />
+  <add key="aliapy_return" value="http://192.168.1.160:8011/Alipays/returnurl" />
+  <add key="aliapy_notify" value="http://192.168.1.160:8011/Alipays/notifyurl" />
+  <add key="aliapy_product" value="http://192.168.1.160:8011/ProJect/Detail" />
+  <!--支付宝 end -->
+
+  <!--关键词字段配置路径 -->
+  <add key="KeyWord" value="~/XmlConfig/default.dic" />
+</appSettings>
+

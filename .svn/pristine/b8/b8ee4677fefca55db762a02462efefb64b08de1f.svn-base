@@ -1,0 +1,196 @@
+﻿@model Domain.Entity.tb_Column
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">项目</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="/FytAdmin/Column/Index">主页</a></li>
+            <li><strong>添加/修改栏目</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+<!-- form star -->
+@using (Ajax.BeginForm("ColumnModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new {@class = "form-horizontal mform tip-wal", @id = "forms"}))
+{
+    @Html.HiddenFor(model=>model.ID)
+    @Html.HiddenFor(model=>model.Number)
+    @Html.HiddenFor(model=>model.ClassLayer)
+    @Html.HiddenFor(model=>model.ClassList)
+    @Html.HiddenFor(model=>model.Sort)
+    @Html.HiddenFor(model=>model.TypeID)
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">栏目选项</a></li>
+                </ul>
+            </div>
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">所属父栏目</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.ParentId, ViewBag.pardrop as IEnumerable<SelectListItem>, new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Title,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "请输入栏目的中文名称，如新闻中心。"},
+                                            {"placeholder","请输入标题"}
+                                        })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">副标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.SubTitle,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "请输入栏目的中文名称，如新闻中心。"}
+                                        })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">英文标题</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.EnTitle,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "*只能填写英文和数字的组合,不能带：*？“ < > | 等特殊符号"}
+                                        })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">绑定模板</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.TempId, ViewBag.selectList as IEnumerable<SelectListItem>, new { @class = "form-control select2" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">图片</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.ImgUrl,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "input-sm form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "用于在栏目页显示指定的图片"}
+                                        })
+                                    <span class="input-group-btn"><button type="button" data-text="ImgUrl" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">内容</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Content" name="Content" type="text/plain" style="width:100%;height:200px;">
+                                        @Html.Raw(Model.Content)
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">导航选项</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsTopShow, new { @class = "i-checks" }) 本栏目是否在顶部导航中显示</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">移动栏目选项</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsWapShow, new { @class = "i-checks" }) 本栏目在移动版栏目导航里显示</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">转向链接</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.LinkUrl,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"},{"placeholder","http://"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "可以直接跳转到指定外部链接"}
+                                        })</div>
+                            </div>
+                            <div class="form-group hidden" id="wapLink">
+                                <label class="col-sm-1 control-label">移动转向链接</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.WapLinkUrl,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"},{"placeholder","http://"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "可以直接跳转到指定外部链接"}
+                                        })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">页面关键</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.KeyWord, new { @class = "form-control", @rows = "4", @placeholder = "留空则默认显示文章里设置的KeyWords" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">页面描述</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "4", @placeholder = "留空则默认显示文章简介" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">更新时间</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入添加时间" placeholder="请输入添加时间" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $('.select2').select2();
+        $('.tip-wal').tooltip({
+            selector: "[data-toggle=tooltip]",
+            container: "body"
+        });
+        UE.getEditor('Content');
+        $("#IsWapShow").click(function () {
+            if ($(this).is(':checked')) {
+                $("#wapLink").removeClass("hidden");
+            } else {
+                $("#wapLink").addClass("hidden");
+            }
+        });
+    })
+</script>
+}

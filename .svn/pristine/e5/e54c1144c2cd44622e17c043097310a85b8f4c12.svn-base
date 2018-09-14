@@ -1,0 +1,153 @@
+﻿@model Domain.Entity.tb_AdminMenu
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<!-- form star -->
+@using (Ajax.BeginForm("MenuModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.Sort)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="clearfix f-hafl">
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">菜单编号</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.NodeID, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入菜单编号" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">菜单父级</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.ParentID, ViewBag.selectList as IEnumerable<SelectListItem>, new { @class = "form-control select2" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">菜单名称</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入菜单名称" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">提交方式</label>
+                                    <div class="col-lg-8">
+                                        @Html.DropDownListFor(model => model.FormMethod, new List<SelectListItem>() { new SelectListItem() { Text = "POST", Value = "POST" }, new SelectListItem() { Text = "GET", Value = "GET" } }, new { @class = "form-control select2" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">外链地址</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.LinkUrl, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">区域名称</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.AreaName, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">控制器名称</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.ControllerName, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">方法名称</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.ActionName, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">等级</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Level, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">选项</label>
+                                    <div class="col-lg-8">
+                                        <label class="checkbox-inline" data-toggle="tooltip" data-placement="top" title="注：禁用后，菜单将不显示">@Html.CheckBoxFor(model => model.IsShow, new { @class = "i-checks" }) 是否有效</label>
+                                        <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsLink, new { @class = "i-checks" }) 是否外链</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">图标</label>
+                            <div class="col-lg-8 input-group p115" style="padding-left:15px">
+                                @Html.TextBoxFor(model => model.Ico,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "选择图标"}
+                                        })
+                                <span class="input-group-btn"><button id="icoSel" type="button" data-text="Ico" class="btn btn-sm btn-primary sel-icon" style="height:35px"> 选择图标</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">描述</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3" })
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-8 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("#forms").initValidform();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            $('.select2').select2();
+        });
+        $(".sel-icon").click(function() {
+            top.dialog({
+                title: "选择Icon",
+                url: '/FytAdmin/SysAdmin/MenuIcon/',
+                width: 650,
+                height: 400,
+                onclose: function () {
+                    if (this.returnValue) {
+                        $('#Ico').val(this.returnValue);
+                    }
+                }
+            }).showModal();
+        });
+    </script>
+}

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-agent" content="format=html5;url=http://www.feiyit.com">
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/css/flexslider.css">
+    <link rel="stylesheet" href="/lib/alert/sweetalert.css">
+    <link type="text/css" rel="stylesheet" href="/lib/css/font-awesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="/lib/css/icons.css" />
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/lib/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/lib/css/animate.css" />
+    <link rel="stylesheet" href="/lib/css/index.css">
+    <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+    <title>@ViewBag.Title</title>
+    <meta name="keywords" content="@ViewBag.Keywords" />
+    <meta name="description" content="@ViewBag.Description" />
+</head>
+    <body class="log-bd">
+        <header>
+            <div class="logo"><a href="/" title=""><img alt="" src="/lib/img/logo.png" width="240" height="90" /></a></div>
+            <div class="sup-btn"><span><a href="/users/reg" class="reg">注册</a><a href="/users/login">登录</a></span><a href="/" class="sup-fb">发布</a></div>
+            <div class="nav-w">
+                <nav>
+                    <ul>
+                        <li><a href="">首页</a></li>
+                        <li><a href="">我等你</a></li>
+                        <li><a href="">去看看</a></li>
+                        <li><a href="">旅程故事</a></li>
+                        <li><a href="/category/help/shouce" class="last">帮助中心</a></li>
+                    </ul>
+                </nav>
+                <div class="search">
+                    <form>
+                        <input type="text" class="" placeholder="输入你想要参加的活动" />
+                        <select><option value="想要去的地方">想要去的地方</option></select>
+                        <button><i class="icon-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </header>
+        @RenderBody()
+    </body>
+</html>

@@ -1,0 +1,103 @@
+﻿@model Domain.Entity.tb_Comment
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+    .cmd_span {
+        padding-top: 8px;
+        display: inline-block;
+    }
+</style>
+<!-- form star -->
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">评论主题</label>
+                            <div class="col-lg-8">
+                                <span class="cmd_span">@Model.Title</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">发表人</label>
+                            <div class="col-lg-8">
+                                <span class="cmd_span">@Model.tb_User.LoginName</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">发表人IP</label>
+                            <div class="col-lg-8">
+                                <span class="cmd_span">@Model.UserIP</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">发表时间</label>
+                            <div class="col-lg-8">
+                                <span class="cmd_span">@Model.AddDate</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">用户观点</label>
+                            <div class="col-lg-8 control-label">
+                                支持态度： <span class="cmd_span">@Model.Good</span>　　反对态度： <span class="cmd_span">@Model.Tread</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">评星等级</label>
+                            <div class="col-lg-8 control-label">
+                                <span class="cmd_span">@Model.Star 星</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">审核状态</label>
+                            <div class="col-lg-8">
+                                <label class="checkbox-inline" style="padding-left: 0px"> @Html.RadioButtonFor(model => model.Status,"1", new { @class = "i-checks", @style="margin-left:0px" }) 未审核</label>
+                                <label class="checkbox-inline"> @Html.RadioButtonFor(model => model.Status, "2", new { @class = "i-checks" }) 审核通过</label>
+                                <label class="checkbox-inline"> @Html.RadioButtonFor(model => model.Status, "3", new { @class = "i-checks" }) 审核未通过</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">回复内容</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.RepContent, new { @class = "form-control", @rows = "3", @placeholder = "这里输入回复评论人的内容..." })
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <label class="col-lg-3 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $("#FirstLetter").select2();
+        });
+    </script>
+}

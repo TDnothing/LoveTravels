@@ -1,0 +1,72 @@
+$(window).load(function () {
+	servLoad();
+})
+
+var servLoad=function(){
+	$(".item_o").click(function(){
+		if(navigator.platform.indexOf('Win32')!=-1){
+			$('html,body').animate({ scrollTop: $(this).attr("data-top") }, 800);
+		}
+		else{
+			$('html,body').animate({ scrollTop: $(this).attr("data-m-top") }, 800);
+		}
+	});	
+	
+	$(".pc-s-nav ul li a").click(function(){
+		$('html,body').animate({ scrollTop: $(this).attr("data-top") }, 800);
+	})
+	
+	
+	$(window).scroll(function(){
+		var sH=$(window).scrollTop();
+		if(sH<340){
+			$(".pc-s-nav").stop(true,true).animate({'opacity':0});
+		}
+		if(sH>540){
+			$(".pc-s-nav").stop(true,true).animate({'opacity':1});
+		}
+		
+		if(sH>540 && sH<1330){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(0).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(0).position().top)
+		}
+		if(sH>1400 && sH<2200){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(1).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(1).position().top)
+		}
+		if(sH>2200 && sH<3200){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(2).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(2).position().top)
+		}
+		if(sH>3000 && sH<3900){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(3).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(3).position().top)
+		}
+		if(sH>3900 && sH<4800){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(4).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(4).position().top)
+		}
+		if(sH>4800){
+			$(".pc-s-nav ul li a").css("color", "#333");
+			$(".pc-s-nav ul li a").eq(5).css("color", "White");
+			$(".pc-s-nav ul li.bg").css("top", $(".pc-s-nav ul li").eq(5).position().top)
+		}
+	});
+	
+	$(".pc-s-nav ul li").not(".bg").bind("mouseenter",
+	    function(e) {
+	        $(this).parent().find("a").css("color", "#333");
+	        $(this).find("a").css("color", "White");
+	        $(".pc-s-nav ul li.bg").css("top", $(this).position().top)
+	    });
+	    $(".pc-s-nav ul").bind("mouseleave",
+	    function() {
+	        $(".pc-s-nav ul li.active").trigger("mouseenter").find("a").css("color", "White")
+	}).trigger("mouseleave");
+	
+}

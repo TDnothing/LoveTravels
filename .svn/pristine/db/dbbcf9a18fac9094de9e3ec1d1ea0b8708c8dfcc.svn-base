@@ -1,0 +1,138 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 6px 18px !important;
+    }
+
+    table.dataTable tbody th, table.dataTable tbody td {
+        padding: 6px 18px !important;
+        font-size: 12px;
+    }
+
+    .col-sm-1 {
+        width: 10%;
+    }
+
+    #fileUp {
+        display: none;
+    }
+</style>
+<!-- form star -->
+<div class="row white-bg">
+    <div class="wrapper-content" style="padding: 0">
+        <div class="form-horizontal mform">
+            <div class="tab-content">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">目录</label>
+                    <div class="col-sm-10 col-md-6 input-group">
+                        <input type="text" id="path" value="/upload/" style="background-color: white" disabled="disabled" class="input-sm form-control">
+                        <span id="fback" class="input-group-btn hidden">
+                            <button type="button" class="btn btn-sm btn-primary"> 返回上级目录</button>
+                        </span>
+                        <span id="lvmodel" class="input-group-btn">
+                            <button type="button" class="btn btn-sm btn-primary" title="更改浏览模式" data-model="1"><i class="im-grid3"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div style="height: 330px; overflow-y: auto; overflow-x: hidden; margin-bottom: 15px;">
+                    <table id="tables" class="table table-striped table-bordered table-hover dataTables-example dataTable hidden" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th width="45%">名称</th>
+                                <th>类型</th>
+                                <th>大小</th>
+                                <th width="20%">修改时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trows"></tbody>
+                        <script id="tlist" type="text/x-jquery-tmpl">
+                            <tr>
+                                <td>
+                                    {{if ext=="文件夹"}}
+                                    {{html '<img src="/assets/images/icon/folderclosed.png" /> <a href="javascript:void(0)" class="text-navy" onclick="OpenFolder(\''+name+'\')">'+name+'</a>'}}
+                                    {{else}}
+                                    {{html '<img src="/assets/images/fileioc/img.png" /> <a href="javascript:void(0)" style="color: #333" onclick="SetFile(\''+name+'\')">'+name+'</a>'}}
+                                    {{/if}}
+                                </td>
+                                <td>${ext}</td>
+                                <td>{{html f.fileSizes(size)}}</td>
+                                <td>${time}</td>
+                                <td><a href="javascript:void(0)" onclick="delFolder('${name}','${ext}')" class="text-navy f14"><i class=" im-close2"></i></a></td>
+                            </tr>
+                        </script>
+                    </table>
+                    <ul class="flist"></ul>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">Url地址</label>
+                    <div class="col-sm-10 col-md-6 input-group">
+                        <input type="text" id="fileUrl" class="input-sm form-control">
+                        <span class="input-group-btn"><button type="button" class="btn btn-sm btn-danger fsave">　确定　</button> </span>
+                        <span class="input-group-btn"><button type="button" class="btn btn-sm btn-primary fclose" style="margin-left: 10px;"> 取消</button> </span>
+                    </div>
+                </div>
+                <form action="/FytAdmin/FileMiam/SignUpFile" id="forms" method="post" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">上传文件</label>
+                        <div class="col-sm-10 col-md-6 input-group">
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-danger sign-up"> 单文件上传</button>
+                                <span class="f12">
+                                    <label class="checkbox-inline"><input data-val="true" id="roimg" checked="checked" name="filestype" type="radio" value="0"> 图片</label>
+                                    <label class="checkbox-inline"><input data-val="true" id="rofile" name="filestype" type="radio" value="1"> 文件</label>
+                                    <label class="checkbox-inline"><input data-val="true" id="rofile" name="filestype" type="radio" value="2"> 视/音频</label>　　
+                                    <label class="checkbox-inline red"><input data-val="true" id="isthum" name="isthum" type="checkbox" checked="checked" > 是否生成缩略图</label>　　     
+                                    <label class="checkbox-inline"><input data-val="true" id="isWater" name="isWater" type="checkbox"> 添加水印</label>
+                                </span>
+                                <input type="file" id="fileUp" name="fileUp" />
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        var spath = "/upload/";
+        $(function() {
+            var dialog = top.dialog.get(window);
+            var datas = dialog.data;
+            $("#fileUrl").val(datas);
+
+            $(".fsave").click(function() {
+                var val = $('#fileUrl').val();
+                dialog.close(val);
+                dialog.remove();
+            });
+            initFiles($("#path").val());
+
+            $("#fback > button").click(function() {
+                OpenParentFolder();
+            });
+            $("#lvmodel").click(function() {
+                var t = $(this).find("button");
+                if ($(t).attr("data-model") == 1) {
+                    $(".flist").addClass("hidden");
+                    $("#tables").removeClass("hidden");
+                    $(t).attr("data-model", "2");
+                } else {
+                    $(".flist").removeClass("hidden");
+                    $("#tables").addClass("hidden");
+                    $(t).attr("data-model", "1");
+                }
+            });
+        });
+    </script>
+}

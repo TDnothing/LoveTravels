@@ -1,0 +1,63 @@
+????:2016-09-28 20:02:57,576 
+??ID:[17] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:The operation has timed out.
+---------------------------------------------------------------
+
+????:2016-09-28 20:06:38,544 
+??ID:[17] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:The operation has timed out.
+---------------------------------------------------------------
+
+????:2016-09-28 20:10:26,942 
+??ID:[11] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-28 20:11:15,679 
+??ID:[11] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-28 20:14:47,525 
+??ID:[11] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-28 20:15:37,719 
+??ID:[56] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:The SMTP server requires a secure connection or the client was not authenticated. The server response was: 5.7.0 Must issue a STARTTLS command first. u9sm5184620qtb.28 - gsmtp
+---------------------------------------------------------------
+
+????:2016-09-28 20:20:03,063 
+??ID:[11] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:The operation has timed out.
+---------------------------------------------------------------
+
+????:2016-09-28 20:38:36,511 
+??ID:[13] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:The operation has timed out.
+---------------------------------------------------------------
+
+????:2016-09-28 20:58:23,098 
+??ID:[13] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:Object reference not set to an instance of an object.
+---------------------------------------------------------------
+

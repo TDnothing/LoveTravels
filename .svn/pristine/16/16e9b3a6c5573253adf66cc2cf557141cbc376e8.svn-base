@@ -1,0 +1,56 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@{
+    ViewBag.Title = "旅程故事";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var s = FytRequest.GetQueryString("tag");
+    s = s == "" ? "red" : s;
+    var k=FytRequest.GetQueryString("key")!="" ? DESEncrypt.Decrypt(FytRequest.GetQueryString("key")) : "";
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+    <script type="text/javascript" src="/lib/js/story.js"></script>
+}
+<div class="hr"></div>
+
+<div class="w1200 hts"><h2><span>旅程故事</span></h2></div>
+<div id="masonry" class="containers" style="min-height: 300px">
+    <div class="box rhot">
+        <h4>站长力推</h4>
+        <div class="hit">
+            <a href="/story?tag=red&key=@DESEncrypt.Encrypt(k)" @Html.Raw(s=="red" ? "class=cur" : "")>热门</a><a href="/story?tag=top&key=@DESEncrypt.Encrypt(k)" @Html.Raw(s == "top" ? "class=cur" : "")>优质精华</a><a href="/story?tag=time&key=@DESEncrypt.Encrypt(k)" @Html.Raw(s == "time" ? "class=cur" : "")>最新发表</a>
+        </div>
+        <h5>热门目的地</h5>
+        <div class="red">
+            @{
+    var gn = ViewBag.gN as List<tb_AdvList>;
+    if (gn != null && gn.Count > 0)
+    {
+        foreach (var list in gn)
+        {
+            <a href="/story?tag=@s&key=@DESEncrypt.Encrypt(list.Title)" @Html.Raw(k == list.Title ? "class=cur" : "")>@list.Title</a>
+        }
+    }
+}
+            <p></p>
+            @{
+    var gw = ViewBag.gW as List<tb_AdvList>;
+    if (gw != null && gw.Count > 0)
+    {
+        foreach (var list in gw)
+        {
+            <a href="/story?tag=@s&key=@DESEncrypt.Encrypt(list.Title)" @Html.Raw(k == list.Title ? "class=cur" : "")>@list.Title</a>
+        }
+    }
+}
+        </div>
+    </div>
+    
+    
+</div>
+<div class="w1200" id="load"><p style="text-align: center"><img src="/lib/img/loading.gif" /></p></div>
+<div class="w1200" id="loadDown"><p style="text-align: center"><a href="javascript:void(0)" style="color: #333">加载下一页</a></p></div>
+<input type="hidden" id="hpage" value="1" /><input type="hidden" id="htotal" value="" />
+<input type="hidden" id="htj" value="@s" /><input type="hidden" id="hkey" value="@k" />

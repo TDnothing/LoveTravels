@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<appSettings>
+  <!--数据库链接字符串 -->
+  <add key="ConnectionString" value="server=.;database=sq_FytMCms;uid=sa;pwd=sa" />
+  <add key="Configpath" value="~/XmlConfig/WebSet.config"/>
+  <add key="Userpath" value="~/XmlConfig/user.config"/>
+  <add key="ApnsUrl" value="http://localhost:8066/Push/Post"/>
+  <add key="AndRoidApnsUrl"  value="http://android.dgbingo.com/Index.aspx"/>
+
+  <!--关键词字段配置路径 -->
+  <add key="KeyWord" value="~/XmlConfig/default.dic" />
+</appSettings>
+

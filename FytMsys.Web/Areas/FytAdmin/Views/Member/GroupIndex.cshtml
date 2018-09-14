@@ -1,0 +1,91 @@
+﻿@model Domain.Entity.tb_UserGroup
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    .tb-row th {
+        background-color: #f3f3f4;
+    }
+        .tb-row th, .tb-row td{padding:5px 15px;}
+</style>
+<!-- table star -->
+<div class="row col-lg-12">
+    <div class="wrapper animated fadeInUp">
+        <div class="ibox">
+            <div class="ibox-title">
+                <table width="100%" class="tb-row f12">
+                    <tr>
+                        <th width="200">名称</th>
+                        <th>值</th>
+                    </tr>
+                    <tr>
+                        <td>角色名：</td>
+                        <td>@Model.Name</td>
+                    </tr>
+                    <tr>
+                        <td>备注：</td>
+                        <td>@Model.Summary</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="ibox-content">
+                <!-- search star -->
+                <div class="form-horizontal clearfix">
+                    <div class="col-lg-4 col-sm-4">
+                        <div class="form-group">
+                            <div class="col-lg-12 col-sm-12 input-group">
+                                <input type="text" id="txtKey" placeholder="请输入关键字" value="" class="input-sm form-control">
+                                <span class="input-group-btn">
+                                    <button type="button" id="btnKey" class="btn btn-sm btn-primary"> 搜索</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- search end -->
+                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                    <table id="tables" class="table table-striped table-bordered table-hover dataTables-example dataTable" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="tn" style="width: 60px !important"><input id="checkall" name="" type="checkbox" value=""></th>
+                                <th>会员名</th>
+                                <th>真实姓名</th>
+                                <th>电子邮箱</th>
+                                <th>手机号码</th>
+                                <th>注册时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trows"></tbody>
+                        <script id="tlist" type="text/x-jquery-tmpl">
+                            <tr>
+                                <td class="tn"><input class="check" type="checkbox" name="checkbox_name" value="${ID}"></td>
+                                <td>${LoginName}</td>
+                                <td>${TrueName}</td>
+                                <td>${Email}</td>
+                                <td>${Mobile}</td>
+                                <td>${RegDate}</td>
+                            </tr>
+                        </script>
+                    </table>
+                    <!-- page -->
+                    <div class="bottom">
+                        <div class="dataTables_info" id="tables_info" role="status" aria-live="polite"></div>
+                        <div class="dataTables_length" id="tables_length">
+                            <label>显示 <select id="sel_page" class="form-control input-sm"><option value="10" selected="selected">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> 项结果</label>
+                        </div>
+                        <div class="dataTables_paginate paging_full_numbers" id="tables_paginate"><ul class="pagination"></ul></div>
+                        <div class="clear"></div>
+                    </div>
+                    <!-- page -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- table end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/table/member.js"></script>
+}

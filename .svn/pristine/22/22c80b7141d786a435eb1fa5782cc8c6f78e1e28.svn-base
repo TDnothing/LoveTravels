@@ -1,0 +1,117 @@
+﻿@using Domain.Entity
+@model tb_Site
+@{
+    ViewBag.Title = "解决方案_" + Model.SeoTitle;
+    ViewBag.Key = Model.SeoKey;
+    ViewBag.Desc = Model.SeoDescribe;
+    ViewBag.Nav = "2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>解决方案<span>]</span></h2>
+        <h3><a href="/">首页</a><tt>></tt><span>解决方案</span></h3>
+    </div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：解决方案
+-->
+<div class="sol-ser-w">
+    <div class="si-info">
+        <div class="en"><span>方案解决流程</span></div>
+    </div>
+    <div class="container">
+        <div class="sol-lc clearfix">
+            <div class="animated bounceInLeft sol-sitem">
+                <img src="/lib/img/ser/s1.png" alt="需求分析" />
+                <p style="color:#ffce55">需求分析</p>
+            </div>
+            <div class="animated bounceInLeft sol-sitem">
+                <img src="/lib/img/ser/s2.png" alt="交互设计" />
+                <p style="color:#7bceeb">交互设计</p>
+            </div>
+            <div class="animated bounceInUp sol-sitem">
+                <img src="/lib/img/ser/s3.png" alt="前端制作" />
+                <p style="color:#f49a88">前端制作</p>
+            </div>
+            <div class="animated bounceInRight sol-sitem">
+                <img src="/lib/img/ser/s4.png" alt="程序开发" />
+                <p style="color:#b1e487">程序开发</p>
+            </div>
+            <div class="animated bounceInRight sol-sitem last">
+                <img src="/lib/img/ser/s5.png" alt="测试上线" />
+                <p style="color:#ffc48c">测试上线</p>
+            </div>
+        </div>
+        <div class="sol-zx"><a href="/"><i class="fa fa-fw"></i>服务咨询</a></div>
+    </div>
+</div>
+
+<div class="animated fadeInLeft container">
+    <div class="sol-item clearfix">
+        <div class="sol-quan"><i>1</i></div>
+        <div class="sol-text">
+            <h2>企业品牌网站解决方案</h2>
+            <p>
+                随着计算机和电子通讯技术的飞速发展和网络的应用越来越广泛，国内外不少的中小企业都不约而同地意识到利用网络传递信息可以在一定的程度上提高办事效率、提高企业的竞争力。
+            </p><p>通过互联网为自己做宣传、树立企业的形象和提高企业在业界知名度，</p>
+            <p>这也是目前大多数企业的主要宣传方式。</p>
+            <div class="xq-sy"><span>我的需求与此项目类似</span><a href="/">索取方案与报价</a></div>
+        </div>
+    </div><!-- end -->
+
+    <div class="sol-item clearfix">
+        <div class="sol-quan"><i>2</i></div>
+        <div class="sol-text">
+            <h2>集团公司门户网站解决方案</h2>
+            <p>全球经济一体化正在深刻的影响着公司的变化，加速了公司向集团公司的聚集和转型，迎来前所未有的机遇和挑战。</p>
+            <p>现代大型集团公司一般组织机构庞大，跨地区、跨行业的分布，并包括诸多的职能部门和下属子公司。由此，相应的管理与统一协调方面出现很多无法避免的问题：</p>
+            <p>如方案所突出的现实意义在于：不仅仅只是表面上的产品、服务信息提供，更重要的是通过门户平台的建立，从而形成可观的集团整体影响力</p>
+            <p>创造集团公司的强势品牌形象；而门户网站的持续运营</p>
+            <p>将使得集团公司内部诸多机构更高效的运转，促进公司核心竞争力的提升，不断拓展集团公司更广阔的发展 空间。</p>
+            <div class="xq-sy"><span>我的需求与此项目类似</span><a href="/">索取方案与报价</a></div>
+        </div>
+    </div><!-- end -->
+
+    <div class="sol-item clearfix">
+        <div class="sol-quan"><i>3</i></div>
+        <div class="sol-text">
+            <h2>政府机关网站解决方案</h2>
+            <p>政府机关信息门户网站是各级政府机构最生动的政府形象和最鲜明的旗帜。</p>
+            <p>而同时政府信息化是整个社会信息化的前提和基础，政府信息化必须率先垂范，进而带动整个社会的信息化进程。</p>
+            <p>搭建政府机关门户网站或政府职能网站群，并实现全面运作、简易维护和可持续扩展，不断提高政府行政、服务和管理方面的效率，充分利用网络为公众社会提供优质服务，推动和加速整个社会的信息化发展。</p>
+            <div class="xq-sy"><span>我的需求与此项目类似</span><a href="/">索取方案与报价</a></div>
+        </div>
+    </div><!-- end -->
+
+    <div class="sol-item clearfix">
+        <div class="sol-quan"><i>4</i></div>
+        <div class="sol-text">
+            <h2>电子商务网站解决方案</h2>
+            <p>强大的平台运营工作台、供货商入驻,权限管理、商品审核,二次加工、完整的销售过程记录,便于后期结算。</p>
+            <p>适用于拥有大量消费者资源,想要把消费者价值最大化的企业。</p>
+            <div class="xq-sy"><span>我的需求与此项目类似</span><a href="/">索取方案与报价</a></div>
+        </div>
+    </div><!-- end -->
+
+    <div class="sol-item clearfix">
+        <div class="sol-quan"><i>5</i></div>
+        <div class="sol-text">
+            <h2>旅游网站解决方案</h2>
+            <p>旅游网站市场竞争越来越激烈，已经从线下市场逐渐蔓延到线上，竞争的方式也从实体广告竞争转变为搜索引擎排名竞争。</p>
+            <p>旅游网站建设的好坏直接影响到以后的业务竞争，如何做好一个旅游网站的问题，不再只是考虑页面好看与否，还要考虑网站是否易于搜索引擎优化，如何提高旅游网站的转化率等问题。</p>
+            <p>旅游网站内容非常多，包括线路、景点、旅游资讯、酒店、机票、租车、签证、户外扩展等，也算是一个的门户网站。所以，做好一个旅游网站，需要页面设计的清晰、后台管理方便、搜索引擎友好、用户体验良好，才能打造一个在搜索引擎竞争力强、客户转化率高的网站。</p>
+            <div class="xq-sy"><span>我的需求与此项目类似</span><a href="/">索取方案与报价</a></div>
+        </div>
+    </div><!-- end -->
+
+</div>
+

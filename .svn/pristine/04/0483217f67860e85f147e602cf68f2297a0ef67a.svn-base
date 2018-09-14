@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<SysBasicConfig xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <_vipmoney>180</_vipmoney>
+  <_vipSummary>30分钟内急速解答
+包半年购买音乐</_vipSummary>
+  <webcopyright />
+  <webpath>/</webpath>
+  <webmanagepath>fytadmin</webmanagepath>
+  <staticstatus>1</staticstatus>
+  <memberstatus>1</memberstatus>
+  <commentstatus>0</commentstatus>
+  <logstatus>1</logstatus>
+  <webstatus>1</webstatus>
+  <webclosereason>网站正在维护中，请稍候访问……</webclosereason>
+  <webcountcode>&lt;script src="http://v1.cnzz.com/z_stat.php?id=1000375400&amp;web_id=1000375400" language="JavaScript"&gt;&lt;/script&gt;</webcountcode>
+  <smsapiurl />
+  <smsusername />
+  <smspassword />
+  <emailsmtp>smtp.163.com</emailsmtp>
+  <emailport>25</emailport>
+  <emailfrom>wobgudan138316@163.com</emailfrom>
+  <emailusername>wobgudan138316@163.com</emailusername>
+  <emailpassword>wobgudan</emailpassword>
+  <emailnickname>瑞隆安商城</emailnickname>
+  <filepath>upload</filepath>
+  <filesave>1</filesave>
+  <fileextension>gif,jpg,png,bmp,rar,zip,doc,xls,txt,flv,mp4,apk,mp3</fileextension>
+  <attachsize>51200</attachsize>
+  <imgsize>10240</imgsize>
+  <imgmaxheight>0</imgmaxheight>
+  <imgmaxwidth>0</imgmaxwidth>
+  <thumbnailheight>300</thumbnailheight>
+  <thumbnailwidth>300</thumbnailwidth>
+  <watermarktype>1</watermarktype>
+  <watermarkposition>9</watermarkposition>
+  <watermarkimgquality>80</watermarkimgquality>
+  <watermarkpic>watermark.png</watermarkpic>
+  <watermarktransparency>5</watermarktransparency>
+  <watermarktext>飞易腾</watermarktext>
+  <watermarkfont>新宋体</watermarkfont>
+  <watermarkfontsize>16</watermarkfontsize>
+  <sysdatabaseprefix>dt_</sysdatabaseprefix>
+  <sysencryptstring>Fytcms</sysencryptstring>
+  <wxewcode>/img/ercode.png</wxewcode>
+  <serverline>400-000-0000</serverline>
+  <vipmoney>180</vipmoney>
+  <vipSummary>30分钟内急速解答
+包半年购买音乐</vipSummary>
+  <iosverison>1</iosverison>
+  <iossummary>
+    IOS版本描述#
+    1.介绍1#
+    2.介绍2#
+    3.介绍3
+  </iossummary>
+  <androidversion>1</androidversion>
+  <androidsummary>
+    Android版本描述#
+    1.介绍1#
+    2.介绍2#
+    3.介绍3
+  </androidsummary>
+  <androidfile>/upload/201506/16/201506160948223702.apk</androidfile>
+</SysBasicConfig>

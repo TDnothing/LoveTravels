@@ -1,0 +1,161 @@
+﻿@using Domain.Entity
+@model tb_Site
+@{
+    ViewBag.Title = "关于飞易腾_" + Model.SeoTitle;
+    ViewBag.Key = Model.SeoKey;
+    ViewBag.Desc = Model.SeoDescribe;
+    ViewBag.Nav = "4";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/about.js"></script>
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>关于我们<span>]</span></h2>
+        <h3><a href="/">首页</a><tt>></tt><span>关于我们</span></h3>
+    </div>
+</div>
+
+<div class="sign container">
+    <div class="si-info">
+        <div class="en">ABOUT US</div>
+        <div class="in-p">飞易腾=网站平台建设+移动APP开发+手机微网站+网络营销推广+运营外包</div>
+        <div class="in-p hui">我们倾听客户需求，以最前沿的设计理念，赋予企业与品牌崭新的形象</div>
+    </div>
+
+    <div class="animated fadeInLeftBig ab_o_item clearfix">
+        <div class="ab_quan ab_quan_1 left"><span>about us</span><i></i></div>
+        <div class="ab_qtext right">
+            <h2>北京飞易腾科技有限公司</h2>
+            <p>北京飞易腾科技有限公司自创立以来一直致力于网络品牌规划、品牌网站建设、互动营销执行，成为互动网站建设的先行者，坚持网站与创意结合，网站与行业结合，网站与营销结合，先进技术与传统模式的融合。为政府事业单位、国企、电子商务企业、传统企业等各级客户提供切合实际的互联网应用解决方案。我们不只是希望与您建立客户关系，更希望用我们的网络技术所长与您建立长期的战略合作伙伴关系，共同发展。</p>
+        </div>
+    </div>
+
+    <div class="animated fadeInRightBig ab_o_item td clearfix">
+        <div class="ab_quan ab_quan_1 left"><span>Service</span><i></i></div>
+        <div class="ab_qtext right">
+            <h2>我们的态度：<span>提供全面的网站应用解决方案，成为客户的网站应用顾问</span></h2>
+        </div>
+    </div>
+
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-03
+    描述：成长历程
+-->
+<div class="f-czlc">
+    <div class="si-info">
+        <div class="en">Grow up Days</div>
+    </div>
+    <div class="container big">
+        <div class="day">
+            <div class="size"></div><div class="size"></div><div class="size" style="border: 0;"></div>
+            <div class="size"></div><div class="size"></div><div class="size"></div><div class="size" style="border-color:#888"></div>
+            <div class="green"></div>
+            <div class="day1" id="d1">
+                <div class="h_c"></div>
+                <span class="date">2010.10.10</span>
+                <span class="title" style="color: rgb(204, 204, 204);">飞易腾工作室成立</span>
+            </div>
+            <div class="day2" id="d2" style="left: 200px;">
+                <span class="date">2012.12.22</span>
+                <span class="title" style="color: rgb(204, 204, 204);">飞易腾<br>公司正式成立</span>
+            </div>
+            <div class="day2" id="d3" style="left: 350px;">
+                <span class="date">2013.5.5</span>
+                <span class="title">FytCms上线</span>
+            </div>
+            <div class="day1" id="d4" style="left: 440px;">
+                <div class="h_c"></div>
+                <span class="date">2013.10.22</span>
+                <span class="title">飞易腾和山东智达达成合作</span>
+            </div>
+            <div class="day2" id="d5" style="left: 628px;">
+                <span class="date">2014.5.5</span>
+                <span class="title">飞易腾<br>CMSV2.2上线</span>
+            </div>
+            <div class="day1" id="d6" style="left: 823px;">
+                <div class="h_c"></div>
+                <span class="date">2015.06.06</span>
+                <span class="title">公司搬迁至大望路</span>
+            </div>
+            <div class="day2" id="d7" style="left: 970px;">
+                <span class="date">2015.9.10</span>
+                <span class="title">飞易腾自营产品上线</span>
+            </div>
+            <div class="day2" id="d8">
+                <span class="date">∞</span>
+                <span class="title" style="top:-2px">无限可能</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-03
+    描述：我们的团队
+-->
+<div class="container team">
+    <div class="si-info">
+        <div class="en">FeiYiT　Team</div>
+    </div>
+    <div class="team_c clearfix">
+        <div class="item"><img src="/lib/img/ab/1.png"><p>商务经理</p></div>
+        <div class="item" style="background:#e3bc68"><img src="/lib/img/ab/5.png"><p>项目经理</p></div>
+        <div class="item" style="background:#f87366"><img src="/lib/img/ab/4.png"><p>交互工程师</p></div>
+        <div class="item" style="background:#fef1d6"><img src="/lib/img/ab/8.png"><p>UI设计师</p></div>
+        <div class="item" style="background:#c4a2d9"><img src="/lib/img/ab/2.png"><p>前端工程师</p></div>
+        <div class="item" style="background:#50c1e9"><img src="/lib/img/ab/6.png"><p>程序员</p></div>
+        <div class="item" style="background:#57ca8b"><img src="/lib/img/ab/3.png"><p>测试员</p></div>
+        <div class="item" style="background:#71d3d4"><img src="/lib/img/ab/7.png"><p>人事</p></div>
+    </div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：工作环境
+-->
+<div class="animated fadeIn f-gzyh">
+    <div class="container clearfix">
+        <div class="hj-item"><img alt="" src="/lib/img/hj/1.jpg" /><div class="bg"></div></div>
+        <div class="hj-item"><img alt="" src="/lib/img/hj/2.jpg" /><div class="bg"></div></div>
+        <div class="hj-item"><img alt="" src="/lib/img/hj/3.jpg" /><div class="bg"></div></div>
+        <div class="hj-item"><img alt="" src="/lib/img/hj/4.jpg" /><div class="bg"></div></div>
+        <div class="hj-item"><img alt="" src="/lib/img/hj/5.jpg" /><div class="bg"></div></div>
+        <div class="hj-item"><img alt="" src="/lib/img/hj/6.jpg" /><div class="bg"></div></div>
+    </div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：合作伙伴
+-->
+<div class="f-hzhb container">
+    <div class="si-info">
+        <div class="en">FeiYiT　Partners</div>
+    </div>
+    <div class="f-part clearfix">
+        <div class="hz-item"><img alt="" src="/lib/img/hz/1.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/2.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/1.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/2.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/1.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/2.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/1.png" /><p>中国北车</p></div>
+        <div class="hz-item"><img alt="" src="/lib/img/hz/2.png" /><p>中国北车</p></div>
+    </div>
+</div>
+

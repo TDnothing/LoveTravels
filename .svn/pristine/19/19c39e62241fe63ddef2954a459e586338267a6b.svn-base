@@ -1,0 +1,109 @@
+﻿@using Domain.Entity
+@model tb_Article
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.Key = Model.KeyWord;
+    ViewBag.Desc = Model.Summary;
+    ViewBag.Nav = "3";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dtNav = ViewBag.dtNav as List<tb_Column>;
+    var pModel = dtNav.Find(m => m.ID == Model.ClassID);
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/case.js"></script>
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>我们的作品<span>]</span></h2>
+        <h3>
+            <a href="/">首页</a><tt>></tt><a href="/cases/" style="color: #f0a116">我们的作品</a>
+            <tt>></tt><span>@pModel.Title</span>
+        </h3>
+    </div>
+</div>
+
+<div class="container n-detail c-detail clearfix">
+    <h1><span><i class="glyphicon glyphicon-list-alt"></i></span>@Model.Title</h1>
+    <div class="button"><div>索取报价</div><i class="glyphicon glyphicon-search"></i></div>
+    <span class="rel">
+        @Model.Source<u>•</u>@Convert.ToDateTime(Model.EditDate).ToShortDateString().Replace("/", ".")<u>•</u>
+        @{
+            if (!string.IsNullOrEmpty(Model.Tag))
+            {
+                if (Model.Tag.Contains(","))
+                {
+                    var sp = Model.Tag.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var s in sp)
+                    {
+                        <a href="/search/?key=@s">@s</a>
+                    }
+                }
+                else
+                {
+                    <a href="/search/?key=@Model.Tag">@Model.Tag</a>
+                }
+            }
+            else
+            {
+                <a href="/search/?key=飞易腾">飞易腾</a>
+            }
+        }<u>•</u><span class="" title="浏览次数"></span>@Model.Hits
+    </span>
+    <div class="animated fadeInRightBig case-banner">
+        <div class="case-slide clearfix">
+            <ul>
+                <li><img src="/lib/img/c1.jpg" /></li>
+                <li><img src="/lib/img/c2.jpg" /></li>
+                <li><img src="/lib/img/c1.jpg" /></li>
+            </ul>
+        </div>
+        <div class="backs"><a href="javascript:void(0)"></a></div>
+    </div>
+    <div style="clear: both;"></div>
+    <div class="c-bar"></div>
+    <div class="words">
+        <div class="bdsharebuttonbox bdshare-button-style2-24" data-bd-bind="1444914840540">
+            <a title="分享到新浪微博" href="#" class="bds_tsina" data-cmd="tsina"></a>
+            <a title="分享到微信" href="#" class="bds_weixin" data-cmd="weixin"></a>
+            <a href="#" class="bds_more" data-cmd="more"></a>
+        </div>
+        <script>
+            window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdMiniList": false, "bdPic": "", "bdStyle": "2", "bdSize": "24" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+        </script>
+
+        <div class="button"><div>索取报价</div><i class="glyphicon glyphicon-search"></i></div>
+
+        <h2>项目背景</h2>
+        <div>@Html.Raw(Model.Content)</div>
+    </div>
+</div>
+
+<div class="container ca-more">
+    <h2><i class="im-arrow-left5"></i><a href="javascript:history.go(-1)">返回案例列表 </a></h2>
+</div>
+
+<div class="container else-case">
+    <div class="ni-tit clearfix"><span>其它相关案例</span><a href="/cases/">查看全部</a></div>
+    <div class="p-it-w clearfix" style="margin-top: 20px;">
+        @{
+            var reCase = ViewBag.reCase as List<tb_Article>;
+            if (reCase != null && reCase.Count > 0)
+            {
+                foreach (var item in reCase)
+                {
+                    <div class="p-item @(item.ID==reCase[reCase.Count-1].ID ? "last" : "")">
+                        <div class="p-img"><a href="/cases/details/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.ImgUrl" /></a></div>
+                        <div class="p-tit"><a href="/cases/details/@item.ID" title="@item.Title">@item.Title</a></div>
+                    </div><!-- end -->
+                }
+            }
+        }
+    </div>
+</div>
+

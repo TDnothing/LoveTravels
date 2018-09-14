@@ -1,0 +1,122 @@
+﻿@model Domain.Entity.tb_GoodsBrand
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">商品品牌</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="/FytAdmin/GoodsBrand/Index">主页</a></li>
+            <li><strong>添加/编辑商品品牌</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+@using (Ajax.BeginForm("Modify", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                </ul>
+            </div>
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">品牌名</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.BrandName, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入品牌名", @placeholder = "请输入品牌名" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">品牌别名</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.BrandAlias, new { @class = "form-control", @datatype = "*", @placeholder = "请输入品牌别名" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">品牌LOGO</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @{
+    if (!string.IsNullOrEmpty(Model.BrandLogo))
+    {
+        <img style="width:100px;height:75px;float:left" src="@Model.BrandLogo" />
+    }
+    else
+    {
+        <img style="width:100px;height:75px;float:left" src="/assets/images/admin/nopicture.gif" />
+    }
+                                    }
+                                    @Html.TextBoxFor(model => model.BrandLogo,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"style","width:79%;margin-top:22px;"},{"class", "input-sm form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "品牌LOGO大小100×75像素"}
+                                        })
+                                    <span class="input-group-btn"><button type="button" data-text="BrandLogo" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">品牌网站</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.BrandWebSite, new { @class = "form-control", @datatype = "*", @placeholder = "请输入品牌网站" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">品牌描述</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @placeholder = "请输入品牌描述" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">备注</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", rows = 4, @placeholder = "请输入备注" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">更新时间</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入添加时间" placeholder="请输入添加时间" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+        })
+    </script>
+}

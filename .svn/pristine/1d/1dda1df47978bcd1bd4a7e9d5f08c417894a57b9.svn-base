@@ -1,0 +1,136 @@
+﻿@model Domain.Entity.tb_Site
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- form star -->
+<div class="row white-bg animated fadeInRight">
+    <div class="wrapper-content">
+        <div class="panel-options">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">站点基本信息</a></li>
+                <li><a data-toggle="tab" href="tabs_panels.html#tab-2">SEO信息</a></li>
+                <li><a data-toggle="tab" href="tabs_panels.html#tab-3">站点归属公司信息</a></li>
+            </ul>
+        </div>
+        @using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+        {
+            HttpMethod = "post",
+            OnSuccess = "fyt.FSuccess",
+            OnBegin = "fyt.FBegin",
+            OnComplete = "fyt.FEnd"
+        }, new { @class = "form-horizontal mform tip-wal", @id = "forms"}))
+        {
+            @Html.HiddenFor(model=>model.ID)
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">站点名称</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteName, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">站点域名</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteUrl, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">站点Logo</label>
+                            <div class="col-sm-5 col-md-5 input-group pl15">
+                                @Html.TextBoxFor(model => model.SiteLogo, new {@class = "input-sm form-control"})
+                                <span class="input-group-btn"><button type="button" data-text="SiteLogo" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">备注</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.Summary, new {@class = "form-control", @rows = "4"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">备案号</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteCode, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">版权</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.SiteCopyright, new {@class = "form-control", @rows = "4"})
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">页面标题</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SeoTitle, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">页面关键</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.SeoKey, new {@class = "form-control", @rows = "4"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">页面描述</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.SeoDescribe, new {@class = "form-control", @rows = "4"})
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">公司电话</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteTel, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">公司传真</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteFax, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">公司邮箱</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteEmail, new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">公司地址</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.SiteAddress, new {@class = "form-control"})
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr-line-dashed">
+                        <div class="form-group m20">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定提交</span></button>
+                                <button class="btn btn-warning" id="btn-back" type="button"><i class="im-undo2"></i> 取消返回</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- form end -->
+@section scripts
+{
+<script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            })
+        })
+    </script>
+}

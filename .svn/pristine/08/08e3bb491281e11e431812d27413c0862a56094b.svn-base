@@ -1,0 +1,91 @@
+﻿@using Domain.Entity
+@model tb_Site
+@{
+    ViewBag.Title = "联系地址_" + Model.SeoTitle;
+    ViewBag.Key = Model.SeoKey;
+    ViewBag.Desc = Model.SeoDescribe;
+    ViewBag.Nav = "6";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/lxwm.js"></script>
+}
+<!--
+            作者：北京飞易腾科技有限公司
+            时间：2015-11-03
+            描述：面包屑
+        -->
+<div class="f-mbx">
+    <div class="container clearfix">
+        <h2><span>[</span>联系我们<span>]</span></h2>
+        <h3><a href="/">首页</a><tt>></tt><span>联系我们</span></h3>
+    </div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：联系我们
+-->
+<div class="animated pulse container clearfix lx-w">
+    <div class="in-lxwm">
+        <p class="p1"><i class="glyphicon glyphicon-map-marker"></i>北京朝阳区西大望路下甸甲3号院尚8国际广告园3单元403A</p>
+        <p><i class="glyphicon glyphicon-heart"></i>715515390@qq.com</p>
+        <p><i class="glyphicon glyphicon-earphone"></i>010-57178368　　13511084034</p>
+        <p><i class="glyphicon glyphicon-screenshot"></i>http://www.feiyit.com</p>
+        <div class="f-share">
+            <a href="javascript:void(0)" title="微信" id="weixin"><i class="fa fa-fw"></i></a>
+            <a href="http://weibo.com/feiyt" target="_blank" title="新浪微博"><i class="fa fa-fw"></i></a>
+            <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=715515390&amp;site=qq&amp;menu=yes" target="_blank" title="QQ咨询"><i class="fa fa-fw"></i></a>
+        </div>
+    </div>
+    <div class="in-mess">
+        <form action="" method="">
+            <div class="fell"><input type="text" value="" placeholder="这里是姓名" /></div>
+            <div class="fell"><input type="text" value="" placeholder="这里是手机号码/电话" /></div>
+            <div class="fell"><textarea placeholder="这里是您的需求描述"></textarea></div>
+            <div class="fell"><button>提交您的需求</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="erweima" align="center">
+    <div class="wem-w">
+        <div class="close"><i class="im-close2"></i></div>
+        <img src="/lib/img/erweima.jpg" onclick="event.stopPropagation();">
+    </div>
+</div>
+
+<div class="container f-fk">
+    <div class="si-info">
+        <div class="en">Contacts<span>付款方式</span></div>
+    </div>
+
+    <div class="clearfix fkfs">
+        <div class="left">
+            <div class="fkyh">
+                <img src="/lib/img/jianhang.png" width="183" alt="北京飞易腾公司科技有限公司" height="62">
+            </div>
+            <div class="fktxt">
+                <p>对公账户</p>
+                <p>开户行:中国建设银行北京华威支行</p>
+                <p>帐户名称：北京飞易腾科技有限公司</p>
+                <p>帐号：11001070600053022690</p>
+            </div>
+        </div>
+        <div class="left rleft">
+            <div class="fkyh">
+                <img src="/lib/img/gonghang.png" width="183" alt="北京飞易腾公司科技有限公司" height="62">
+            </div>
+            <div class="fktxt">
+                <p>中国工商银行</p>
+                <p>开户行:中国工商银行北京万年花城分行</p>
+                <p>帐户名称：付裕</p>
+                <p>帐号：6222020200106379544</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+

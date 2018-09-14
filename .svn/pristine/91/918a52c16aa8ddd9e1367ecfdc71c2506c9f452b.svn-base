@@ -1,0 +1,70 @@
+﻿@using Domain.Entity
+@{
+    ViewBag.Title = "旅程故事";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+    <script type="text/javascript" src="/lib/js/story.js"></script>
+}
+<div class="hr"></div>
+
+<div class="w1200 hts"><h2><span>旅程故事</span></h2></div>
+@*<script type="text/javascript">
+    $(function () {
+        var $container = $('#masonry');
+        $container.imagesLoaded(function () {
+            $container.masonry({
+                itemSelector: '.box',
+                gutterWidth: 10,
+                isAnimated: true,
+            });
+        });
+    })
+</script>*@
+<div id="masonry" class="containers">
+    <div class="box rhot">
+        <h4>站长力推</h4>
+        <div class="hit"><a href="" class="cur">热门</a><a href="">优质精华</a><a href="">最新发表</a></div>
+        <h5>热门目的地</h5>
+        <div class="red">
+            @{
+                var gn = ViewBag.gN as List<tb_AdvList>;
+                if (gn != null && gn.Count > 0)
+                {
+                    foreach (var list in gn)
+                    {
+                        <a href="javascript:void(0)" data-title="@list.Title">@list.Title</a>
+                    }
+                }
+            }
+            <p></p>
+            @{
+                var gw = ViewBag.gW as List<tb_AdvList>;
+                if (gw != null && gw.Count > 0)
+                {
+                    foreach (var list in gw)
+                    {
+                        <a href="javascript:void(0)" data-title="@list.Title">@list.Title</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="box">
+        <ins></ins>
+        <img src="lib/img/img11.jpg">
+        <p><a href="news.html">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    
+</div>
+<div class="w1200" id="load"><p style="text-align: center"><img src="/lib/img/loading.gif" /></p></div>
+<div class="w1200" id="loadDown"><p style="text-align: center"><a href="javascript:void(0)">加载下一页</a></p></div>
+<input type="hidden" id="hpage" value="1" /><input type="hidden" id="htotal" value="" />

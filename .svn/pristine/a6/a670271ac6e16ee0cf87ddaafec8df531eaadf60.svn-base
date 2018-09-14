@@ -1,0 +1,180 @@
+﻿@model Domain.ViewModel.MemberConfig
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">主页</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="javascript:void(0)">会员注册设置</a></li>
+            <li><strong>编辑</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+<!-- form star -->
+@using (Ajax.BeginForm("ConfigModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本参数配置</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">用户积分策略</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-3">其它设置</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">注册设置</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regstatus, 1) 开放注册</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regstatus, 0) 不允许注册</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regstatus, 2) 仅通过邀请注册</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">注册验证</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regverify, 0) 无验证</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regverify, 1) Email验证</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regverify, 2) 人工审核</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">IP注册间隔限制</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Regctrl,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "小时*同一IP的注册间隔，0为不限制。"}
+                                        })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">Email验证请求有效期</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Regemailexpired,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "天*新用户注册Email验证有效期，0为不限制。"}
+                                        })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">同Email注册不同用户</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regemailditto, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regemailditto, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">允许Email登录</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Emaillogin, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Emaillogin, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">注册许可协议</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regrules, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regrules, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">许可协议内容</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.Regrulestxt, new { @class = "form-control", @rows = "10" })
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-2" class="tab-pane">
+                        
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">邀请码使用期限</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Invitecodeexpired, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">天*邀请码有效天数，0为不限制。</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">邀请码可使用次数</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Invitecodecount, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">次*邀请码使用次数，0为不限制。</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">每天可申请邀请码数量</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Invitecodenum, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">个*每天可申请邀请码数量，0为不限制。</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">现金/积分兑换比例</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Pointcashrate, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">个*1元等于多少个积分，0为禁用兑换功能。</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">邀请注册获得积分</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextBoxFor(model => model.Pointinvitenum, new { @class = "form-control fl", @style = "width:100px" })<span class="pt10" style="display: block">分*邀请一个注册成功用户所获得的积分。</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="tab-3" class="tab-pane">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">注册保留关键字</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.Regkeywords, new { @class = "form-control", @rows = "6" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">注册欢迎短信息</label>
+                            <div class="col-sm-10 col-md-6">
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regmsgstatus, 0) 关闭</label>
+                                <label class="checkbox-inline">@Html.RadioButtonFor(model => model.Regmsgstatus, 1) 开启</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">欢迎短信息内容</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.TextAreaFor(model => model.Regmsgtxt, new { @class = "form-control", @rows = "4" })
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hr-line-dashed">
+                        <div class="form-group m20">
+                            <div class="col-sm-4 col-sm-offset-2">
+                                <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> 确定保存</button>
+                                <button class="btn btn-warning" type="button"><i class="im-undo2"></i> 取消返回</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts{
+    <script type="text/javascript">
+    $(function () {
+        $("#watermarkfont").select2();
+        $('.tip-wal').tooltip({
+            selector: "[data-toggle=tooltip]",
+            container: "body"
+        });
+    })
+    </script>
+}

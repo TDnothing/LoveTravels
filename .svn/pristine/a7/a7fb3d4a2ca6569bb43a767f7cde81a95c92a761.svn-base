@@ -1,0 +1,70 @@
+﻿$(function() {
+    story.GetAll(0, 1, 0, "", 1);
+    $("#loadDown a").click(function () {
+        var total = $("#htotal").val();
+        var npage = $("#hpage").val();
+        if ((parseInt(npage) + 1) > parseInt(total)) {
+            return;
+        }
+        $("#hpage").val((parseInt(npage) + 1));
+        story.GetAll(0, 1, 0, "", (parseInt(npage) + 1));
+    });
+});
+
+
+var story= {
+    GetAll: function (isTop,isHit,isTime,country,pages) {
+        $.ajax({            
+            type: "post",
+            url: "/story/GetAll",
+            dataType:"json",
+            data: { isTop: isTop, isHit: isHit, isTime: isTime, country: country,page:pages },
+            beforeSend: function () {
+                $("#load").show();
+            },
+            success: function (res) {
+                $("#load").hide();
+                if (res.Status == "y") {
+                    var htmls = '';
+                    if (res.Data == "" || res.Data == null) {
+                    } else {
+                        $.each(res.Data, function (item, i) {
+                            htmls += '<div class="box"><ins></ins>';
+                            htmls += '<img src="lib/img/img11.jpg">';
+                            htmls += '<p><a href="news.html">你的旅行，应该是不一样的！</a></p>';
+                            htmls += '<div class="us"><img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>';
+                            htmls += '<samp><i class="im-eye3"></i>10</samp>';
+                            htmls += '</div><p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>';
+                            htmls += '</div><!-- end -->';
+                        });
+                    }
+                    $("#htotal").val(res.PageTotal);
+                    var npage = $("#hpage").val();
+                    if (parseInt(npage) + 1 > parseInt(res.PageTotal)) {
+                        $("#loadDown a").html("已全部加载完成");
+                    }
+                    $("#masonry").append(htmls);
+                    var $container = $('#masonry');
+                    $container.imagesLoaded(function () {
+                        $container.masonry({
+                            itemSelector: '.box',
+                            gutterWidth: 10,
+                            isAnimated: true,
+                            isResizable: true,
+                            animationOptions: {
+                                duration: 800,
+                                easing: 'easeInOutBack',//如果你引用了jQeasing这里就可以添加对应的动态动画效果，如果没引用删除这行，默认是匀速变化
+                                queue: false//是否队列，从一点填充瀑布流
+                            }
+                        });
+                    });
+                } else {
+                    alert(res.Msg);
+                }
+            },
+            error: function (e) {
+                alert("错误");
+            }
+        });
+    }
+}

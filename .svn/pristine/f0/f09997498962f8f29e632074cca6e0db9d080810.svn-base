@@ -1,0 +1,424 @@
+﻿using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 我等你管理
+    /// </summary>
+    public class ProJectController : Controller
+    {
+        #region 1、[我等你] 列表页 + Index()
+        /// <summary>
+        /// 列表页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(int orderinfo, int page)
+        {
+            int pageSize = 15;
+            var lq = from p in OperateSession.SetContext.lv_ProJect
+                     orderby p.UpdateTime descending
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.Types,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.ShowImg,
+                         p.CoverImg,
+                         p.Region,
+                         p.Hits,
+                         StarNum = (int?)OperateSession.SetContext.tb_Comment.Where(m => m.ClassId == p.ID && m.Option == 1).Sum(m => m.Star) % OperateSession.SetContext.tb_Comment.Count(m => m.ClassId == p.ID) ?? 0,
+                         p.AddTime,
+                         p.UpdateTime
+                     };
+            switch (orderinfo)
+            {
+                case 0: lq = lq.OrderByDescending(m => m.AddTime); break;
+                case 1: lq = lq.OrderBy(m => m.AddTime); break;
+                case 2: lq = lq.OrderByDescending(m => m.Hits); break;
+                case 3: lq = lq.OrderBy(m => m.Hits); break;
+            }
+            ViewBag.list = JsonConverter.JsonClass(lq.Skip(pageSize * (page - 1)).Take(pageSize).ToList());
+            //分页控件
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = page,
+                Rows = lq.Count(),
+                Counts = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize)),
+                Urls = "/project/index/" + orderinfo + "-" + page
+            };
+            //网站信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            //广告位
+            var banner = OperateContext<tb_AdvList>.SetServer.GetList(m => m.ClassId == 5, m => m.Sort, false).Where(m => m.Status).FirstOrDefault();
+            ViewBag.banner = banner;
+            return View(siteModel);
+        }
+        #endregion
+
+        #region 2、[我等你] 发布我等你信息 + Publish()
+        /// <summary>
+        /// 发布我等你信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Publish()
+        {
+            var userId = 0;
+            if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+            {
+                userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                var user = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == userId);
+                ViewBag.user = user;
+            }
+            return View();
+        }
+        #endregion
+
+        #region 3、[我等你] 发布我等你信息 + Publish()
+        /// <summary>
+        /// 发布我等你信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Publish(lv_ProJect model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                }
+                model.Number = UtilsHelper.GetRamCode();
+                model.UserId = userId;
+                model.IsRecommend = false;
+                model.IsSpecial = false;
+                model.AddTime = DateTime.Now;
+                model.UpdateTime = DateTime.Now;
+                //保存我等你信息
+                OperateContext<lv_ProJect>.SetServer.Add(model);
+                //保存我等你参与记录
+                var po = new lv_ProjectOrder()
+                {
+                    ProJectId = model.ID,
+                    UserId = model.UserId,
+                    PayPrice = Convert.ToDecimal(model.Price),
+                    PayAccount = "",
+                    PayName = "",
+                    PayStatus = 1,
+                    Status = true,
+                    AddTime = DateTime.Now
+                };
+                OperateContext<lv_ProjectOrder>.SetServer.Add(po);
+                #region 多张图片上传
+                var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var listModel = new List<tb_ImageLibrary>();
+                foreach (string s in reslist)
+                {
+                    var u = FytRequest.GetFormString("file_name_" + s);
+                    if (u != "")
+                    {
+                        listModel.Add(new tb_ImageLibrary()
+                        {
+                            ImgID = model.ID,
+                            ImgType = 2,
+                            ImgUrl = u,
+                            ImgSmall = u,
+                            IsCover = false
+                        });
+                    }
+                }
+                OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                #endregion
+                jsonM.Msg = model.ID.ToString();
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 4、[我等你] 详情 + Detail(int id)
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Detail(int id)
+        {
+            //获取我等你详情
+            var model = OperateContext<lv_ProJect>.SetServer.GetModel(m => m.ID == id);
+            //获取我等你图片列表
+            var imglist = OperateContext<tb_ImageLibrary>.SetServer.GetList(
+                PredicateBuilder.True<tb_ImageLibrary>().And(m => m.ImgID == id).And(m => m.ImgType == 2),
+                m => m.IsCover, true);
+            ViewBag.imglist = imglist.ToList();
+            //获取Cookie用户ID
+            var userId = 0;
+            if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+            {
+                userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+            }
+            //获取我等你参与人列表
+            var peoplelist = OperateContext<lv_ProjectOrder>.SetServer.GetList(m => m.ProJectId == id, m => m.AddTime, true);
+            ViewBag.peoplelist = peoplelist.ToList();
+            //获取当前登录用户
+            ViewBag.User = userId;
+            //判断用户是否参与
+            var isExist = 0;
+            foreach (var item in peoplelist.ToList())
+            {
+                if (item.UserId == userId)
+                {
+                    isExist = 1;
+                }
+            }
+            ViewBag.isExist = isExist;
+            //获取我等你评论列表
+            var commentlist = OperateContext<tb_Comment>.SetServer.GetList(
+                PredicateBuilder.True<tb_Comment>().And(m => m.ClassId == id).And(m => m.Option == 1)
+                , m => m.AddDate, false).ToList();
+            ViewBag.commentlist = commentlist;
+            //获取我等你评星
+            var starnum = 0;
+            if (commentlist != null && commentlist.Count > 0)
+            {
+                foreach (var item in commentlist)
+                {
+                    starnum += item.Star;
+                }
+                starnum = starnum % commentlist.Count;
+            }
+            else
+            {
+                starnum = 5;
+            }
+            ViewBag.starnum = starnum;
+            //更新用户访问量
+            model.Hits = model.Hits + 1;
+            ViewBag.userId = userId;
+            OperateContext<lv_ProJect>.SetServer.Update(model);
+            return View(model);
+        }
+        #endregion
+
+        #region 5、[我等你] 报名支付 + ProjectOrder()
+        /// <summary>
+        /// 报名支付
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ProjectOrder()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var projectId = FytRequest.GetFormInt("projectId");//我等你ID
+                var payType = FytRequest.GetFormString("payType");//支付类型
+                var info = "";
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    //获取我等你信息
+                    var project = OperateContext<lv_ProJect>.SetServer.GetModel(m => m.ID == projectId);
+                    //获取我等你参与人数
+                    var joinnum = OperateContext<lv_ProjectOrder>.SetServer.Count(m => m.ProJectId == projectId);
+                    if (joinnum < int.Parse(project.Rsum))
+                    {
+                        var IsExist = OperateContext<lv_ProjectOrder>.SetServer.Exist(PredicateBuilder.True<lv_ProjectOrder>().And(m => m.ProJectId == projectId).And(m => m.UserId == userId));
+                        if (!IsExist)
+                        {
+                            switch (payType)
+                            {
+                                case "zfb": info = "支付宝"; break;
+                                case "bb": info = "PayPal"; break;
+                                case "xyk": info = "信用卡"; break;
+                                default: info = "支付宝"; break;
+                            }
+                            //生成参与订单
+                            var model = new lv_ProjectOrder()
+                            {
+                                Number = UtilsHelper.GetRamCode(),
+                                UserId = userId,
+                                ProJectId = projectId,
+                                Status = false,
+                                PayStatus = 0,
+                                PayName = info,
+                                PayPrice = Convert.ToInt32(project.Price),
+                                PayAccount = "",
+                                AddTime = DateTime.Now
+                            };
+                            OperateContext<lv_ProjectOrder>.SetServer.Add(model);
+                            //生成参与用户财务日志
+                            var uml = new tb_UserMoneyLog()
+                            {
+                                Number = UtilsHelper.GetRamCode(),
+                                UserId = userId,
+                                Option = 1,
+                                Price = Convert.ToDecimal(project.Price),
+                                RealPrice = 0,
+                                NowPrice = 0,
+                                Status = 1,
+                                PayType = info,
+                                Summary = "支付旅游项目",
+                                AddDate = DateTime.Now,
+                            };
+                            OperateContext<tb_UserMoneyLog>.SetServer.Add(uml);
+                            jsonM.Msg = model.ID.ToString();
+                        }
+                        else
+                        {
+                            jsonM.Status = "n";
+                            jsonM.Msg = "抱歉，您已报名!";
+                        }
+                    }
+                    else
+                    {
+                        jsonM.Status = "n";
+                        jsonM.Msg = "抱歉，参与人数已满!";
+                    }
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "您尚未登录，请先登录";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 6、[我等你] 支付完成 + PaySuccess()
+        /// <summary>
+        /// 支付完成
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult PaySuccess(int id)
+        {
+            //我等你详情
+            var model = OperateContext<lv_ProjectOrder>.SetServer.GetModel(m => m.ID == id);
+            return View(model);
+        }
+        #endregion
+
+        #region 7、[我等你] 收藏 + UserCollect()
+        /// <summary>
+        /// 收藏
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UserCollect()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "收藏成功！" };
+            try
+            {
+                int projectId = FytRequest.GetFormInt("proId");//我等你ID
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    //判断用户是否已收藏
+                    var isExist = OperateContext<tb_Collect>.SetServer.Count(
+                        PredicateBuilder.True<tb_Collect>().And(m => m.CollectId == projectId).And(m => m.UserId == userId).And(m => m.CollectType == 1));
+                    if (isExist == 0)
+                    {
+                        //加入收藏
+                        var model = new tb_Collect()
+                        {
+                            CollectId = projectId,
+                            UserId = userId,
+                            CollectType = 1,
+                            AddDate = DateTime.Now
+                        };
+                        OperateContext<tb_Collect>.SetServer.Add(model);
+                    }
+                    else
+                    {
+                        jsonM.Status = "err";
+                        jsonM.Msg = "您已收藏该旅游";
+                    }
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "用户未登录";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 8、[我等你] 发评论 + UserComment()
+        /// <summary>
+        /// 发评论
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UserComment(tb_Comment model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "评论成功！" };
+            try
+            {
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    model.UserId = userId;
+                    model.Option = 1;
+                    model.Star = 5;
+                    model.AddDate = DateTime.Now;
+                    OperateContext<tb_Comment>.SetServer.Add(model);
+
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "用户未登录";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(ProJectController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}

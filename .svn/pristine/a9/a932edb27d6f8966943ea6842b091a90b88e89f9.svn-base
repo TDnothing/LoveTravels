@@ -1,0 +1,115 @@
+﻿@model Domain.Entity.tb_User
+@{
+    ViewBag.Title = "个人中心";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 1);}
+
+    <div class="ur-wall">
+        <h2><span>基本信息</span><samp><a href="/account/signout" class="btn" style="background-color: #719CC9;color: white;">退出账户</a></samp></h2>
+        @using (Ajax.BeginForm("edituser", null, new AjaxOptions()
+        {
+            HttpMethod = "post",
+            OnSuccess = "fyt.FSuccess",
+            OnBegin = "fyt.FBegin",
+        }, new { @id = "forms" }))
+        {
+            <table class="tb-base">
+                <tr>
+                    <td width="180">头像</td>
+                    <td>
+                        <div style="float: left;"><a href="javascript:void(0)" id="upHface"><img id="himg" src="@Model.HeadPic" width="120" height="120" title="点击修改头像" /></a></div>
+                        <input type="file" style="display: none" id="fileUrl" name="fileUrl" />
+                        @{
+            if (Model.Types == 0)
+            {
+                <div class="rz-st"><img src="/lib/img/icon/1-1.png" />　您还不是认证用户<br><a href="/account/authuser/" style="display: block; padding-left: 37px; margin-top: 10px;">点此认证</a></div>
+            }
+            else
+            {
+                <div class="rz-st"><img src="/lib/img/icon/1.png" />　您已认证</div>
+            }
+                        }
+
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>ID</td>
+                    <td>@Model.LoginName    （此ID为用户唯一不变标识）</td>
+                </tr>
+                <tr>
+                    <td>真实姓名</td>
+                    <td><input type="text" value="@Model.TrueName" id="TrueName" name="TrueName" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td>昵称</td>
+                    <td><input type="text" value="@Model.NickName" id="NickName" name="NickName" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td>性别</td>
+                    <td><select class="form-control" id="Sex" name="Sex"><option value="男" @Html.Raw(Model.Sex == "男" ? "selected=selected" : "")>男</option><option value="女" @Html.Raw(Model.Sex == "女" ? "selected=selected" : "")>女</option></select></td>
+                </tr>
+                <tr>
+                    <td valign="top">个人介绍</td>
+                    <td>
+                        <textarea class="form-control" id="SafeAnswer" name="SafeAnswer" rows="5" placeholder="例如：我来自北京，现在在美国攻读工商管理，业余喜欢逛历史博物馆，研究名家名作，没事儿自
+己写写点评">
+                            @Html.Raw(Model.SafeAnswer)
+                        </textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>职业</td>
+                    <td><input type="text" value="@Model.SafeQuestion" id="SafeQuestion" name="SafeQuestion" class="form-control" placeholder="例如：UI设计师" /></td>
+                </tr>
+                <tr>
+                    <td>邮箱</td>
+                    <td><input type="email" value="@Model.Email" id="Email" datatype="e" name="Email" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td>微信号</td>
+                    <td><input type="text" value="@Model.QQ" id="QQ" name="QQ" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td>电话</td>
+                    <td><input style="width:15%;display:initial;margin-right:10px;" type="text" value="@Model.Province" id="Province" datatype="n" name="Province" class="form-control" placeholder="区号"> - <input style="width:60%;display:initial;margin-left:10px;" type="text" value="@Model.Mobile" id="Mobile" datatype="n" name="Mobile" class="form-control" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><div style="text-align: center;"><button class="btn">保存</button></div></td>
+                </tr>
+            </table>
+            @Html.AntiForgeryToken()
+        }
+    </div><!-- end -->
+</div>
+<script type="text/javascript" src="/assets/js/jquery.form.min.js"></script>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript" src="/lib/js/account.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#forms").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal('成功', res.Msg, 'success');
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+
+</script>

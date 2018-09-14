@@ -1,0 +1,243 @@
+﻿@using Domain.Entity
+@using Domain.ViewModel
+@model tb_Site
+@{
+    ViewBag.Title = Model.SeoTitle;
+    ViewBag.Key = Model.SeoKey;
+    ViewBag.Desc = Model.SeoDescribe;
+    ViewBag.Nav = "0";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sysModel = ViewBag.sysModel as SysBasicConfig;
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+}
+<!--
+        作者：北京飞易腾科技有限公司
+        时间：2015-11-02
+        描述：焦点图
+    -->
+<div id="banner" class="flexslider">
+    <ul class="slides">
+        @{
+            var blist = ViewBag.Banner as List<tb_AdvList>;
+            if (blist != null && blist.Count > 0)
+            {
+                foreach (var item in blist)
+                {
+                    <li>
+                        <a title="@item.Title" target="_blank" href="@item.LinkUrl">
+                            <img class=" sp-image" alt="@item.Title" src="@item.ImgUrl">
+                        </a>
+                    </li>
+                }
+            }
+        }
+    </ul>
+</div>
+<div class="rnav">
+    <ul>
+        <li id="who" data-top="700"><span>我们的作品</span><div class="circle"></div></li>
+        <li id="work" data-top="1600"><span>我们的优势</span><div class="circle"></div></li>
+        <li id="news" data-top="2220"><span>新闻与媒体</span><div class="circle"></div></li>
+        <li id="contact" data-top="3820"><span>需求提交</span><div class="circle"></div></li>
+    </ul>
+</div>
+<!--
+        作者：北京飞易腾科技有限公司
+        时间：2015-11-02
+        描述：成功案例
+    -->
+<div class="container">
+    <div class="ic-infor">
+        <div class="tit">品牌互联网化  互联网品牌化</div>
+        <div class="brief">飞易腾品牌互联网+ = 端到端策略规划+品牌的移动化设计+O2O互动体验+数字化管理</div>
+        <div class="fyt-gb">改变从这里开始！</div>
+    </div>
+    <div class="ni-tit clearfix"><span>我们的作品</span><a href="/cases/">查看全部案例</a></div>
+    <div class="ui-pw clearfix">
+        <div class="pro-wrap">
+            <a href="javascript:void(0)" data-id="0" class="cur">全部作品</a><span>|</span>@{
+                var dtNav = ViewBag.dtNav as List<tb_Column>;
+                if (dtNav != null && dtNav.Count > 0)
+                {
+                    foreach (var item in dtNav)
+                    {
+                        if (item.Title.Equals(dtNav[dtNav.Count - 1].Title))
+                        {
+                            <a href="javascript:void(0)" data-id="@item.ID" title="@item.Title">@item.Title</a>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0)" data-id="@item.ID" title="@item.Title">@item.Title</a><span>|</span>
+                        }
+                    }
+                }
+            }
+        </div>
+    </div>
+
+    <div class="p-it-w clearfix">
+        @{
+            var nlist = ViewBag.inCaseList as List<tb_Article>;
+            if (nlist != null && nlist.Count > 0)
+            {
+                int index = 0;
+                foreach (var item in nlist)
+                {
+                    index++;
+                    <div class="p-item  @(index%4==0 ? "last" : "")">
+                        <div class="p-img"><a href="/cases/details/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.ImgUrl" /></a></div>
+                        <div class="p-tit"><a href="/cases/details/@item.ID">@item.Title</a></div>
+                    </div><!-- end -->
+                }
+            }
+        }
+    </div>
+
+</div>
+<!--
+        作者：北京飞易腾科技有限公司
+        时间：2015-11-02
+        描述：我们的优势
+    -->
+<div class="ys-w">
+    <div class="container">
+        <div class="ys-txt">
+            <h2><span>01-</span>飞易腾拥有自己研发的CMS内容管理系统，服务商家包括政府、教育、金融等行业。</h2>
+            <h2><span>02-</span>专业的移动APP开发团队，包括IOS、安卓、Windows Phone技术成员。</h2>
+            <h2><span>03-</span>我们拥有超过5年的前端开发人员，可定制化研发Html5动画宣传页，动态交互网站。</h2>
+            <h2><span>04-</span>我们的商务有超过10年的工作经验，对各行各业需求了解透彻，并协助构建项目框架。</h2>
+            <h2><span>05-</span>交互设计，动态效果，响应式网站现在是我们的强项，也是互联网发展的方向。</h2>
+            <h2><span>06-</span>飞易腾拥有专业的SEO优化专员，24小时为您的网站提供营销服务。</h2>
+        </div>
+    </div>
+</div>
+<!--
+        作者：北京飞易腾科技有限公司
+        时间：2015-11-02
+        描述：飞易腾动态
+    -->
+<div class="container">
+    <div class="ni-tit clearfix"><span>新闻与动态</span><a href="/dynamic/">查看全部</a></div>
+    <div class="clearfix">
+        @{
+            var inList = ViewBag.inList as dynamic;
+        }
+        <div class="in-it-w first">
+            <div class="in-img">
+                <a href="/dynamic/details/@inList[0].ID" title="@inList[0].Title" class="nimg"><img alt="@inList[0].Title" src="@inList[0].ImgUrl" /></a>
+                <p><a href="/dynamic/details/@inList[0].ID">@inList[0].Title</a></p>
+            </div>
+            <div class="in-img">
+                <a href="/dynamic/details/@inList[1].ID" title="@inList[1].Title">@inList[1].Title</a>
+                <a href="/dynamic/details/@inList[2].ID" title="@inList[2].Title">@inList[2].Title</a>
+                <a href="/dynamic/details/@inList[3].ID" title="@inList[3].Title">@inList[3].Title</a>
+                <a href="/dynamic/details/@inList[4].ID" title="@inList[4].Title">@inList[4].Title</a>
+            </div>
+        </div><!-- end -->
+        <div class="in-it-w">
+            <div class="in-img">
+                <a href="/dynamic/details/@inList[5].ID" title="@inList[5].Title" class="nimg"><img alt="@inList[5].Title" src="@inList[5].ImgUrl" /></a>
+                <p><a href="/dynamic/details/@inList[5].ID">@inList[5].Title</a></p>
+            </div>
+            <div class="in-list">
+                <a href="/dynamic/details/@inList[6].ID" title="@inList[6].Title">@inList[6].Title</a>
+                <a href="/dynamic/details/@inList[7].ID" title="@inList[7].Title">@inList[7].Title</a>
+                <a href="/dynamic/details/@inList[8].ID" title="@inList[8].Title">@inList[8].Title</a>
+                <a href="/dynamic/details/@inList[9].ID" title="@inList[9].Title">@inList[9].Title</a>
+            </div>
+        </div><!-- end -->
+        <div class="in-it-w">
+            <div class="in-img">
+                <a href="/dynamic/details/@inList[10].ID" title="@inList[10].Title" class="nimg"><img alt="@inList[10].Title" src="@inList[10].ImgUrl" /></a>
+                <p><a href="/dynamic/details/@inList[10].ID">@inList[10].Title</a></p>
+            </div>
+            <div class="in-list">
+                <a href="/dynamic/details/@inList[11].ID" title="@inList[11].Title">@inList[11].Title</a>
+                <a href="/dynamic/details/@inList[12].ID" title="@inList[12].Title">@inList[12].Title</a>
+                <a href="/dynamic/details/@inList[13].ID" title="@inList[13].Title">@inList[13].Title</a>
+                <a href="/dynamic/details/@inList[14].ID" title="@inList[14].Title">@inList[14].Title</a>
+            </div>
+        </div><!-- end -->
+        <div class="in-it-w last">
+            <div class="in-img">
+                <a href="/dynamic/details/@inList[15].ID" title="@inList[15].Title" class="nimg"><img alt="@inList[15].Title" src="@inList[15].ImgUrl" /></a>
+                <p><a href="/dynamic/details/@inList[15].ID">@inList[15].Title</a></p>
+            </div>
+            <div class="in-list">
+                <a href="/dynamic/details/@inList[16].ID" title="@inList[16].Title">@inList[16].Title</a>
+                <a href="/dynamic/details/@inList[17].ID" title="@inList[17].Title">@inList[17].Title</a>
+                <a href="/dynamic/details/@inList[18].ID" title="@inList[18].Title">@inList[18].Title</a>
+                <a href="/dynamic/details/@inList[19].ID" title="@inList[19].Title">@inList[19].Title</a>
+            </div>
+        </div><!-- end -->
+    </div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：宣传语
+-->
+<div class="xcy-fyt">
+    <p><span>为梦飞翔、腾飞在无限空间，因为年轻，我们不妥协！</span><a href="/aboutus/"><span>了解飞易腾</span><i class="glyphicon glyphicon-search"></i></a></p>
+</div>
+
+<div class="lx-info">
+    <div class="tit">To make an appointment to discuss<span>预约洽谈</span></div>
+    <div class="brief">提交您的业务需求，我们的客户经理将及时与您取得联系</div>
+    <div class="fyt-gb">改变从这里开始！</div>
+</div>
+
+<!--
+    作者：北京飞易腾科技有限公司
+    时间：2015-11-02
+    描述：联系我们
+-->
+<div class="animated pulse container clearfix">
+    <div class="in-lxwm">
+        <p class="p1"><i class="glyphicon glyphicon-map-marker"></i>@Model.SiteAddress</p>
+        <p><i class="glyphicon glyphicon-heart"></i>@Model.SiteEmail</p>
+        <p><i class="glyphicon glyphicon-earphone"></i>@Model.SiteTel　　13511084034</p>
+        <p><i class="glyphicon glyphicon-screenshot"></i>http://www.feiyit.com</p>
+        <div class="f-share">
+            <a href="javascript:void(0)" title="微信" id="weixin"><i class="fa fa-fw"></i></a>
+            <a href="http://weibo.com/feiyt" target="_blank" title="新浪微博"><i class="fa fa-fw"></i></a>
+            <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=715515390&amp;site=qq&amp;menu=yes" target="_blank" title="QQ咨询"><i class="fa fa-fw"></i></a>
+        </div>
+    </div>
+    <div class="in-mess">
+        <form action="" method="">
+            <div class="fell"><input type="text" value="" placeholder="这里是姓名" /></div>
+            <div class="fell"><input type="text" value="" placeholder="这里是手机号码/电话" /></div>
+            <div class="fell"><textarea placeholder="这里是您的需求描述"></textarea></div>
+            <div class="fell"><button>提交您的需求</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="erweima" align="center">
+    <div class="wem-w">
+        <div class="close"><i class="im-close2"></i></div>
+        <img src="/lib/img/erweima.jpg" onclick="event.stopPropagation();">
+    </div>
+</div>
+
+<div id="preloader">
+    <div id="status">
+        <div class="center-text">
+            <div class="loaders">
+                <div class="loader">
+                    <div class="loader-inner ball-scale-multiple">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+            <em>loading...</em>
+        </div>
+    </div>
+</div>

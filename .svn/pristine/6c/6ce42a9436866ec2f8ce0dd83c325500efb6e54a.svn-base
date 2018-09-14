@@ -1,0 +1,53 @@
+﻿@using FytMsys.Common
+@{
+    Layout = "~/Views/Shared/_LayoutRelease.cshtml";
+    var userId = FytRequest.GetQueryInt("uId");
+}
+
+<div class="gs-rest">
+    <div class="mbx"><a href="">我爱旅途</a>><a href="">旅途故事</a>><span>发布</span></div>
+    <div class="fb-info">
+        <p>
+            所有发布都要遵守“<a href="">我爱旅途行为准则</a>”<br>用户单独承担发布内容的责任。用户对服务的使用是根据所有适用于携程服务的地方法律、国家法律和国际法律标准的。用户必须遵循：
+            ⑴发布信息时必须符合中国有关法规； ⑵使用网络会员服务不作非法用途； ⑶不干扰或混乱网络服务； ⑷遵守所有使用会员服务的网络协议、
+            规定和程序。 会员服务是利用因特网发送和收取信息。所以，用户的行为指引是根据国家有关因特网的法规，政策和程序的。
+            用户单独承担发布内容的责任。用户对服务的使用是根据所有适用于携程服务的地方法律、国家法律和国际法律标准的。用户必须遵循：
+            ⑴发布信息时必须符合中国有关法规； ⑵使用网络会员服务不作非法用途； ⑶不干扰或混乱网络服务； ⑷遵守所有使用会员服务的网络协议、规定和程序。
+            会员服务是利用因特网发送和收取信息。
+        </p>
+    </div>
+    <hr style="border-top: 1px solid #CCCCCC; margin-bottom: 10px;">
+    <div class="rg-par">发布><strong>填写表单</strong>>预览信息>审核>发布</div>
+    <form action="/PorJect/Publish" data-ajax="true" data-ajax-begin="b.Begin" data-ajax-method="post" data-ajax-success="b.Success" id="bform" method="post" role="form">
+        <table>
+            <tr>
+                <td>
+                    标题：<input id="Title" name="Title" type="text" required="required" style="width:300px" />
+                </td>
+                <td>
+                    价格：<input id="Price" name="Price" type="number" required="required" placeholder="RMB" />
+                </td>
+                <td>
+                    人数：<input id="Rsum" name="Rsum" type="number" required="required" value="1" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <p>具体说明（2000字以内）</p>
+                    <div><img src="lib/img/img12.jpg" /></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    添加/编辑：<span class="bannt"><a href="javascript:void(0)" class="btn">Banner图</a>（建议图片为 19:5 高清大图）</span><br>
+                    <span class="bannt mt10"><a href="javascript:void(0)" class="btn">详情图片</a>（最多10张）</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="padding-left: 68px;">
+                    <button class="btn">继续>></button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

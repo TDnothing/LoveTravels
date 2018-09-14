@@ -1,0 +1,77 @@
+????:2016-11-27 09:48:19,765 
+??ID:[70] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : This transaction cannot be processed. The amount to be charged is zero.
+---------------------------------------------------------------
+
+????:2016-11-27 09:48:19,790 
+??ID:[70] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+
+????:2016-11-27 09:51:42,292 
+??ID:[17] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : This transaction cannot be processed. The amount to be charged is zero.
+---------------------------------------------------------------
+
+????:2016-11-27 09:51:42,317 
+??ID:[17] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+
+????:2016-11-27 10:01:49,379 
+??ID:[20] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-11-27 11:17:39,604 
+??ID:[185] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : A successful transaction has already been completed for this token.
+---------------------------------------------------------------
+
+????:2016-11-27 11:17:39,617 
+??ID:[185] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+
+????:2016-11-27 11:24:54,523 
+??ID:[19] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-11-27 11:36:52,115 
+??ID:[17] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-11-27 11:40:23,870 
+??ID:[32] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Object reference not set to an instance of an object.
+---------------------------------------------------------------
+
+????:2016-11-27 12:39:21,875 
+??ID:[102] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Object reference not set to an instance of an object.
+---------------------------------------------------------------
+

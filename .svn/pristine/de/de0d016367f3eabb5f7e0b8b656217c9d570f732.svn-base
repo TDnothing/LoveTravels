@@ -1,0 +1,175 @@
+﻿@{
+    ViewBag.Title = "旅程故事";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript" src="/lib/js/jquery.masonry.min.js"></script>
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+}
+<div class="hr"></div>
+
+<div class="w1200 hts"><h2><span>旅程故事</span></h2></div>
+<script type="text/javascript">
+    $(function () {
+        var $container = $('#masonry');
+        $container.imagesLoaded(function () {
+            $container.masonry({
+                itemSelector: '.box',
+                gutterWidth: 10,
+                isAnimated: true,
+            });
+        });
+    })
+</script>
+<div id="masonry" class="containers">
+    <div class="box rhot">
+        <h4>站长力推</h4>
+        <div class="hit"><a href="" class="cur">热门</a><a href="">优质精华</a><a href="">最新发表</a></div>
+        <h5>热门目的地</h5>
+        <div class="red">
+            <a href="">厦门</a><a href="">三亚</a><a href="">北京</a><a href="">香港</a>
+            <a href="">澳门</a><a href="">丽江</a>
+            <a href="">凤凰</a><a href="">青岛</a>
+            <p></p>
+            <a href="">美国</a><a href="">马尔代夫</a><a href="">埃及</a>
+            <a href="">韩国</a><a href="">瑞士</a><a href="">澳大利亚</a>
+        </div>
+    </div>
+    <div class="box">
+        <ins></ins>
+        <img src="lib/img/img11.jpg">
+        <p><a href="news.html">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画</p>
+    </div><!-- end -->
+    <div class="box">
+        <img src="lib/img/img11.jpg">
+        <p><a href="">你的旅行，应该是不一样的！你的旅行，</a></p>
+        <div class="us">
+            <img src="lib/img/img2.jpg" width="25" height="25" /><span>小花猫</span>
+            <samp><i class="im-eye3"></i>10</samp>
+        </div>
+        <p class="summary">我们为你定制旅行的唯一原则就是旅行中的每一个画则就是旅行中的每一个画<</p>
+    </div><!-- end -->
+</div>

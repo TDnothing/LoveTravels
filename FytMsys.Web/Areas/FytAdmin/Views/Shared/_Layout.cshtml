@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <title>@ViewBag.Title</title>
+        @Styles.Render("~/manage/css")
+        <link href="/assets/css/fonts.css" rel="stylesheet" />
+        <link href="/assets/css/icons.css" rel="stylesheet" />
+    </head>
+    <body>
+        @RenderBody()
+    </body>
+</html>
+<script src="/assets/js/jquery.min.js"></script>
+@Scripts.Render("~/manage/js")
+@Scripts.Render("~/table/js")
+@RenderSection("scripts", required: false)

@@ -1,0 +1,114 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">项目</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="javascript:void(0)">主页</a></li>
+            <li><strong>数据库备份</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+@using (Ajax.BeginForm("BAKDataBackup", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new {@class = "form-horizontal mform tip-wal", @id = "forms"}))
+{
+    @Html.Hidden("BakName", ViewBag.dataName as string)
+     @Html.Hidden("BakUrl", ViewBag.dataUrl as string)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="alert alert-warning alea-if">
+                                <i class="im-bullhorn"></i>　备份BAK格式数据库
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">数 据 库</label>
+                            <div class="col-sm-10 col-md-6 wdis">
+                                @Html.TextBox("txtBakName", ViewBag.dataName as string, new { @class = "form-control", @disabled = "disabled" })
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">名称和位置</label>
+                            <div class="col-sm-10 col-md-6 wdis">
+                                @Html.TextBox("txtBakUrl", ViewBag.dataUrl as string, new { @class = "form-control", @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <label class="col-sm-1 control-label"></label>
+                                <div class="col-sm-10 col-md-6">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> 备份数据库BAK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Ajax.BeginForm("SqlDataBackup", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.Hidden("BakName", ViewBag.dataName as string)
+    @Html.Hidden("BakUrl", ViewBag.dataUrl as string)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="alert alert-warning alea-if">
+                            <i class="im-bullhorn"></i>　备份SQL格式数据库 → 提示信息  @Html.Raw(ViewBag.dataUrl as string)
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">数 据 库</label>
+                            <div class="col-sm-10 col-md-6 wdis">
+                                <label class="checkbox-inline">@Html.RadioButton("bfsql","0",true, new { @class = "i-checks" }) 备份全部数据表中的数据到一个备份文件</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">名称和位置</label>
+                            <div class="col-sm-10 col-md-6 wdis">
+                                <label class="checkbox-inline" style="float: left">@Html.RadioButton("bfsql", "1", true, new { @class = "i-checks" }) 备份单张表数据</label>
+                                @Html.DropDownList("tablename", ViewBag.selectList as IEnumerable<SelectListItem>, new { @class = "form-control select2", @Style = "width:400px; float: left; margin-left: 20px" })
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <label class="col-sm-1 control-label"></label>
+                                <div class="col-sm-10 col-md-6">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> 备份数据库SQl</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('.select2').select2();
+        });
+    </script>
+}

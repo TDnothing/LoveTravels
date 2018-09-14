@@ -1,0 +1,11 @@
+﻿@using FytMsys.Helper
+
+@{
+    var basicSite = WebSiteHelper.GetSite(1);
+}
+<div class="ul-foot clearfix">
+    <div class="ul-f-copy">@Html.Raw(basicSite.SiteCopyright)  </div>
+    <div class="ul-f-nav">
+        <a href="">关于我们</a> | <a href="">我爱旅途首页</a> | <a href="">我爱旅途邮箱</a> | <a href="">帮助</a>
+    </div>
+</div>

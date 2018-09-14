@@ -1,0 +1,133 @@
+$(window).load(function () { // makes sure the whole site is loaded
+    $("#status").fadeOut(); // will first fade out the loading animation
+    $("#preloader").delay(350).fadeOut("slow"); // will fade out the white DIV that covers the website.
+
+    $(".flexslider").flexslider({
+        slideshowSpeed: 4000, //展示时间间隔ms
+        animationSpeed: 400, //滚动时间ms
+        touch: true //是否支持触屏滑动
+    });
+    $('.xcy-fyt a').hover(bnshow, bnhide);
+    $('.f-share #weixin').click(weixinclk);
+    $('.erweima').click(weixinclose);
+    $('.f_contact #ph').hover(p_show, null);
+    $('.f_contact .ph').hover(null, p_hide);
+
+    $(".rnav ul li").click(function() {
+        var h = $(this).attr("data-top");
+        $('html,body').animate({ scrollTop: h }, 600);
+    });
+
+    $(window).scroll(function() {
+        if ($(window).scrollTop() >= 100) {
+            $('.actGotop').fadeIn(300);
+        } else {
+            $('.actGotop').fadeOut(300);
+        }
+    });
+    $('.actGotop').click(function() {
+        $('html,body').animate({ scrollTop: '0px' }, 800);
+    });
+
+    $('#in-search').click(function() {
+        $('.search').stop();
+        $('.search').animate({ height: '100px', opacity: '1' }, 500);
+        $('.search input').focus();
+        if ($('.search').css('opacity') == 0)
+            event.stopPropagation();
+    });
+
+    $('body').click(function() {
+        $('.search').stop();
+        $('.search').animate({ height: '0', opacity: '0' }, 500);
+        $('.search input').val(null);
+    });
+    $('.search').click(function() {
+        if ($('.search input').val() == '请输入要搜索的内容') {
+            $('.search input').css('color', '#ccc');
+            $('.search input').val(null);
+        }
+        event.stopPropagation();
+    });
+
+    bannPc();
+    $(window).size(function() {
+        bannPc();
+    });
+    tabCase();
+});
+
+var tabCase = function () {
+    $(".pro-wrap a").click(function () {
+        $(this).addClass("cur").siblings().removeClass('cur');
+        $.ajax({            
+            type: "post",
+            url: "/Home/GetCaseByClass",
+            data: { pid: $(this).attr("data-id") },
+            beforeSend: function () {
+                $(".p-it-w").html('<div style="text-align:center; padding:100px 0;"><img src="/lib/img/fyt_load.gif" /></div>');
+            },
+            success: function (res) {
+                if (res.Status == "y") {
+                    $(".p-it-w").html('');
+                    if (res.Data != "" || res.Data != null) {
+                        $.each(res.Data, function (i,item) {
+                            $(".p-it-w").append('<div class="p-item '+((i+1)%4==0 ? "last" : "")+'"><div class="p-img"><a href="/cases/details/' + item.ID + '" title="' + item.Title + '"><img alt="' + item.Title + '" src="' + item.ImgUrl + '" /></a></div>' +
+                                '<div class="p-tit"><a href="/cases/details/' + item.ID + '">' + item.Title + '</a></div></div><!-- end -->');
+                        });
+                    }
+                }
+            }
+        });
+    });
+};
+
+var bannPc=function(){
+	var winW=1920;
+	var winH=700;
+	var wBl=(1920/700).toFixed(2);
+	//alert(wBl);
+	var nW=$(window).width();
+	var nH=nW/wBl;
+	//alert(nH);
+	if(navigator.platform.indexOf('Win32')!=-1){
+		$(".sp-image").css({'height':nH});
+	}
+	
+}
+
+function p_show()
+{
+	$('.f_contact .ph').css({'opacity':'1','width':'271px'});
+	$('.f_contact .c img#phone').css('-webkit-animation','none');
+}
+function p_hide()
+{
+	$('.f_contact .ph').css({'opacity':'0','width':'66px'});
+}
+
+function bnshow()
+{
+	$('.xcy-fyt a span').css('left','170px');
+	$('.xcy-fyt a i').css('left','75px');
+}
+function bnhide()
+{
+	$('.xcy-fyt a span').css('left','0px');
+	$('.xcy-fyt a i').css('left','-113px');
+}
+function weixinclk()
+{
+	$('.erweima').css('position','fixed').css('z-index','9').animate({opacity:'1'},200,function(){
+		$('.erweima img').css({'width':'320px'});
+		setTimeout(function(){$('.erweima .close').css({'left':'35px','top':'30px','opacity':'1','z-index':'9'});},500);
+	});
+}
+function weixinclose()
+{
+	$('.erweima').animate({opacity:'0'},500,function(){
+		$('.erweima').css('z-index','-1').css('position','absolute');
+		$('.erweima img').css({'width':'0'});
+		setTimeout(function(){$('.erweima .close').css({'left':'0px','top':'55px','opacity':'0','z-index':'0'});},500);
+	});
+}

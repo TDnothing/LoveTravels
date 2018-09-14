@@ -1,0 +1,268 @@
+﻿@using Domain.Entity
+@model Domain.Entity.tb_User
+@{
+    Layout = "../shared/_Layout.cshtml";
+    var appModel = new tb_UserApp() { ID = 0, IsPush = true, UserId = 0 };
+    if (Model.tb_UserApp != null)
+    {
+        appModel = Model.tb_UserApp.FirstOrDefault();
+    }
+}
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">会员</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="/FytAdmin/Member/Index">主页</a></li>
+            <li><strong>添加/编辑会员</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new {@class = "form-horizontal mform tip-wal", @id = "forms"}))
+{
+    @Html.HiddenFor(model=>model.ID)
+    @Html.HiddenFor(app=>appModel.ID)
+    @Html.HiddenFor(app=>appModel.UserId)
+    <!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">扩展会员信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-3">其它选项</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-4">App扩展</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-5">会员档案</a></li>
+                </ul>
+            </div>
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">所属会员组</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.GroupId, ViewBag.selectList as IEnumerable<SelectListItem>, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">会员登录账号</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.LoginName, new {@class = "form-control", @datatype = "*", @nullmsg = "请输入登录帐号", @placeholder = "请输入登录帐号"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">真实姓名</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.TrueName, new {@class = "form-control", @datatype = "*", @nullmsg = "请输入真实姓名", @placeholder = "请输入真实姓名"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">昵称</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.NickName, new {@class = "form-control", @placeholder = "请输入昵称"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">登录密码</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.LoginPwd, new {@class = "form-control", @datatype = "*", @nullmsg = "请输入登录密码", @placeholder = "请输入登录密码"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">审核状态</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.DropDownListFor(model => model.Types, new List<SelectListItem>() {new SelectListItem() {Text = "未认证", Value = "0"}, new SelectListItem() {Text = "已认证", Value = "1"}}, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">认证文件</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @{
+    if (!string.IsNullOrEmpty(Model.Address))
+    {
+                        <a href="@Model.Address" target="_blank"> <img src="@Model.Address" width="400" height="260" /></a>
+    }
+    else
+    {
+                        <p style="padding-top: 5px">未上传认证文件</p>
+    }
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">会员头像</label>
+                                <div class="col-sm-5 col-md-5 input-group pl15">
+                                    @Html.TextBoxFor(model => model.HeadPic,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "input-sm form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "会员头像大小120×120像素"}
+                                        })
+                                    <span class="input-group-btn"><button type="button" data-text="HeadPic" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">邮箱</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Email, new {@class = "form-control", @placeholder = "请输入邮箱"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">手机号码</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Mobile, new {@class = "form-control", @datatype = "m", @nullmsg = "请输入手机号码", @placeholder = "请输入手机号码"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">微信号</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.QQ, new {@class = "form-control", @placeholder = "请输入微信号码"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">会员状态</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.CheckBoxFor(model => model.Status, new {@class = "i-checks"}) 是否启用</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">职业</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.SafeQuestion, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">个人介绍</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextAreaFor(model => model.SafeAnswer, new { @class = "form-control",@rows="4" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">注册时间</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <input class="form-control" datatype="*" id="RegDate" name="RegDate" nullmsg="请选择注册时间" placeholder="请选择注册时间" type="text" value="@Model.RegDate" onclick=" laydate({ istime: true, format: 'YYYY-MM-DD hh:mm:ss' }) " />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-2" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">余额</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Amount, new {@class = "form-control", @datatype = "*", @nullmsg = "请输入余额", @placeholder = "请输入余额"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">积分</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Point, new {@class = "form-control", @datatype = "n", @nullmsg = "请输入积分", @placeholder = "请输入积分"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">经验值</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Exp, new {@class = "form-control", @datatype = "n", @nullmsg = "请输入经验值", @placeholder = "请输入经验值"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">注册IP</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.RegIp, new {@class = "form-control"})
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-3" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">省份</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Province, new {@class = "form-control"})
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">市</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.City, new {@class = "form-control"})
+                                </div>
+                            </div>                            
+                        </div>
+                        <div id="tab-4" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">Ios设备ID</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(app => appModel.IosToke, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">安卓设备ID</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(app => appModel.AndroidToke, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">支付安全码</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(app=>appModel.SafeCode, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">消息推送</label>
+                                <div class="col-sm-10 col-md-6">
+                                    <label class="checkbox-inline">@Html.CheckBoxFor(app => appModel.IsPush, new { @class = "i-checks" }) 是否开启消息推送</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-5" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">生日</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model=>model.Birthday, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">性别</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Sex, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">婚否</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.IsMarried, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+<script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#ClassID").select2();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+        })
+    </script>
+}

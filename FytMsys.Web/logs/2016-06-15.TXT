@@ -1,0 +1,7 @@
+记录时间：2016-06-15 18:17:15,285 
+线程ID:[18] 
+日志级别：ERROR 
+出错类：FytMsys.Web.Controllers.UsersController property:[(null)]  
+错误描述：邮箱不可用。 服务器响应为:User has no permission
+---------------------------------------------------------------
+

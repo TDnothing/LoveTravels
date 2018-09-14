@@ -1,0 +1,233 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@model Domain.Entity.tb_Admin
+@{
+    var siteModel = ViewBag.siteModel as tb_Site;
+    Layout = "../shared/_Layout.cshtml";
+}
+<!-- box star -->
+<div class="row pt10 white-bg animated fadeInUp">
+    <div class="wrapper-content">
+        <div class="panel-options">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="tabs_panels.html#tab-1">系统版本信息</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="tabs_panels.html#tab-2">站长工具(PR/Alexa/收录查询)</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="tabs_panels.html#tab-3">系统基本信息</a>
+                </li>
+            </ul>
+        </div>
+
+        <form class="form-horizontal mform tip-wal" action="http://www.alexa.cn/index.php" method="get" target="_blank">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="ibox-content sys-if">
+                            <div class="alert alert-info alea-if">
+                                <i class="im-home2"></i><strong class="f14">当前站点：@siteModel.SiteName <i class="im-arrow-right5"></i> <a href="/FytAdmin/SiteSet/Index">(管理)</a></strong>
+                            </div>
+                            <div class="alert alert-warning alea-if mt10">
+                                <i class="im-bullhorn"></i>当前版本：FytSys Version 1.0.20150601    官方最新版本：V1.0.20150601    最后更新时间：2015-02-06</br></br>
+                                系统说明： 本系统是北京飞易腾科技有限公司独立开发，授权予 @siteModel.SiteName 使用！
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-2" class="tab-pane">
+                        <div class="form-group mt10">
+                            <label class="col-sm-1 control-label">您的网站域名</label>
+                            <div class="col-sm-10 col-md-6 input-group">
+                                <input type="text" name="url" class="input-sm form-control" data-toggle="tooltip" data-placement="top" title="域名例如：www.feiyit.com" placeholder="www.">
+                                <span class="input-group-btn"><button type="submit" class="btn btn-sm btn-primary"> 确认查询</button> </span>
+                            </div>
+                        </div>
+                        <div class="ibox-content sys-if">
+                            <div class="alert alert-warning alea-if"><i class="im-bullhorn"></i>说明：利用本工具您可以查询指定网站的Google PageRank、网站被各大搜索引擎收录情况、网站Alexa排名等。</div>
+                        </div>
+                    </div>
+
+                    <div id="tab-3" class="tab-pane">
+                        <div class="ibox-content sys-if">
+                            <div class="alert alert-success">.NET 服务器相关参数</div>
+                            <div class="col-lg-4 col-md-4">站点名称：@siteModel.SiteName</div>
+                            <div class="col-lg-4 col-md-4">网站域名：@siteModel.SiteUrl</div>
+                            <div class="col-lg-4 col-md-4">附件上传目录：upload</div>
+                            <div class="col-lg-4 col-md-4">服务器名称：@Server.MachineName</div>
+                            <div class="col-lg-4 col-md-4">服务器IP：@Request.ServerVariables["LOCAL_ADDR"]</div>
+                            <div class="col-lg-4 col-md-4">NET框架版本：@Environment.Version.ToString()</div>
+                            <div class="col-lg-4 col-md-4">IIS环境：@Request.ServerVariables["SERVER_SOFTWARE"]</div>
+                            <div class="col-lg-4 col-md-4">服务器端口：@Request.ServerVariables["SERVER_PORT"]</div>
+                            <div class="col-lg-4 col-md-4">目录物理路径：@Request.ServerVariables["APPL_PHYSICAL_PATH"]</div>
+                            <div class="col-lg-4 col-md-4">系统版本：E2.13</div>
+                            <div class="col-lg-4 col-md-4">服务端脚本执行超时：3000000秒</div>
+                            <div class="col-lg-4 col-md-4">服务器当前时间：@DateTime.Now</div>
+                        </div>
+
+                        <div class="ibox-content sys-if">
+                            <div class="alert alert-info">客户端相关信息</div>
+                            <div class="col-lg-4 col-md-4">你的IP地址：@Request.ServerVariables["REMOTE_ADDR"]</div>
+                            <div class="col-lg-4 col-md-4">操作系统：@Environment.OSVersion.ToString()</div>
+                            <div class="col-lg-4 col-md-4">
+                                浏览器类型：@{
+                                    HttpBrowserCapabilitiesBase b = Request.Browser;
+                                }@b.Browser
+                            </div>
+                            <div class="col-lg-4 col-md-4">浏览器版本：@b.Version</div>
+                            <div class="col-lg-4 col-md-4">支持JavaScript：True</div>
+                            <div class="col-lg-4 col-md-4">支持VbScript：True</div>
+                            <div class="col-lg-4 col-md-4">支持JavaApplets：True</div>
+                            <div class="col-lg-4 col-md-4">支持Cookies：@b.Cookies</div>
+                            <div class="col-lg-4 col-md-4">语言：zh-CN,zh;q=0.8</div>
+                            <div class="col-lg-4 col-md-4">IFrames：@b.Frames</div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+<div class="clear pt10"></div>
+<div class="row mt10 animated fadeInUp">
+    <div class="col-lg-4 col-sm-4">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title"><h5>最新留言消息</h5></div>
+            <div class="ibox-content ibox-heading">
+                <h3><i class="fa fa-envelope-o"></i> 新消息</h3>
+                <small>@Html.Raw("您有" + ViewBag.messCount + "条未读消息")</small>
+            </div>
+            <div class="ibox-content">
+                <div class="feed-activity-list f12">
+                    @{
+                        var mList = ViewBag.messList as List<tb_Message>;
+                        if (mList != null && mList.Count > 0)
+                        {
+                            foreach (var mitem in mList)
+                            {
+                                <div class="feed-element">
+                                    <div>
+                                        <small class="pull-right text-navy">@CommentHelper.DateStringFromNow(mitem.AddDate)</small>
+                                        <strong>@mitem.UserName</strong>
+                                        <div>@mitem.Content</div>
+                                        <small class="text-muted">@mitem.AddDate.ToLongDateString() @mitem.AddDate.ToLongTimeString()</small>
+                                    </div>
+                                </div><!-- end -->
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8 col-sm-8">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title"><h5>文章点击走势图</h5></div>
+            <div class="ibox-content">
+                <div id="line-chart-dots" style="height: 300px; width:100%;"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- box end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/admin/echarts-all.js"></script>
+    <script type="text/javascript" src="/assets/js/admin/echarts-macarons.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var H = $(window).height();
+            $("#DeployBase").css({
+                'height': H - 20
+            });
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            })
+        })
+        var myChart = echarts.init(document.getElementById("line-chart-dots"), e_macarons);
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                show:
+                true
+            },
+            toolbox: {
+                show: true,
+                feature:
+                {
+                    mark: {
+                        show: true
+                    }
+                ,
+                    dataView: {
+                        show: true, readOnly:
+                        false
+                    }
+                ,
+                    magicType: {
+                        show: true, type:
+                        ['line', 'bar']
+                    }
+                ,
+                    restore: {
+                        show: true
+                    }
+                ,
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            }
+        ,
+            legend: {
+                data: ['点击量']
+            }
+        ,
+            calculable: true,
+            xAxis:
+            [
+                {
+                    type: 'category',
+                    data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '10月', '11月', '12月']
+                }
+            ],
+            yAxis:
+            [
+                {
+                    type: 'value'
+                }
+            ],
+            series:
+            [
+                {
+                    "name": "点击量",
+                    "type": "line",
+                    "data": [@Ajax.JavaScriptStringEncode(ViewBag.tjSum)],
+                    markPoint: {
+                        data: [
+                            { type: 'max', name: '最多' },
+                            { type: 'min', name: '最少' }
+                        ]
+                    },
+                    markLine: {
+                        data: [
+                            { type: 'average', name: '平均值' }
+                        ]
+                    }
+                }
+            ]
+        }
+        ;
+        myChart.setOption(option);
+
+    </script>
+}

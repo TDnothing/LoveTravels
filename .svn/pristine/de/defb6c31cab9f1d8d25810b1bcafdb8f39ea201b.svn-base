@@ -1,0 +1,56 @@
+$(window).load(function () {
+	cd();
+	
+	$(window).size({function(){
+		cd();
+	}})
+})
+
+var cd=function(){
+	var ul=$(".case-slide ul li").length;
+	var imgW=$(".case-slide ul li").eq(0).width();
+	//alert(navigator.platform);
+	 if(navigator.platform.indexOf('Win32')!=-1){ }
+	 else{
+	 	imgW=$(window).width();
+	 	$(".case-slide ul li").css({'width':imgW});
+	 	$(".case-slide ul li img").css({'width':imgW-30});
+	 	
+	 	$(".case-slide,.case-banner").css({'height':$(".case-slide ul li img").height()});
+	 }
+	 
+	var ulW=$(".case-slide ul");
+	ulW.css({'width':ul*imgW});$(".case-slide").css({'width':ul*imgW});
+	
+	var winW=$(window).width();
+	var bw=winW/2-200;
+	$(".backs").css({'width':bw,'right':-((winW/2)-570),'opacity':1});
+	
+	for(var i=0; i<ul; i++){
+		if(i==0){$(".c-bar").append("<span class='cur'></span>");}
+		else{$(".c-bar").append('<span></span>');}
+	}
+	$(".c-bar span").click(function(){
+		var ins=$(this).index();
+		h=ins;
+		ulW.animate({'left':-(ins*imgW)});
+		$(this).addClass("cur").siblings().removeClass('cur');
+	})
+	var h=0;
+	$(".backs a").click(function(){
+		autoSlide();
+	});
+	var loop;var seep=5000;
+	$(".case-slide").hover(function(){
+		clearInterval(loop);
+	},function(){
+		loop=setInterval(autoSlide,seep);
+	});
+	loop=setInterval(autoSlide,seep);
+	function autoSlide(){
+		if(h!=ul){h++}
+		if(h==ul){h=0}
+		ulW.animate({'left':-(h*imgW)});
+		$(".c-bar span").removeClass("cur").eq(h).addClass("cur");
+	}
+}

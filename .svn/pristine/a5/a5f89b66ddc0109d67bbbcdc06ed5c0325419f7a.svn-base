@@ -1,0 +1,131 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    public class CasesController : Controller
+    {
+        /// <summary>
+        /// 成功案例
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(string entitle)
+        {
+            #region 根据栏目的父ID查询新闻栏目列表（增加到缓存内）
+            List<tb_Column> dtNav;
+            if (CacheHelper.Get("CaseNav") != null)
+            {
+                dtNav = CacheHelper.Get("CaseNav") as List<tb_Column>;
+            }
+            else
+            {
+                dtNav = OperateContext<tb_Column>.SetServer.GetList(
+                    PredicateBuilder.True<tb_Column>().And(m => m.ParentId == 4).And(m => m.TypeID == 1),
+                    m => m.Sort, true).ToList();
+                CacheHelper.Insert("CaseNav", dtNav, 10000);
+            }
+            ViewBag.dtNav = dtNav;
+            #endregion
+
+            var key = entitle;
+            tb_Column model = null;
+            var url = "/cases/";
+            //判断用户是否选择二级栏目
+            if (!string.IsNullOrEmpty(key))
+            {
+                url += key + "/";
+                //根据英文标题查询模型
+                model = OperateContext<tb_Column>.SetServer.GetModel(m => m.EnTitle == key);
+                ViewBag.colModel = model;
+            }
+            else
+            {
+                ViewBag.colModel = null;
+            }
+
+            #region 根据新闻类别查询对应的列表
+            var where = PredicateBuilder.True<tb_Article>();
+            where = where.And(m => m.Audit == 1);
+            where = where.And(m => m.IsRecyc == false);
+            //当前页码
+            var pageIndex = FytRequest.GetQueryInt("page", 1);
+            //每页显示数量
+            const int pageSize = 12;
+            int rows = 0, total = 0;
+            //增加条件根据新闻栏目查询
+            if (model != null)
+            {
+                where = where.And(m => m.ClassID == model.ID);
+            }
+            else
+            {
+                if (dtNav != null)
+                {
+                    var result = dtNav.Select(m => m.ID).ToList();
+                    where = where.And(m=>result.Contains(m.ClassID));
+                }
+            }
+            ViewBag.nlist = OperateContext<tb_Article>.SetServer.GetPageList(pageIndex, pageSize, out rows, out total, where, false,
+                m => m.EditDate).ToList();
+            //构建分类模型类
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = pageIndex,
+                Rows = rows,
+                Counts = total,
+                Urls = url
+            };
+            #endregion
+
+            //查询站点基本信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            return View(siteModel);
+        }
+
+
+        /// <summary>
+        /// 案例详细页
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult Details(int id)
+        {
+            #region 根据栏目的父ID查询新闻栏目列表（增加到缓存内）
+            List<tb_Column> dtNav;
+            if (CacheHelper.Get("CaseNav") != null)
+            {
+                dtNav = CacheHelper.Get("CaseNav") as List<tb_Column>;
+            }
+            else
+            {
+                dtNav = OperateContext<tb_Column>.SetServer.GetList(
+                    PredicateBuilder.True<tb_Column>().And(m => m.ParentId == 4).And(m => m.TypeID == 1),
+                    m => m.Sort, true).ToList();
+                CacheHelper.Insert("CaseNav", dtNav, 10000);
+            }
+            ViewBag.dtNav = dtNav;
+            #endregion
+
+            var model = OperateContext<tb_Article>.SetServer.GetModel(m => m.ID == id);
+
+            #region 根据行业查询相关案例
+            var where = PredicateBuilder.True<tb_Article>();
+            where = where.And(m => m.Audit == 1);
+            where = where.And(m => m.IsRecyc == false);
+            where = where.And(m=>m.ClassID==model.ClassID);
+            where = where.And(m => m.ID != model.ID);
+            ViewBag.reCase = OperateContext<tb_Article>.SetServer.GetList(where,m=>m.EditDate,false).Take(4).ToList();
+            #endregion
+            
+            return View(model);
+        }
+    }
+}

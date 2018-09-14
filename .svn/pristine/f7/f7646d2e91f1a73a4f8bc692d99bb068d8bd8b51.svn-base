@@ -1,0 +1,9 @@
+﻿@model Domain.Entity.tb_Column
+@{
+    Layout = null;
+}
+<div class="fb-info">
+    <p>
+        @Html.Raw(Model.Content)
+    </p>
+</div>

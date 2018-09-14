@@ -1,0 +1,413 @@
+﻿@{
+    ViewBag.Title = "安装统计图表";
+    Layout = "../shared/_Layout.cshtml";
+}
+
+<div class="row col-lg-12">
+    <div class="wrapper animated fadeInUp">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>安装统计图表</h5>
+                <div class="ibox-tools rboor pr20"></div>
+            </div>
+            <div class="ibox-content">
+                <div class="form-horizontal clearfix">
+                    <form action="InstallCount" method="get">
+                        <div class="col-lg-4 col-sm-3 p10">
+                            <div class="form-group">
+                                <div class="col-lg-8 col-sm-7">
+                                    <select id="yearSelect" name="yearSelect" class="input-sm form-control">
+                                        <option value="0">全部</option>
+                                        <option value="2015">2015年</option>
+                                        <option value="2016">2016年</option>
+                                        <option value="2017">2017年</option>
+                                        <option value="2018">2018年</option>
+                                        <option value="2019">2019年</option>
+                                        <option value="2020">2020年</option>
+                                        <option value="2021">2021年</option>
+                                        <option value="2022">2022年</option>
+                                        <option value="2023">2023年</option>
+                                        <option value="2024">2024年</option>
+                                        <option value="2025">2025年</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-4">
+                            <div class="form-group">
+                                <div class="col-lg-12 col-sm-12 input-group">
+                                    <select id="monthSelect" name="monthSelect" class="input-sm form-control">
+                                        <option value="0">全部</option>
+                                        <option value="1">1月</option>
+                                        <option value="2">2月</option>
+                                        <option value="3">3月</option>
+                                        <option value="4">4月</option>
+                                        <option value="5">5月</option>
+                                        <option value="6">6月</option>
+                                        <option value="7">7月</option>
+                                        <option value="8">8月</option>
+                                        <option value="9">9月</option>
+                                        <option value="10">10月</option>
+                                        <option value="11">11月</option>
+                                        <option value="12">12月</option>
+                                    </select>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-xs p310" style="line-height:2.0">查询</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div style="width:99%">
+                    <div><span><b>按月统计</b></span></div>
+                    <div style="padding-top:10px;">
+                        <div id="qz_container_month" style="height:290px;"></div>
+                    </div>
+                </div>
+                <div class="row mt10 animated fadeInUp">
+                    <div class="col-lg-4 col-sm-4">
+                        <div style="width:99%">
+                            <div><span><b>各系统安装比例</b></span></div>
+                            <div style="padding-top:10px;">
+                                <div id="gl_container_tyear" style="height:290px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-sm-8">
+                        <div style="width:99%">
+                            <div><span><b>总统计</b></span></div>
+                            <div style="padding-top:10px;">
+                                <div id="qz_container_tyear" style="height:290px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="width:99%">
+                    <div><span><b>按年统计</b></span></div>
+                    <div style="padding-top:10px;">
+                        <div id="qz_container_year" style="height:290px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/assets/js/admin/echarts-all.js"></script>
+<script type="text/javascript" src="/assets/js/admin/echarts-macarons.js"></script>
+<script type="text/javascript">
+    var myChart_gyear = echarts.init(document.getElementById("gl_container_tyear"));
+    var myChart_tyear = echarts.init(document.getElementById("qz_container_tyear"), e_macarons);
+    var myChart_year = echarts.init(document.getElementById("qz_container_year"), e_macarons);
+    var myChart_month = echarts.init(document.getElementById("qz_container_month"), e_macarons);
+    //各系统安装比例统计
+    var option_gyear = {
+        tooltip: {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['pie', 'funnel'],
+                    option: {
+                        funnel: {
+                            x: '25%',
+                            width: '50%',
+                            funnelAlign: 'left',
+                            max: "@ViewBag.MaxNum"
+                        }
+                    }
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            orient: 'vertical',
+            x: 'left',
+            data: ['IOS安装人数', 'Android安装人数']
+        },
+        calculable: true,
+        series:
+        [
+            {
+                name: "安装人数",
+                type: "pie",
+                radius: '55%',
+                center: ['50%', '60%'],
+                data: [
+                    { "value": "@ViewBag.MaleNum", "name": "IOS" },
+                    { "value": "@ViewBag.FemaleNum", "name": "Android" }
+                ]
+            }
+        ]
+    };
+    myChart_gyear.setOption(option_gyear);
+    //按年统计
+    var option_tyear = {
+        tooltip: {
+            trigger: 'axis',
+            show:
+                true
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['line', 'bar']
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            data: ['IOS安装人数', 'Android安装人数']
+        },
+        calculable: true,
+        xAxis:
+        [
+            {
+                type: 'category',
+                data: [@Html.Raw(ViewBag.category_tyear)]
+            }
+        ],
+        yAxis:
+        [
+            {
+                type: 'value'
+            }
+        ],
+        series:
+        [
+            {
+                "name": "IOS安装人数",
+                "type": "line",
+                "data": [@ViewBag.mdata_tyear],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            },
+            {
+                "name": "Android安装人数",
+                "type": "line",
+                "data": [@ViewBag.fdata_tyear],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            }
+        ]
+    };
+    myChart_tyear.setOption(option_tyear);
+    //按月统计
+    var option_year = {
+        tooltip: {
+            trigger: 'axis',
+            show:
+                true
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['line', 'bar']
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            data: ['IOS安装人数', 'Android安装人数']
+        },
+        calculable: true,
+        xAxis:
+        [
+            {
+                type: 'category',
+                data: [@Html.Raw(ViewBag.category_year)]
+            }
+        ],
+        yAxis:
+        [
+            {
+                type: 'value'
+            }
+        ],
+        series:
+        [
+            {
+                "name": "IOS安装人数",
+                "type": "line",
+                "data": [@ViewBag.mdata_year],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            },
+            {
+                "name": "Android安装人数",
+                "type": "line",
+                "data": [@ViewBag.fdata_year],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            }
+        ]
+    };
+    myChart_year.setOption(option_year);
+    //按日统计
+    var option_month = {
+        tooltip: {
+            trigger: 'axis',
+            show:
+                true
+        },
+        toolbox: {
+            show: true,
+            feature:
+            {
+                mark: {
+                    show: true
+                },
+                dataView: {
+                    show: true, readOnly:
+                        false
+                },
+                magicType: {
+                    show: true, type:
+                    ['line', 'bar']
+                },
+                restore: {
+                    show: true
+                },
+                saveAsImage: {
+                    show: true
+                }
+            }
+        },
+        legend: {
+            data: ['IOS安装人数', 'Android安装人数']
+        },
+        calculable: true,
+        xAxis:
+        [
+            {
+                type: 'category',
+                data: [@Html.Raw(ViewBag.category_month)]
+            }
+        ],
+        yAxis:
+        [
+            {
+                type: 'value'
+            }
+        ],
+        series:
+        [
+            {
+                "name": "IOS安装人数",
+                "type": "bar",
+                "data": [@ViewBag.mdata_month],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            },
+            {
+                "name": "Android安装人数",
+                "type": "bar",
+                "data": [@ViewBag.fdata_month],
+                markPoint: {
+                    data: [
+                        { type: 'max', name: '最多' },
+                        { type: 'min', name: '最少' }
+                    ]
+                },
+                markLine: {
+                    data: [
+                        { type: 'average', name: '平均值' }
+                    ]
+                }
+            }
+        ]
+    };
+    myChart_month.setOption(option_month);
+</script>

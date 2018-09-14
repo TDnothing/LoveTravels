@@ -1,0 +1,116 @@
+﻿using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace FytMsys.Logic.Admin
+{
+    /// <summary>
+    /// 用户提现后台管理
+    /// </summary>
+    public class FytGetMoneyController : BaseController
+    {
+        #region 1、[提现管理] 初始化 + Index()
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            return View();
+        }
+        #endregion
+
+        #region 2、[提现管理] 获取数据 + IndexData()
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult IndexData()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var key = FytRequest.GetFormString("key");
+                int pageIndex = FytRequest.GetFormInt("pageIndex", 1),
+                    pageSize = FytRequest.GetFormInt("pageSize", 10);
+                var lq = from gm in OperateSession.SetContext.lv_GetMoney
+                         orderby gm.AddTime
+                         select new
+                         {
+                             gm.ID,
+                             gm.Number,
+                             gm.tb_User.NickName,
+                             gm.tb_User.TrueName,
+                             gm.Price,
+                             gm.Account,
+                             gm.BankId,
+                             BankCard = OperateSession.SetContext.lv_Bank.Where(m => m.UserId == gm.UserId).FirstOrDefault().BankAccont,
+                             gm.Status,
+                             gm.AddTime
+                         };
+                if (key != "")
+                {
+                    lq = lq.Where(m => m.TrueName.Contains(key));
+                }
+                jsonM.Data = lq.Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList();
+                jsonM.PageRows = lq.Count();
+                jsonM.PageTotal = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize));
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "获取数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(FytGetMoneyController), ex);
+            }
+            return MyJson(jsonM, "");
+        }
+        #endregion
+
+        #region 3、[提现管理] 修改提现状态 + ChangeStatus()
+        /// <summary>
+        /// 修改提现状态
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult ChangeStatus()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var ids = FytRequest.GetFormString("id");
+                if (!ids.Contains(","))
+                {
+                    var id = Convert.ToInt32(ids);
+                    var model = OperateContext<lv_GetMoney>.SetServer.GetModel(m => m.ID == id);
+                    model.Status = true;
+                    OperateContext<lv_GetMoney>.SetServer.Update(model);
+                }
+                else
+                {
+                    List<int> result = new List<string>(ids.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)).ConvertAll(int.Parse);
+                    var list = OperateContext<lv_GetMoney>.SetServer.GetList(m => result.Contains(m.ID), m => m.ID, true).ToList();
+                    foreach (var item in list)
+                    {
+                        item.Status = true;
+                        OperateContext<lv_GetMoney>.SetServer.Update(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(FytGoLookController), ex);
+            }
+            return MyJson(jsonM, "");
+        }
+        #endregion
+    }
+}

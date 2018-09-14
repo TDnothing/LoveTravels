@@ -1,0 +1,119 @@
+﻿@using FytMsys.Common
+@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = "我参与的";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+    var types = FytRequest.GetQueryInt("types");
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 7);}
+    <div class="ur-wall">
+        <h2><span>我参与的</span><samp><a href="/account/myjoin?types=0" @(types == 0 ? "class=cur" : "")>我等你</a>|<a href="/account/myjoin?types=1" @(types == 1 ? "class=cur" : "")>去看看</a></samp></h2>
+        @{
+            if (list != null && list.Length > 0)
+            {
+                foreach (var item in list)
+                {
+                    if (types == 0)
+                    {
+                        <div class="oitem clearfix">
+                            <div class="oimg"><a href="/project/detail/@item.ProjectId"><img src="@item.HeadPic" /></a></div>
+                            <div class="oinfo">
+                                <p><strong>@item.NickName　</strong></p>
+                                <p>愿望地：@(item.Region)　　人数 : @(item.Rsum)人</p>
+                            </div>
+                            <div class="obtn">
+                                <p style="text-align: right; margin-top: 10px;">预约时间：@(Convert.ToDateTime(item.UpdateTime).ToShortDateString())</p><p style="text-align: right;">@(item.PayStatus == 0 ? "未付款" : (item.Status == false ? Html.Raw("<a onclick='changestatus(" + item.ID + ")'>标记完成</a>") : Html.Raw("<a href='/project/detail/" + item.ProjectId + "'>评价</a>")))</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="qkk-item clearfix">
+                            <div class="qkk-img"><a href="/golook/detail/@item.ProjectId" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="100" height="75" /></a></div>
+                            <div class="qkk-info">
+                                <div><span class="tag">@(item.Flags == 0 ? "求带" : "组团")</span></div>
+                                <div class="qkk-qgo">愿望地：@item.GoAddress　　　人数:@(item.Rsum)人 　　　预计抵达时间：@(item.ArriveTime)　　　发布时间：@Convert.ToDateTime(item.UpdateTime).ToShortDateString()</div>
+                                <div class="qkk-p">说明：@(UtilsHelper.CutString(UtilsHelper.DropHTML(item.Centents), 80))　　<a href="/golook/detail/@item.ID">&gt;&gt;</a></div>
+                                <div class="msc-del edit" @(item.Flags == 0 ? "style=display:none;" : "")>@*<a onclick="exitgl(@item.ID)">取消参与</a>*@</div>
+                                <div class="qkk-btn">
+                                    <samp @(item.Flags == 0 ? "style=display:none;" : "")>
+                                        <a href="/golook/detail/@item.ID">@(item.JoinNum)人预约</a>
+                                    </samp>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <p style="padding-top:20px;text-align: center">暂无数据</p>
+            }
+        }
+    </div><!-- end -->
+    <div class="page">
+        @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+    </div>
+</div>
+
+@using (Ajax.BeginForm("ChangeStatus", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        OnSuccess = "info.FSuccess",
+                        OnBegin = "info.FBegin",
+                    }, new { @id = "form" }))
+{
+    @Html.Hidden("vals", "")
+}
+
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}
+<script>
+    //用户修改我等你完成状态
+    function changestatus(id) {
+        if (id != 0) {
+            swal({
+                title: "警告！",
+                text: "是否确认修改此次活动状态为完成？",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $("#vals").val(id);
+                    $("#form").submit();
+                } else {
+                }
+            });
+        }
+    }
+    var info = {
+        FSuccess: function (res) {
+            if (res.Status == "y") {
+                swal({
+                    title: "提示",
+                    text: res.Msg,
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false
+                }, function () { window.location.reload(); });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        }
+    };
+</script>

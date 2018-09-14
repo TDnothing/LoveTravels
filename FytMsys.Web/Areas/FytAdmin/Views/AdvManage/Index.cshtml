@@ -1,0 +1,61 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+
+    .cbktb {
+        margin-left: 0px !important;
+        position: relative;
+        top: -2px;
+    }
+</style>
+<!-- box star -->
+@Html.Hidden("Flag", ViewBag.flag as string)
+<div class="row pt10  animated fadeInUp">
+    <table id="ad_tab" width="100%">
+        <tr valign="top">
+            <td style="width:300px;">
+                <div class="col-lg-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" style="padding: 0px 0px 10px 0px;">
+                            <div class="ibox-title" style="border-top: 4px solid #fff; padding: 14px 0px 7px; border-bottom: 1px solid #e7eaec; margin-bottom: 15px; ">
+                                <div class="ibox-tools rboor pr20" style="float: left">
+                                    <a href="javascript:void(0)" style="margin-left: 0px;" class="btn btn-primary btn-xs p310" id="Insert"><i class="im-plus"></i> 新建版位</a>
+                                    <a href="javascript:void(0)" class="btn btn-primary btn-xs p310" id="Modfiy"><i class="im-pencil2"></i> 编辑</a>
+                                    <a href="javascript:void(0)" onclick="javascript:tb.deletes(0)" class="btn btn-primary btn-xs p310"><i class="im-remove4"></i> 删除</a>
+                                </div>
+                            </div>
+                            <ul id="trows" class="folder-list category-list m-b-md boxs" style="padding: 0"></ul>
+                            <script id="tlist" type="text/x-jquery-tmpl">
+                                <li>
+                                    <a href="/FytAdmin/AdvManage/ImgIndex/?classId=${ID}" target="DeployBase"> <input class="cbktb" name="checkbox_name" type="checkbox" value="${ID}"> ${Title} <span class="label pull-right">${Width}×${Height}</span>                                            </a>
+                                </li>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div id="splitter1" class="z-splitter-v shadow-v"></div>
+                <div class="col-lg-12 animated fadeInRight" style="padding: 0px 10px 20px 10px;">
+                    <iframe src="/FytAdmin/AdvManage/ImgIndex/?classId=0" width="100%" height="100%" style="position:static;left:-22in;top:-11in;" id="DeployBase" name="DeployBase" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- box end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/table/adv_class.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var H = $(window).height();
+            $("#DeployBase,#ad_tab").css({ 'height': H - 0 });
+        })
+        
+    </script>
+}

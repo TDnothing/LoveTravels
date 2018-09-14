@@ -1,0 +1,51 @@
+﻿@using Domain.Entity
+@model Domain.Entity.tb_Column
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var cModel = ViewBag.cmodel as tb_Column;
+}
+<div class="hr"></div>
+<div class="help-sew" style="border-top: none">
+    <div class="w1200">
+        <div class="h-search clearfix">
+            <form action="/category/search" method="GET">
+                <input type="search" id="key" name="key" placeholder="在下面输入您问题关键词" /><button class="btn">搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="w1200 clearfix">
+    <div class="help-lnav">
+        <h2><span>@cModel.Title</span></h2>
+        <ul>
+            @{
+                var list = ViewBag.navList as List<tb_Column>;
+                if (list != null && list.Count > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <li @Html.Raw(item.ID==Model.ID ? "class=cur" : "")><a href="/category/@cModel.EnTitle/@item.EnTitle">@item.Title<i class="icon-angle-right"></i></a></li>
+                    }
+                }
+            }
+        </ul>
+    </div><!-- end -->
+    <div class="help-rtxt">
+        <h2>@Model.Title</h2>
+        <div class="help-ntext clearfix">
+            @{
+                if (!string.IsNullOrEmpty(Model.Content))
+                {
+                    @Html.Raw(Model.Content)
+                }
+                else
+                {
+                    <p style="text-align: center">无内容</p>
+                }
+            }
+            
+        </div>
+    </div>
+</div>
+

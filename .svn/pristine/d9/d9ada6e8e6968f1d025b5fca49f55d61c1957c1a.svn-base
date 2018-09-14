@@ -1,0 +1,48 @@
+﻿@using FytMsys.Common
+@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = "财务信息";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 2);}
+    <div class="ur-wall">
+        <h2><span>财务信息</span></h2>
+        <div class="cw-info"><span>账户余额</span><strong>RMB：@ViewBag.useramount</strong></div>
+        <div class="tb-title">交易记录</div>
+        <table class="cw-tb">
+            <tr>
+                <th width="300">时间 </th>
+                <th>交易类型</th>
+                <th width="150">金额</th>
+            </tr>
+            @{
+                if (list != null && list.Length > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <tr>
+                            <td>@Convert.ToDateTime(item.AddDate).ToShortDateString()</td>
+                            <td>@item.Summary</td>
+                            <td>@(item.Option == 1 ? "-" : "+")￥@item.Price</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3">暂无数据</td>
+                    </tr>
+                }
+            }
+        </table>
+        <div class="cw-foot"><span>余额：￥@ViewBag.useramount</span></div>
+    </div><!-- end -->
+    <div class="page">
+        @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+    </div>
+</div>

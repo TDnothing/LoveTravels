@@ -1,0 +1,92 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 旅程故事
+    /// </summary>
+    /// <returns></returns>
+    public class StoryController : Controller
+    {
+        /// <summary>
+        /// 旅程故事
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 发布我等你
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Release()
+        {
+            var model = new lv_Story();
+            return View(model);
+        }
+
+
+        #region  发布我等你
+        /// <summary>
+        /// 发布我等你
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Release(lv_Story model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                model.UserId = 1;
+                model.Hits = 0;
+                model.UpdateTime = DateTime.Now;
+                model.AddTime = DateTime.Now;
+                model.IsTop = "0";
+                model.Tag = model.Tag == "original" ? "原创" : "转载";
+                OperateContext<lv_Story>.SetServer.Add(model);
+                jsonM.Msg = model.ID.ToString(CultureInfo.InvariantCulture);
+                #region 多张图片上传
+                var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var listModel = new List<tb_ImageLibrary>();
+                foreach (string s in reslist)
+                {
+                    var u = FytRequest.GetFormString("file_name_" + s);
+                    if (u != "")
+                    {
+                        listModel.Add(new tb_ImageLibrary()
+                        {
+                            ImgID = model.ID,
+                            ImgType = 1,
+                            ImgUrl = u,
+                            ImgSmall = u,
+                            IsCover = false
+                        });
+                    }
+                }
+                OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "保存过程中发生错误，消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(StoryController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}

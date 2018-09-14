@@ -1,0 +1,95 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: #f9f9f9;
+    }
+
+    .cbktb {
+        margin-left: 0px !important;
+        position: relative;
+        top: -2px;
+    }
+</style>
+<link href="/assets/css/admin/metroStyle.css" rel="stylesheet" type="text/css" />
+<div class="row pt10  animated fadeInUp">
+    <table id="ad_tab" width="100%">
+        <tr valign="top">
+            <td style="width:230px;">
+                <div class="col-lg-12" style="padding-left:10px; padding-right: 10px;">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content" style="padding: 0px 0px 10px 0px; background-color: #f9f9f9">
+                            <div class="ibox-title" style=" background-color: #f9f9f9; border-top: 4px solid #fff; padding: 14px 0px 7px; border-bottom: 1px solid #e7eaec; margin-bottom: 15px; ">
+                                <div class="ibox-tools rboor pr20" style="float: left">
+                                    <a href="/FytAdmin/Content/Index?ClassId=0" style="margin-left: 0px;" class="btn btn-primary btn-xs p310" target="DeployBase"><i class="im-home2"></i> 默认</a>
+                                    <a href="/FytAdmin/FytComment/Index" class="btn btn-primary btn-xs p310" target="DeployBase"><i class="im-bubbles"></i> 评论</a>
+                                </div>
+                            </div>
+                            <div class="zTreeDemoBackground left" style="overflow: auto">
+                                <ul id="treeDemo" class="ztree"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div id="splitter1" class="z-splitter-v shadow-v"></div>
+                <div class="col-lg-12 animated fadeInRight" style="padding: 0px 10px 20px 10px;">
+                    <iframe src="/FytAdmin/Goods/Index?ClassId=0" width="100%" height="100%" style="position:static;left:-22in;top:-11in;" id="DeployBase" name="DeployBase" frameborder="0" scrolling="auto" allowtransparency="true"></iframe>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<!-- box end -->
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/admin/jquery.ztree.core-3.5.js"></script>
+    <script type="text/javascript">
+        var setting = {
+            check: {
+                enable: true
+            },
+            /*data: {
+            simpleData: {
+                enable: true
+            }
+        }*/
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onCheck: onCheck
+            }
+        };
+
+        function onCheck(e, treeId, treeNode) {
+            var treeObj = $.fn.zTree.getZTreeObj("treeDemo"),
+                nodes = treeObj.getCheckedNodes(true),
+                v = "";
+            for (var i = 0; i < nodes.length; i++) {
+                v += nodes[i].name + ",";
+                alert(nodes[i].id); //获取选中节点的值
+            }
+
+
+        }
+
+        $(function () {
+            var H = $(window).height();
+            $("#DeployBase").css({ 'height': H - 50 });
+            $(".zTreeDemoBackground").css({ 'height': H - 100 });
+
+            $.post("/FytAdmin/Shop/GetTree", null, function (res) {
+                if (res.Status == "y")
+                    $.fn.zTree.init($("#treeDemo"), setting, res.Data);
+                else {
+                }
+            }, "json");
+        });
+
+    </script>
+}

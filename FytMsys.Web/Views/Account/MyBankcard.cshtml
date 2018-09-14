@@ -1,0 +1,109 @@
+﻿@using FytMsys.Common
+@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = "我的提现账号";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<style>
+    .m-tb th {
+        padding: 10px;
+    }
+</style>
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 12);}
+    <div class="col-md-9 col-xs-12 ur-wall">
+        <h2><span>我的提现账号</span><samp><a href="/account/editbankcard" class="btn" style="background-color: #719CC9;color: white;">新建提现账号</a></samp></h2>
+        <table class="cw-tb">
+            <tr>
+                <th >用户名</th>
+                <th >账号类型</th>
+                <th>账号</th>
+                <th>操作</th>
+            </tr>
+            @{
+                if (list != null && list.Length > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <tr>
+                            <td width="140">@item.UserName</td>
+                            <td width="140">@item.BankName</td>
+                            <td>@item.BankAccont</td>
+                            <td>
+                                <span style="cursor:pointer;color:blue;" onclick="window.location.href = '/account/editbankcard?bankId=@(item.ID)'">编辑</span>
+                                <span style="cursor:pointer;color:blue;" id="del-a" onclick="deletec(@item.ID)">删除</span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center">暂无数据</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div><!-- end -->
+    <div class="page">
+        @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+    </div>
+</div>
+
+
+@using (Ajax.BeginForm("DeleteBankcard", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        OnSuccess = "info.FSuccess",
+                        OnBegin = "info.FBegin",
+                    }, new { @id = "form" }))
+{
+    @Html.Hidden("vals", "")
+}
+
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}
+<script>
+    //删除银行卡
+    function deletec(id) {
+        if (id != 0) {
+            swal({
+                title: "警告！",
+                text: "删除数据不可恢复，是否确认？",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }, function (isConfirm) {
+                if (isConfirm) {
+                    $("#vals").val(id);
+                    $("#form").submit();
+                } else {
+                }
+            });
+        }
+    }
+    var info = {
+        FSuccess: function (res) {
+            if (res.Status == "y") {
+                window.location.reload();
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+
+        }
+    };
+</script>

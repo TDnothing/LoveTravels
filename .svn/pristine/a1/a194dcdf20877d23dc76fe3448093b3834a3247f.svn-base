@@ -1,0 +1,65 @@
+﻿<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<title>addyouku</title>
+<script type="text/javascript" src="../internal.js"></script>
+<style type="text/css">
+*{ margin:0; padding:0; font-family:arial,"Microsoft Yahei"; }
+body { padding: 10px; margin: 0; font-size:12px;}
+#insertHtml { margin: 10px 0px 0px 10px; width: 370px; height: 220px; }
+table, td, tr { border-collapse: collapse; border-spacing: 0; border: none; }
+ul, li { margin: 0; padding: 0; list-style: none; }
+.ul { margin: 0px 0 10px 10px; }
+.ul li { padding: 5px 0; }
+#spwidth, #spheight { width: 32px; }
+#isauto { vertical-align: -2px; margin-right: 3px; }
+input[type="text"],textarea,select{ padding:0 2px; width:80%; height:22px; line-height:22px; outline:none;}
+</style>
+</head>
+<body>
+<table border="1">
+	<tr>
+		<td width="300" id="youku"><img src="images/loading.jpg"></td>
+		<td width="220" valign="top">
+			<ul class="ul">
+				<li>视频ID：</li>
+				<li><input name="ykid" type="text" id="ykid" size="15" value=""></li>
+				<li><img src="images/demo.jpg" width="232" height="36"/></li>
+				<li>是否自动播放：</li>
+				<li><label><input type="checkbox" id="isauto">是</label></li>
+				<li>视频尺寸：</li>
+				<li><input type="text" id="spwidth" value="480">×<input type="text" id="spheight" value="400"></li>
+			</ul>
+		</td>
+	</tr>
+</table>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript">
+$(function () {
+	$("#ykid").blur(function () {
+		if ($("#ykid").val()) {
+			var auto = "false";
+			if ($("#isauto").is(":checked")) {
+				auto = "true";
+			}
+			$("#youku").html('<embed type="application/x-shockwave-flash" src="http://player.youku.com/player.php/Type/Folder/Fid/25809481/Ob/1/sid/' + $("#ykid").val() + '==/v.swf" width="300" height="240" flashvars="isAutoPlay=' + auto + '&winType=interior" id="movie_player" quality="high" allowscriptaccess="always" allowfullscreen="true" />')
+		}
+	});
+});
+
+dialog.onok = function () {
+	// 插入内容到编辑器
+	var spnr = "";
+	if ($("#ykid").val()) {
+		var auto = "false";
+		if ($("#isauto").is(":checked")) {
+			auto = "true"
+		}
+		spnr = '<embed type="application/x-shockwave-flash" src="http://player.youku.com/player.php/Type/Folder/Fid/25809481/Ob/1/sid/' + $("#ykid").val() + '==/v.swf" width="' + $("#spwidth").val() + '" height="' + $("#spheight").val() + '" flashvars="isAutoPlay=' + auto + '&winType=interior" id="movie_player" quality="high" allowscriptaccess="always" allowfullscreen="true" />';
+	}
+	editor.execCommand('inserthtml', spnr);
+}
+</script>
+</body>
+</html>

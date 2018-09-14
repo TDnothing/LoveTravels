@@ -1,0 +1,39 @@
+﻿$(function () {
+    $("#asign").click(function () {
+        $("#signfile").unbind();
+        $("#signfile").click();
+        $("#signfile").change(function () {
+            f.signUpFile();
+        });
+    });
+});
+
+var f = {
+    signUpFile: function () {
+        var subUrl = "/FileUp/SignUpFile?upFiles=signfile";
+        $("#forms").ajaxSubmit({
+            beforeSubmit: function () {
+                $("#asign").attr("disabled", "disabled").html("正在上传...");
+            },
+            success: function (data) {
+                if (data.Status == "y") {
+                    $("#CoverImg").val(data.Data);
+                    $("#sp-img").show();
+                    $("#sp-img img").attr("src",data.Data);
+                } else {
+                   alert(data.Msg);
+                }
+                $("#asign").attr("disabled", false).html("Banner图");
+                $("#signfile").unbind();
+            },
+            error: function (e) {
+                $("#asign").attr("disabled", false).html("Banner图");
+                console.log(e);
+            },
+            url: subUrl,
+            type: "post",
+            dataType: "json",
+            timeout: 600000
+        });
+    }
+}

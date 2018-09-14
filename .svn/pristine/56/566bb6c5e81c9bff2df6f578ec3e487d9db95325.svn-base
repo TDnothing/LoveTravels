@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<repositories>
+  <repository path="..\Domain.Entity\packages.config" />
+  <repository path="..\FytMsys.DALMSSQL\packages.config" />
+  <repository path="..\FytMsys.Helper\packages.config" />
+  <repository path="..\FytMsys.Logic.Admin\packages.config" />
+  <repository path="..\FytMsys.Web\packages.config" />
+</repositories>

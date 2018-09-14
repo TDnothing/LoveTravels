@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
+
+namespace FytMsys.Web
+{
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.MapRoute(
+                name: "ProjectList",
+                url: "{controller}/{action}/{orderinfo}-{page}",
+                defaults: new { controller = "ProJect", action = "Index", orderinfo = UrlParameter.Optional, page = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+            routes.MapRoute(
+                name: "CategorySearch",
+                url: "Category/Search",
+                defaults: new { controller = "Category", action = "Search", flag = UrlParameter.Optional, en = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+            routes.MapRoute(
+                name: "Category",
+                url: "Category/{flag}/{en}",
+                defaults: new { controller = "Category", action = "Index", flag = UrlParameter.Optional, en = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+            routes.MapRoute(
+                name: "homeSpecialVacation",
+                url: "Home/SpecialVacation/{page}",
+                defaults: new { controller = "Home", action = "SpecialVacation", page = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+            routes.MapRoute(
+                name: "homeRelease",
+                url: "Release",
+                defaults: new { controller = "Home", action = "Release", flag = UrlParameter.Optional, en = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+            routes.MapRoute(
+               name: "homeReleaseEng",
+               url: "ReleaseEng",
+               defaults: new { controller = "Home", action = "ReleaseEng", flag = UrlParameter.Optional, en = UrlParameter.Optional },
+               namespaces: new string[1] { "FytMsys.Web" }
+           );
+            routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+                namespaces: new string[1] { "FytMsys.Web" }
+            );
+
+        }
+    }
+}

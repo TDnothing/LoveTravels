@@ -1,0 +1,124 @@
+﻿@using System.Net.Mime
+@using System.Web.UI.HtmlControls
+@model Domain.Entity.tb_Job
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+@using (Ajax.BeginForm("Modfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)@Html.HiddenFor(model => model.ClassId)
+    <!-- head star -->
+    <div class="tnav row wrapper border-bottom white-bg page-heading">
+        <div class="col-sm-4">
+            <h2 class="fl">项目</h2>
+            <ol class="breadcrumb fl">
+                <li><a href="/FytAdmin/FytJob/Index?ClassId=@Model.ClassId">主页</a></li>
+                <li><strong>编辑新招聘信息</strong></li>
+            </ol>
+        </div>
+    </div>
+	<!-- head end -->
+	<!-- form star -->
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <form class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">职位名称</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入职位名称", @placeholder = "请输入职位名称" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">工作经验</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.WordJy, new { @class = "form-control", @placeholder = "不限或具体年限" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">工作地点</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.WordAddress, new { @class = "form-control", @placeholder = "请输入详细工作地点" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">工作性质</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.WordType, new { @class = "form-control", @placeholder = "全职或兼职" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">薪资待遇</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Salary, new { @class = "form-control", @placeholder = "面议或具体区间额数" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">招聘人数</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.JobSum, new { @class = "form-control", @placeholder = "人数或不限" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">最低学历</label>
+                                <div class="col-sm-10 col-md-6">
+                                    @Html.TextBoxFor(model => model.Degrees, new { @class = "form-control", @placeholder = "学历或不限" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">发布日期</label>
+                                <div class="col-sm-10 col-md-6 input-group date pl15">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input class="form-control" datatype="*" id="AddDate" name="AddDate" nullmsg="请输入发布日期" placeholder="请输入发布日期" type="text" value="@Model.AddDate" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">内容</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Summary" name="Summary" type="text/plain" style="width:100%;height:200px;">
+                                        @Html.Raw(Model.Summary)
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+	<!-- form end -->
+
+}
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            UE.getEditor('Summary');
+        })
+    </script>
+}

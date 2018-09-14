@@ -1,0 +1,667 @@
+﻿@using Domain.Entity
+@model tb_Admin
+@{
+    var siteModel = ViewBag.siteModel as tb_Site;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="renderer" content="webkit" />
+    <title>飞易腾CMS管理系统</title>
+    <!--[if lt IE 8]>
+    <script>
+        alert('飞易腾管理系统已不支持IE6-8，请使用谷歌、火狐等浏览器\n或360、QQ等国产浏览器的极速模式浏览本页面！');
+    </script>
+    <![endif]-->
+    <link href="/assets/dialog/ui-dialog.css" rel="stylesheet" />
+    <link href="/assets/lib/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/lib/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/assets/lib/css/animate.min.css" rel="stylesheet" />
+    <link href="/assets/lib/css/style.min.css" rel="stylesheet" />
+    <link href="/assets/css/fonts.css" rel="stylesheet" />
+    <link href="/assets/css/icons.css" rel="stylesheet" />
+</head>
+
+    <body class="fixed-sidebar full-height-layout gray-bg">
+        <div id="preloader">
+            <div id="status">
+                <p class="center-text">
+                    正在加载内容...
+                    <em>Loading depends on your connection speed!</em>
+                </p>
+            </div>
+        </div>
+        <div id="wrapper">
+            <!--左侧导航开始-->
+            <nav class="navbar-default navbar-static-side" role="navigation">
+                <div class="nav-close">
+                    <i class="fa fa-times-circle"></i>
+                </div>
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="side-id0">
+                        <li class="nav-header">
+                            <div class="dropdown profile-element">
+                                <span><img alt="image" class="img-circle" src="@Model.HeadPic" width="64" height="64" /></span>
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                    <span class="clear">
+                                        <span class="block m-t-xs"><strong class="font-bold">@Model.LoginName</strong></span>
+                                        <span class="text-muted text-xs block">@Model.tb_AdminRole.RoleName<b class="caret"></b></span>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                    <li>
+                                        <a class="J_menuItem" href="/FytAdmin/SysAdmin/AdminIndex">修改头像</a>
+                                    </li>
+                                    <li>
+                                        <a class="J_menuItem" href="/FytAdmin/SysAdmin/AdminIndex">个人资料</a>
+                                    </li>
+                                    <li>
+                                        <a class="" target="_blank" href="http://www.feiyit.com">联系我们</a>
+                                    </li>
+                                    <li>
+                                        <a class="J_menuItem" href="/FytAdmin/Message/Index?ClassId=0">信箱</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="javascript:void(0)" class="dl_exit">安全退出</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="logo-element"></div>
+                        </li>
+                    </ul>
+                    @{
+                        var result = from sc in FytMsys.Helper.OperateSession.SetContext.tb_AdminMenu
+                                     join user in FytMsys.Helper.OperateSession.SetContext.tb_AdminPermission on sc.ID equals user.NodeID
+                                     where user.RoleID == Model.RoleID
+                                     select new
+                                     {
+                                         sc.ID,
+                                         sc.NodeID,
+                                         sc.ParentID,
+                                         sc.Name,
+                                         sc.AreaName,
+                                         sc.ControllerName,
+                                         sc.ActionName,
+                                         sc.Ico,
+                                         sc.Sort,
+                                         sc.IsLink,
+                                         sc.IsShow,
+                                         sc.Level,
+                                         RoleID = user.RoleID,
+
+                                     };
+                        var mlist = result.ToList();
+                        var LeftNav = mlist.Where(m => m.ParentID == 0).ToList();
+                        if (LeftNav != null && LeftNav.Count > 0)
+                        {
+                            var index = 0;
+                            foreach (var menu in LeftNav)
+                            {
+                                index++;
+                                <ul class="nav side-menu @(index == 1 ? "" : "hidden")" id="side-id@(menu.ID)">
+                                    @{
+                                var twoNav = mlist.Where(m => m.ParentID == menu.NodeID && m.Level == 1).ToList();
+                                        if (twoNav != null && twoNav.Count > 0)
+                                        {
+                                            foreach (var tow in twoNav)
+                                            {
+                                                <li>
+                                                    <a href="javascript:void(0)"><i class="@tow.Ico"></i><span class="nav-label">@tow.Name</span><span class="fa arrow"></span></a>
+                                                    <ul class="nav nav-second-level in">
+                                                        @{
+                                                var three = mlist.Where(m => m.ParentID == menu.NodeID && m.Level == tow.NodeID).ToList();
+                                                            if (three != null && three.Count > 0)
+                                                            {
+                                                                foreach (var the in three)
+                                                                {
+                                                                    <li>
+                                                                        <a class="J_menuItem" href="/@the.AreaName/@the.ControllerName/@the.ActionName" data-index="0">@the.Name</a>
+                                                                    </li>
+                                                                }
+                                                            }
+                                                        }
+                                                    </ul>
+
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            }
+                        }
+                    }
+                </div>
+            </nav>
+            <!--左侧导航结束-->
+            <!--右侧部分开始-->
+            <div id="page-wrapper" class="gray-bg dashbard-1">
+                <div class="row border-bottom">
+                    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                        <div class="navbar-header">
+                            <ul id="J_Nav" class="nav-list ks-clear">
+                                @{
+                                    var firstNav = mlist.Where(m => m.ParentID == 0).ToList();
+                                    if (firstNav != null && firstNav.Count > 0)
+                                    {
+                                        var index = 0;
+                                        foreach (var menu in firstNav)
+                                        {
+                                            index++;
+                                            if (index == 1)
+                                            {
+                                                <li class="nav-item dl-selected"><a href="javascript:void(0)" data-id="@menu.ID"><i class="@menu.Ico"></i><span>@menu.Name</span></a></li>
+                                            }
+                                            else
+                                            {
+                                                <li class="nav-item"><a href="javascript:void(0)" data-id="@menu.ID"><i class="@menu.Ico"></i><span>@menu.Name</span></a></li>
+                                            }
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <ul class="nav navbar-top-links navbar-right">
+                            <li class="dropdown">
+                                <div class="dl_sel_site">
+                                    <a href="javascript:void(0)" id="sel_site"><i class="im-home2"></i><span id="site-name">@siteModel.SiteName</span><b></b></a>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <div class="cle-cache"><a style="color:red" href="javascript:void(0)"><i class="im-remove8"></i> 清除缓存</a></div>
+                            </li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-bell"></i> <span class="label label-primary">@(ViewBag.msgcount)</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-alerts">
+                                    <li>
+                                        <a href="/FytAdmin/Message/Index?ClassId=0">
+                                            <div>
+                                                <i class="fa fa-envelope fa-fw"></i> 您有@(ViewBag.msgcount)条未读消息
+                                                <span class="pull-right text-muted small">@ViewBag.lastmsg</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <div class="text-center link-block">
+                                            <a class="J_menuItem" href="/FytAdmin/Message/Index" data-index="87">
+                                                <strong>查看所有 </strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a class="right-sidebar-toggle" aria-expanded="false">
+                                    <i class="fa fa-tasks"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="z-menu">
+                            <div class="zd-sear"><tt>站点名称：<input type="text" id="Filter" onkeyup="filter()" /> <img src="/assets/images/icon/s_sear.png" style="cursor:pointer; vertical-align:top;" align="absmiddle" onclick="filter()" /></tt></div>
+                            <dl>
+                                <dt><i class="im-home11"></i>所有站点</dt>
+                                <dd>
+                                    <span class="nowservice"><i class="tree-skeleton-icon"></i> <i class="im-align-left"></i>当前服务器</span>
+                                    <ul id="siteul">
+                                        @{
+                                            var siteList = ViewBag.siteList as List<tb_Site>;
+                                            if (siteList != null && siteList.Count > 0)
+                                            {
+                                                foreach (var site in siteList)
+                                                {
+                                                    <li onclick="hm.checkSite(@site.ID)"><i class="line-null"></i><i class="im-forward3"></i> @site.SiteName</li>
+                                                }
+                                            }
+                                        }
+                                    </ul>
+                                </dd>
+                            </dl>
+                        </div>
+                    </nav>
+                </div>
+                <div class="row content-tabs">
+                    <button class="roll-nav roll-left J_tabLeft">
+                        <i class="fa fa-backward"></i>
+                    </button>
+                    <nav class="page-tabs J_menuTabs">
+                        <div class="page-tabs-content">
+                            <a href="javascript:;" class="active J_menuTab" data-id="/FytAdmin/index/default">首页</a>
+                        </div>
+                    </nav>
+                    <button class="roll-nav roll-right J_tabRight">
+                        <i class="fa fa-forward"></i>
+                    </button>
+                    <button class="roll-nav roll-right dropdown J_tabClose">
+                        <span class="dropdown-toggle" data-toggle="dropdown">关闭操作<span class="caret"></span></span>
+                        <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                            <li class="J_tabShowActive">
+                                <a>定位当前选项卡</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="J_tabCloseAll">
+                                <a>关闭全部选项卡</a>
+                            </li>
+                            <li class="J_tabCloseOther">
+                                <a>关闭其他选项卡</a>
+                            </li>
+                        </ul>
+                    </button>
+                    <a href="javascript:void(0)" class="roll-nav roll-right J_tabExit dl_exit"><i class="fa fa fa-sign-out"></i> 退出</a>
+                </div>
+                <div class="row J_mainContent" id="content-main">
+                    <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="/FytAdmin/index/default" frameborder="0" data-id="/FytAdmin/index/default" seamless=seamless></iframe>
+                </div>
+            </div>
+            <!--右侧部分结束-->
+            <!--右侧边栏开始-->
+            <div id="right-sidebar">
+                <div class="sidebar-container">
+
+                    <ul class="nav nav-tabs navs-3">
+
+                        <li class="active">
+                            <a data-toggle="tab" href="#tab-1">
+                                通知
+                            </a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#tab-2">
+                                项目进度
+                            </a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab-3">
+                                <i class="fa fa-gear"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+
+                        <div id="tab-1" class="tab-pane active">
+
+                            <div class="sidebar-title">
+                                <h3> <i class="fa fa-comments-o"></i> 最新通知</h3>
+                                <small><i class="fa fa-tim"></i> 您当前有10条未读信息</small>
+                            </div>
+
+                            <div>
+
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+
+                                            <div class="m-t-xs">
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="media-body">
+
+                                            据天津日报报道：瑞海公司董事长于学伟，副董事长董社轩等10人在13日上午已被控制。
+                                            <br />
+                                            <small class="text-muted">今天 4:21</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+                                        </div>
+                                        <div class="media-body">
+                                            HCY48之音乐大魔王会员专属皮肤已上线，快来一键换装拥有他，宣告你对华晨宇的爱吧！
+                                            <br />
+                                            <small class="text-muted">昨天 2:45</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+
+                                            <div class="m-t-xs">
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="media-body">
+                                            写的好！与您分享
+                                            <br />
+                                            <small class="text-muted">昨天 1:10</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+                                        </div>
+
+                                        <div class="media-body">
+                                            国外极限小子的炼成！这还是亲生的吗！！
+                                            <br />
+                                            <small class="text-muted">昨天 8:37</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+                                        </div>
+                                        <div class="media-body">
+
+                                            一只流浪狗被收留后，为了减轻主人的负担，坚持自己觅食，甚至......有些东西，可能她比我们更懂。
+                                            <br />
+                                            <small class="text-muted">今天 4:21</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+                                        </div>
+                                        <div class="media-body">
+                                            这哥们的新视频又来了，创意杠杠滴，帅炸了！
+                                            <br />
+                                            <small class="text-muted">昨天 2:45</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+
+                                            <div class="m-t-xs">
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="media-body">
+                                            最近在补追此剧，特别喜欢这段表白。
+                                            <br />
+                                            <small class="text-muted">昨天 1:10</small>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="sidebar-message">
+                                    <a href="#">
+                                        <div class="pull-left text-center">
+                                            <img alt="image" class="img-circle message-avatar" src="/assets/lib/img/profile_small.jpg" />
+                                        </div>
+                                        <div class="media-body">
+                                            我发起了一个投票 【你认为下午大盘会翻红吗？】
+                                            <br />
+                                            <small class="text-muted">星期一 8:37</small>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div id="tab-2" class="tab-pane">
+
+                            <div class="sidebar-title">
+                                <h3> <i class="fa fa-cube"></i> 最新任务</h3>
+                                <small><i class="fa fa-tim"></i> 您当前有14个任务，10个已完成</small>
+                            </div>
+
+                            <ul class="sidebar-list">
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>市场调研</h4> 按要求接收教材；
+
+                                        <div class="small">已完成： 22%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+                                        </div>
+                                        <div class="small text-muted m-t-xs">项目截止： 4:00 - 2015.10.01</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>可行性报告研究报上级批准 </h4> 编写目的编写本项目进度报告的目的在于更好的控制软件开发的时间,对团队成员的 开发进度作出一个合理的比对
+
+                                        <div class="small">已完成： 48%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 48%;" class="progress-bar"></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>立项阶段</h4> 东风商用车公司 采购综合综合查询分析系统项目进度阶段性报告武汉斯迪克科技有限公司
+
+                                        <div class="small">已完成： 14%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="label label-primary pull-right">NEW</span>
+                                        <h4>设计阶段</h4>
+                                        <!--<div class="small pull-right m-t-xs">9小时以后</div>-->
+                                        项目进度报告(Project Progress Report)
+                                        <div class="small">已完成： 22%</div>
+                                        <div class="small text-muted m-t-xs">项目截止： 4:00 - 2015.10.01</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>拆迁阶段</h4> 科研项目研究进展报告 项目编号: 项目名称: 项目负责人:
+
+                                        <div class="small">已完成： 22%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 22%;" class="progress-bar progress-bar-warning"></div>
+                                        </div>
+                                        <div class="small text-muted m-t-xs">项目截止： 4:00 - 2015.10.01</div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>建设阶段 </h4> 编写目的编写本项目进度报告的目的在于更好的控制软件开发的时间,对团队成员的 开发进度作出一个合理的比对
+
+                                        <div class="small">已完成： 48%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 48%;" class="progress-bar"></div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="small pull-right m-t-xs">9小时以后</div>
+                                        <h4>获证开盘</h4> 编写目的编写本项目进度报告的目的在于更好的控制软件开发的时间,对团队成员的 开发进度作出一个合理的比对
+
+                                        <div class="small">已完成： 14%</div>
+                                        <div class="progress progress-mini">
+                                            <div style="width: 14%;" class="progress-bar progress-bar-info"></div>
+                                        </div>
+                                    </a>
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                        <div id="tab-3" class="tab-pane">
+
+                            <div class="sidebar-title">
+                                <h3><i class="fa fa-gears"></i> 设置</h3>
+                            </div>
+
+                            <div class="setings-item">
+                                <span>
+                                    显示通知
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example" />
+                                        <label class="onoffswitch-label" for="example">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    隐藏聊天窗口
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" name="collapsemenu" checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked class="onoffswitch-checkbox" id="example2" />
+                                        <label class="onoffswitch-label" for="example2">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    清空历史记录
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example3" />
+                                        <label class="onoffswitch-label" for="example3">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    显示聊天窗口
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example4" />
+                                        <label class="onoffswitch-label" for="example4">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    显示在线用户
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked name="collapsemenu" class="onoffswitch-checkbox" id="example5" />
+                                        <label class="onoffswitch-label" for="example5">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    全局搜索
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked checked= checked name="collapsemenu" class="onoffswitch-checkbox" id="example6" />
+                                        <label class="onoffswitch-label" for="example6">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="setings-item">
+                                <span>
+                                    每日更新
+                                </span>
+                                <div class="switch">
+                                    <div class="onoffswitch">
+                                        <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example7" />
+                                        <label class="onoffswitch-label" for="example7">
+                                            <span class="onoffswitch-inner"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-content">
+                                <h4>设置</h4>
+                                <div class="small">
+                                    你可以从这里设置一些常用选项，当然啦，这个只是个演示的示例。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--右侧边栏结束-->
+        </div>
+
+        <!-- 全局js -->
+        <script src="/assets/lib/js/jquery-2.1.1.min.js"></script>
+        <script src="/assets/lib/js/bootstrap.min.js"></script>
+        <script src="/assets/lib/js/jquery.metisMenu.js"></script>
+        <script src="/assets/lib/js/jquery.slimscroll.min.js"></script>
+        <script src="/assets/lib/js/layer.min.js"></script>
+        <!-- 自定义js -->
+        <script src="/assets/lib/js/hplus.min.js"></script>
+        <script type="text/javascript" src="/assets/lib/js/contabs.min.js"></script>
+        <!-- 第三方插件 -->
+        <script src="/assets/lib/js/pace.min.js"></script>
+        @Scripts.Render("~/index/js")
+        <script type="text/javascript" src="/assets/js/fyt_index.js"></script>
+        <script type="text/javascript">
+            $(window).load(function () { // makes sure the whole site is loaded
+                $("#status").fadeOut(); // will first fade out the loading animation
+                $("#preloader").delay(350).fadeOut("slow"); // will fade out the white DIV that covers the website.
+            })
+            $(function () {
+                $("#J_Nav li").click(function () {
+                    $(this).addClass("dl-selected").siblings().removeClass('dl-selected');
+                    var g = $(this).find("a").attr("data-id");
+                    $(".side-menu").addClass("hidden");
+                    $("#side-id" + g).removeClass("hidden");
+                });
+                $("#sel_site").click(select_site);
+                function select_site() {
+                    $(".z-menu").toggle(200);
+                }
+                $(".cle-cache a").click(function () {
+                    $.post("/Index/ClearCache", null, function () { }, "json");
+                    dig.alertSuccess("清除缓存", "缓存清空完毕！");
+                });
+            });
+        </script>
+
+    </body>
+
+</html>

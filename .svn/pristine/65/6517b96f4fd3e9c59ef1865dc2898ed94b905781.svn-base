@@ -1,0 +1,430 @@
+﻿using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 去看看管理
+    /// </summary>
+    public class GoLookController : Controller
+    {
+        #region 1、[去看看] 列表页 + Index()
+        /// <summary>
+        /// 列表页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(int orderinfo, int page)
+        {
+            int pageSize = 8;
+            var date = DateTime.Now.ToShortDateString();
+            var lq = from p in OperateSession.SetContext.lv_GoLook
+                     where p.Audit == 1
+                     orderby p.UpdateTime descending
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.CoverImg,
+                         p.ShowImg,
+                         p.Rsum,
+                         p.GoAddress,
+                         p.ArriveTime,
+                         p.Flags,
+                         p.Hits,
+                         p.Centents,
+                         p.AddTime,
+                         p.UpdateTime
+                     };
+            switch (orderinfo)
+            {
+                case 0: lq = lq.OrderByDescending(m => m.AddTime); break;
+                case 1: lq = lq.OrderBy(m => m.AddTime); break;
+                case 2: lq = lq.OrderByDescending(m => m.Hits); break;
+                case 3: lq = lq.OrderBy(m => m.Hits); break;
+            }
+            //lq = lq.Where(m => String.Compare(m.ArriveTime, date, StringComparison.Ordinal) >= 0);
+            ViewBag.list = JsonConverter.JsonClass(lq.Skip(pageSize * (page - 1)).Take(pageSize).ToList());
+            //分页控件
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = page,
+                Rows = lq.Count(),
+                Counts = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize)),
+                Urls = "/golook/index/" + orderinfo + "-" + page
+            };
+            //网站信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            //广告位
+            var banner = OperateContext<tb_AdvList>.SetServer.GetList(m => m.ClassId == 6, m => m.Sort, false).Where(m => m.Status).FirstOrDefault();
+            ViewBag.banner = banner;
+            return View(siteModel);
+        }
+        #endregion
+
+        #region 2、[去看看] 发布去看看信息 + Publish()
+        /// <summary>
+        /// 发布去看看信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Publish()
+        {
+            if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+            {
+                ViewBag.userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+            }
+            else
+            {
+                ViewBag.userId = 0;
+            }
+            var flag = FytRequest.GetQueryString("flag");
+            var model = new lv_GoLook() { Flags = flag == "group" ? 1 : 0 ,Price = "0"};
+            var gid = FytRequest.GetQueryInt("gid");
+            if (gid > 0)
+            {
+                model = OperateContext<lv_GoLook>.SetServer.GetModel(m => m.ID == gid);
+                ViewBag.imglist = OperateContext<tb_ImageLibrary>.SetServer.GetList(m => m.ImgID == gid && m.ImgType == 3, m => m.ID, true).ToList();
+            }
+            return View(model);
+        }
+        #endregion
+
+        #region 3、[去看看] 发布去看看信息 + Publish()
+        /// <summary>
+        /// 发布去看看信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Publish(lv_GoLook model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var mtype = FytRequest.GetFormString("pricetype");
+                var rmb = "0";
+                var usd = "0";
+                if (mtype == "人民币")
+                {
+                    rmb = model.Price;
+                    usd = Math.Round(Convert.ToDecimal(model.Price) / MoneyHelper.GetHl(), 2).ToString();
+                }
+                else
+                {
+                    //美元
+                    usd = model.Price;
+                    rmb = Math.Round(Convert.ToDecimal(model.Price) * MoneyHelper.GetHl(), 2).ToString();
+                }
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    if (model.ID == 0)
+                    {
+                        model.Number = UtilsHelper.GetRamCode();
+                        model.UserId = userId;
+                        model.IsSpecial = false;
+                        model.AddTime = DateTime.Now;
+                        model.UpdateTime = DateTime.Now;
+                        model.Price = rmb;
+                        model.UsdPrice = usd;
+                        //保存去看看信息
+                        OperateContext<lv_GoLook>.SetServer.Add(model);
+                        ////保存去看看参与记录
+                        //var go = new lv_GoLookOrder()
+                        //{
+                        //    LookId = model.ID,
+                        //    UserId = model.UserId,
+                        //    AddTime = DateTime.Now
+                        //};
+                        //OperateContext<lv_GoLookOrder>.SetServer.Add(go);
+                    }
+                    else
+                    {
+                        var golook = OperateContext<lv_GoLook>.SetServer.GetModel(m => m.ID == model.ID);
+                        golook.Title = model.Title;
+                        golook.Price = rmb;
+                        golook.UsdPrice = usd;
+                        golook.Rsum = model.Rsum;
+                        golook.XcTime = model.XcTime;
+                        golook.Centents = model.Centents;
+                        golook.GoAddress = model.GoAddress;
+                        golook.ArriveTime = model.ArriveTime;
+                        golook.CoverImg = model.CoverImg;
+                        golook.ShowImg = model.ShowImg;
+                        golook.Flags = model.Flags;
+                        golook.UpdateTime = DateTime.Now;
+                        OperateContext<lv_GoLook>.SetServer.Update(golook);
+                        //删除旧图片
+                        OperateContext<tb_ImageLibrary>.SetServer.DeleteBy(m => m.ImgID == golook.ID && m.ImgType == 3);
+                    }
+                    #region 多张图片上传
+                    var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                    var listModel = new List<tb_ImageLibrary>();
+                    foreach (string s in reslist)
+                    {
+                        var u = FytRequest.GetFormString("file_name_" + s);
+                        if (u != "")
+                        {
+                            listModel.Add(new tb_ImageLibrary()
+                            {
+                                ImgID = model.ID,
+                                ImgType = 3,
+                                ImgUrl = u,
+                                ImgSmall = u,
+                                IsCover = false
+                            });
+                        }
+                    }
+                    OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                    #endregion
+                    jsonM.Msg = model.ID.ToString();
+                }
+                else
+                {
+                    jsonM.Status = "err";
+                    jsonM.Msg = "您的登录信息已失效,请先登录！";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(GoLookController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 4、[去看看] 详情 + Detail(int id)
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Detail(int id)
+        {
+            //获取Cookie用户ID
+            var userId = 0;
+            if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+            {
+                userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+            }
+            //获取去看看详情
+            var model = OperateContext<lv_GoLook>.SetServer.GetModel(m => m.ID == id);
+            //获取去看看图片列表
+            var imglist = OperateContext<tb_ImageLibrary>.SetServer.GetList(
+                PredicateBuilder.True<tb_ImageLibrary>().And(m => m.ImgID == id).And(m => m.ImgType == 3),
+                m => m.IsCover, true).ToList();
+            ViewBag.imglist = imglist;
+            //获取去看看参与人列表
+            var peoplelist = OperateContext<lv_GoLookOrder>.SetServer.GetList(m => m.LookId == id, m => m.AddTime, true).ToList();
+            ViewBag.peoplelist = peoplelist;
+            //获取去看看最新发布
+            var newpublish = OperateContext<lv_GoLook>.SetServer.GetList(m => m.ID != id & m.Audit == 1, m => m.UpdateTime, false);
+            ViewBag.newpublish = newpublish.Take(5).ToList();
+            //判断当前用户是否已参与
+            var IsExist = 0;
+            foreach (var item in peoplelist.ToList())
+            {
+                if (item.UserId == userId)
+                {
+                    IsExist = 1;
+                }
+            }
+            ViewBag.IsExist = IsExist;
+            //更新用户访问量
+            model.Hits = model.Hits + 1;
+            ViewBag.userId = userId;
+            OperateContext<lv_GoLook>.SetServer.Update(model);
+            return View(model);
+        }
+        #endregion
+
+        #region 5、[去看看] 报名 + GoLookOrder()
+        /// <summary>
+        /// 报名
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GoLookOrder()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "报名成功！" };
+            try
+            {
+                var golookId = FytRequest.GetFormInt("golookId");//去看看ID
+                var payType = FytRequest.GetFormString("payType");//支付类型
+                var usd = FytRequest.GetFormInt("husd"); //支付美元
+                //获取Cookie用户ID
+                var userId = 0;
+                var info = "";
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+
+                    //获取去看看所需人数及现参与人数并对比
+                    var glo = OperateContext<lv_GoLook>.SetServer.GetModel(m => m.ID == golookId);
+                    var joinnum = OperateContext<lv_GoLookOrder>.SetServer.Count(m => m.LookId == golookId);
+                    if (joinnum < int.Parse(glo.Rsum))
+                    {
+                        var IsExist = OperateContext<lv_GoLookOrder>.SetServer.Exist(PredicateBuilder.True<lv_GoLookOrder>().And(m => m.LookId == golookId).And(m => m.UserId == userId));
+                        if (!IsExist)
+                        {
+                            switch (payType)
+                            {
+                                case "zfb": info = "支付宝"; break;
+                                case "paypal": info = "PayPal"; break;
+                                case "xyk": info = "信用卡"; break;
+                                default: info = "支付宝"; break;
+                            }
+                            //录入去看看参与记录
+                            var model = new lv_GoLookOrder()
+                            {
+                                Number = "QK" + UtilsHelper.GetRamCode(),
+                                LookId = golookId,
+                                UserId = userId,
+                                PayStatus = 0,
+                                PayName = info,
+                                PayPrice =payType=="zfb" ? Convert.ToDecimal(glo.Price) : Convert.ToDecimal(glo.UsdPrice),
+                                AddTime = DateTime.Now
+                            };
+                            OperateContext<lv_GoLookOrder>.SetServer.Add(model);
+                            jsonM.Data = model.Number;
+                            jsonM.DataA = payType;
+                        }
+                        else
+                        {
+                            jsonM.Status = "n";
+                            jsonM.Msg = "抱歉，您已报名!";
+                        }
+                    }
+                    else
+                    {
+                        jsonM.Status = "n";
+                        jsonM.Msg = "抱歉，参与人数已满!";
+                    }
+                }
+                else
+                {
+                    jsonM.Status = "warning";
+                    jsonM.Msg = "您尚未登录,请先登录！";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(GoLookController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 6、[公用] 发送信息 + SendUserMsg()
+        /// <summary>
+        /// 发送信息
+        /// </summary>
+        /// <returns></returns>
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult SendUserMsg()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                //获取Cookie用户ID
+                var userId = 0;
+                if (!string.IsNullOrEmpty(UtilsHelper.GetCookie("FytUserId")))
+                {
+                    userId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                    var centents = FytRequest.GetFormString("centents");//信息详情
+                    //发送信息
+                    var model = new lv_Message()
+                    {
+                        GoUserId = userId,
+                        SendUserId = userId,
+                        IsRead = false,
+                        Centents = centents,
+                        AddTime = DateTime.Now
+                    };
+                    OperateContext<lv_Message>.SetServer.Add(model);
+                }
+                else
+                {
+                    jsonM.Status = "warning";
+                    jsonM.Msg = "您尚未登录,请先登录！";
+                }
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(GoLookController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+
+        #region 7、[我等你] 支付完成 + PaySuccess()
+        /// <summary>
+        /// 支付完成
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult PaySuccess()
+        {
+            //我等你详情
+            var ordernum = FytRequest.GetQueryString("o");
+            var model = OperateContext<lv_GoLookOrder>.SetServer.GetModel(m => m.Number == ordernum);
+            return View(model);
+        }
+        #endregion
+
+        #region 8、[我等你] 提交订单 + SubOrder()
+        /// <summary>
+        /// 提交订单
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SubOrder()
+        {
+            var ordernum = FytRequest.GetQueryString("o");//订单号
+            if (!string.IsNullOrEmpty(ordernum))
+            {
+                //获取订单信息
+                var model = OperateContext<lv_GoLookOrder>.SetServer.GetModel(m => m.Number == ordernum);
+                //获取我等你信息
+                var golook = OperateContext<lv_GoLook>.SetServer.GetModel(m => m.ID == model.LookId);
+                //判断支付类型
+                if (model.PayName == "支付宝")
+                {
+                    return RedirectToAction("Index", "AliPays",
+                new { o = Server.UrlEncode(model.Number), t = Server.UrlEncode(golook.Title), re = Server.UrlEncode(golook.Title), m = Server.UrlEncode(model.PayPrice.ToString(CultureInfo.InvariantCulture)) });
+                }
+                else if (model.PayName == "PayPal")
+                {
+                    return RedirectToAction("SetExpressCheckout", "Paypal",
+                new { i = Server.UrlEncode(model.ID.ToString()), o = Server.UrlEncode(model.Number), t = Server.UrlEncode(golook.Title), re = Server.UrlEncode(golook.Title), m = Server.UrlEncode(model.PayPrice.ToString(CultureInfo.InvariantCulture)) });
+                }
+                else if (model.PayName == "信用卡")
+                {
+                    return RedirectToAction("SetExpressCheckout", "Paypal",
+                new { i = Server.UrlEncode(model.ID.ToString()), o = Server.UrlEncode(model.Number), t = Server.UrlEncode(golook.Title), re = Server.UrlEncode(golook.Title), m = Server.UrlEncode(model.PayPrice.ToString(CultureInfo.InvariantCulture)) });
+                }
+            }
+            return View();
+        }
+        #endregion
+    }
+}

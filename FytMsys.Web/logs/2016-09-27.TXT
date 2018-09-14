@@ -1,0 +1,56 @@
+????:2016-09-27 19:56:28,984 
+??ID:[18] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-27 19:59:27,009 
+??ID:[18] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-27 20:03:22,799 
+??ID:[41] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-27 20:07:35,015 
+??ID:[19] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-27 20:09:02,108 
+??ID:[41] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:An error occurred while updating the entries. See the inner exception for details.
+---------------------------------------------------------------
+
+????:2016-09-27 20:09:34,341 
+??ID:[14] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:An error occurred while updating the entries. See the inner exception for details.
+---------------------------------------------------------------
+
+????:2016-09-27 20:16:33,409 
+??ID:[14] 
+????:ERROR 
+???:FytMsys.Web.Controllers.UsersController property:[(null)]  
+????:Failure sending mail.
+---------------------------------------------------------------
+
+????:2016-09-27 22:20:57,601 
+??ID:[18] 
+????:ERROR 
+???:Domain.Entity.lv_Message property:[(null)]  
+????:Object reference not set to an instance of an object.
+---------------------------------------------------------------
+

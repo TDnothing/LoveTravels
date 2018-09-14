@@ -1,0 +1,889 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+
+namespace FytMsys.Common
+{
+    /// <summary>
+    /// 公共方法调用类
+    /// </summary>
+    public class UtilsHelper
+    {
+        #region 获得配置文件节点XML文件的绝对路径
+        public static string GetXmlMapPath(string xmlName)
+        {
+            return GetMapPath(ConfigurationManager.AppSettings[xmlName].ToString());
+        }
+        #endregion
+        #region 获得当前绝对路径
+        /// <summary>
+        /// 获得当前绝对路径
+        /// </summary>
+        /// <param name="strPath">指定的路径</param>
+        /// <returns>绝对路径</returns>
+        public static string GetMapPath(string strPath)
+        {
+            if (strPath.ToLower().StartsWith("http://"))
+            {
+                return strPath;
+            }
+            if (HttpContext.Current != null)
+            {
+                return HttpContext.Current.Server.MapPath(strPath);
+            }
+            else //非web程序引用
+            {
+                strPath = strPath.Replace("/", "\\");
+                if (strPath.StartsWith("\\"))
+                {
+                    strPath = strPath.Substring(strPath.IndexOf('\\', 1)).TrimStart('\\');
+                }
+                return System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, strPath);
+            }
+        }
+        #endregion
+        #region 获取IP
+
+        /// <summary>
+        /// 获得当前页面客户端的IP
+        /// </summary>
+        /// <returns>当前页面客户端的IP</returns>
+        public static string GetIP()
+        {
+            string result = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (string.IsNullOrEmpty(result))
+            {
+                result = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            }
+
+            if (string.IsNullOrEmpty(result))
+            {
+                result = HttpContext.Current.Request.UserHostAddress;
+            }
+
+            if (string.IsNullOrEmpty(result) || !IsIP(result))
+            {
+                return "0.0.0.0";
+            }
+
+            return result;
+
+        }
+        /// <summary>
+        /// 是否为ip
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <returns></returns>
+        public static bool IsIP(string ip)
+        {
+            return Regex.IsMatch(ip, @"^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$");
+
+        }
+
+        #endregion
+
+        #region 清除HTML标记
+        public static string DropHTML(string htmlstring)
+        {
+            if (string.IsNullOrEmpty(htmlstring)) return htmlstring;
+            //删除脚本  
+            htmlstring = Regex.Replace(htmlstring, @"<script[^>]*?>.*?</script>", "", RegexOptions.IgnoreCase);
+            //删除HTML  
+            htmlstring = Regex.Replace(htmlstring, @"<(.[^>]*)>", "", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"([\r\n])[\s]+", "", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"-->", "", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"<!--.*", "", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(quot|#34);", "\"", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(amp|#38);", "&", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(lt|#60);", "<", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(gt|#62);", ">", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(nbsp|#160);", " ", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(iexcl|#161);", "\xa1", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(cent|#162);", "\xa2", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(pound|#163);", "\xa3", RegexOptions.IgnoreCase);
+            htmlstring = Regex.Replace(htmlstring, @"&(copy|#169);", "\xa9", RegexOptions.IgnoreCase);
+
+            htmlstring = Regex.Replace(htmlstring, @"&#(\d+);", "", RegexOptions.IgnoreCase);
+            htmlstring.Replace("<", "");
+            htmlstring.Replace(">", "");
+            htmlstring.Replace("\r\n", "");
+            htmlstring = HttpContext.Current.Server.HtmlEncode(htmlstring).Trim();
+
+            return htmlstring;
+        }
+        #endregion
+
+        #region 清除HTML标记且返回相应的长度
+        /// <summary>
+        /// 标记且返回相应的长度
+        /// </summary>
+        /// <param name="htmlstring">要清楚的字符的内容</param>
+        /// <param name="strLen">返回对应长度，后缀...</param>
+        /// <returns></returns>
+        public static string DropHTML(string htmlstring, int strLen)
+        {
+            return CutString(DropHTML(htmlstring), strLen);
+        }
+        #endregion
+
+        #region TXT代码转换成HTML格式
+
+        /// <summary>
+        /// 字符串字符处理
+        /// </summary>
+        /// <param name="input">等待处理的字符串</param>
+        /// <returns>处理后的字符串</returns>
+        /// //把TXT代码转换成HTML格式
+        public static String ToHtml(string input)
+        {
+            StringBuilder sb = new StringBuilder(input);
+            sb.Replace("&", "&amp;");
+            sb.Replace("<", "&lt;");
+            sb.Replace(">", "&gt;");
+            sb.Replace("\r\n", "<br />");
+            sb.Replace("\n", "<br />");
+            sb.Replace("\t", " ");
+            //sb.Replace(" ", "&nbsp;");
+            return sb.ToString();
+        }
+        #endregion
+
+        #region HTML代码转换成TXT格式
+
+        /// <summary>
+        /// 字符串字符处理
+        /// </summary>
+        /// <param name="input">等待处理的字符串</param>
+        /// <returns>处理后的字符串</returns>
+        /// //把HTML代码转换成TXT格式
+        public static String ToTxt(String input)
+        {
+            StringBuilder sb = new StringBuilder(input);
+            sb.Replace("&nbsp;", " ");
+            sb.Replace("<br>", "\r\n");
+            sb.Replace("<br>", "\n");
+            sb.Replace("<br />", "\n");
+            sb.Replace("<br />", "\r\n");
+            sb.Replace("&lt;", "<");
+            sb.Replace("&gt;", ">");
+            sb.Replace("&amp;", "&");
+            return sb.ToString();
+        }
+        #endregion
+
+        #region 检查危险字符
+        /// <summary>
+        /// 检查危险字符
+        /// </summary>
+        /// <param name="Input"></param>
+        /// <returns></returns>
+        public static string Filter(string sInput)
+        {
+            if (string.IsNullOrEmpty(sInput))
+                return null;
+            string sInput1 = sInput.ToLower();
+            string output = sInput;
+            string pattern = @"*|and|exec|insert|select|delete|update|count|master|truncate|declare|char(|mid(|chr(|'";
+            if (Regex.Match(sInput1, Regex.Escape(pattern), RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                throw new Exception("字符串中含有非法字符!");
+            }
+            else
+            {
+                output = output.Replace("'", "''");
+            }
+            return output;
+        }
+        #endregion
+
+        #region 检查过滤设定的危险字符
+
+        /// <summary> 
+        /// 检查过滤设定的危险字符
+        /// </summary>
+        /// <param name="word">危险字符的数组 通过|分割</param>
+        /// <param name="inText">要过滤的字符串 </param> 
+        /// <returns>如果参数存在不安全字符，则返回true </returns> 
+        public static bool SqlFilter(string word, string inText)
+        {
+            return inText != null && word.Split('|').Any(i => (inText.ToLower().IndexOf(i + " ", System.StringComparison.Ordinal) > -1) || (inText.ToLower().IndexOf(" " + i, System.StringComparison.Ordinal) > -1));
+        }
+
+        #endregion
+
+        #region 过滤特殊字符
+        /// <summary>
+        /// 过滤特殊字符
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string Htmls(string input)
+        {
+            if (!string.IsNullOrEmpty(input))
+            {
+                string ihtml = input.ToLower();
+                ihtml = ihtml.Replace("<script", "&lt;script");
+                ihtml = ihtml.Replace("script>", "script&gt;");
+                ihtml = ihtml.Replace("<%", "&lt;%");
+                ihtml = ihtml.Replace("%>", "%&gt;");
+                ihtml = ihtml.Replace("<$", "&lt;$");
+                ihtml = ihtml.Replace("$>", "$&gt;");
+                return ihtml;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+        #endregion
+
+        #region 截取字符长度
+        /// <summary>
+        /// 截取字符长度
+        /// </summary>
+        /// <param name="inputString">字符</param>
+        /// <param name="len">长度</param>
+        /// <returns></returns>
+        public static string CutString(string inputString, int len)
+        {
+            if (string.IsNullOrEmpty(inputString))
+                return "";
+            ASCIIEncoding ascii = new ASCIIEncoding();
+            int tempLen = 0;
+            string tempString = "";
+            byte[] s = ascii.GetBytes(inputString);
+            for (int i = 0; i < s.Length; i++)
+            {
+                if ((int)s[i] == 63)
+                {
+                    tempLen += 2;
+                }
+                else
+                {
+                    tempLen += 1;
+                }
+
+                try
+                {
+                    tempString += inputString.Substring(i, 1);
+                }
+                catch
+                {
+                    break;
+                }
+
+                if (tempLen > len)
+                    break;
+            }
+            //如果截过则加上半个省略号 
+            byte[] mybyte = System.Text.Encoding.Default.GetBytes(inputString);
+            if (mybyte.Length > len)
+                tempString += "…";
+            return tempString;
+        }
+        #endregion
+
+        #region 生成日期随机码
+        /// <summary>
+        /// 生成日期随机码
+        /// </summary>
+        /// <returns></returns>
+        public static string GetRamCode()
+        {
+            #region
+            return DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            #endregion
+        }
+        #endregion
+
+        #region 删除最后结尾的指定字符后的字符
+        /// <summary>
+        /// 删除最后结尾的指定字符后的字符
+        /// </summary>
+        public static string DelLastChar(string str, string strchar)
+        {
+            return str.Substring(0, str.LastIndexOf(strchar, System.StringComparison.Ordinal));
+        }
+        #endregion
+
+        #region 删除最后结尾的一个逗号
+        /// <summary>
+        /// 删除最后结尾的一个逗号
+        /// </summary>
+        public static string DelLastComma(string str)
+        {
+            return str.Substring(0, str.LastIndexOf(",", System.StringComparison.Ordinal));
+        }
+        #endregion
+
+        #region 将字符串转换为数组
+        /// <summary>
+        /// 将字符串转换为数组
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string[] GetStrArray(string str)
+        {
+            return str.Split(new char[',']);
+        }
+        #endregion
+
+        #region 将数组转换为字符串
+        /// <summary>
+        /// 将数组转换为字符串
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="speater"></param>
+        /// <returns></returns>
+        public static string GetArrayStr(List<string> list, string speater)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (i == list.Count - 1)
+                {
+                    sb.Append(list[i]);
+                }
+                else
+                {
+                    sb.Append(list[i]);
+                    sb.Append(speater);
+                }
+            }
+            return sb.ToString();
+        }
+        #endregion
+
+        /// <summary>
+        /// 生成随机数字
+        /// </summary>
+        /// <param name="length">生成长度</param>
+        /// <param name="sleep">是否要在生成前将当前线程阻止以避免重复</param>
+        /// <returns></returns>
+        public static string Number(int length, bool sleep)
+        {
+            if (sleep)
+                System.Threading.Thread.Sleep(100);
+            string result = "";
+            System.Random random = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                result += random.Next(10).ToString(CultureInfo.InvariantCulture);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// MD5加密字符串处理
+        /// </summary>
+        /// <param name="Half">加密是16位还是32位；如果为true为16位</param>
+        /// <param name="Input">待加密码字符串</param>
+        /// <returns></returns>
+        public static string MD5(string Input, bool Half)
+        {
+            string output = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(Input, "MD5").ToLower();
+            if (Half)//16位MD5加密（取32位加密的9~25字符）
+                output = output.Substring(8, 16);
+            return output;
+        }
+
+        /// <summary>
+        /// 返回文件扩展名，不含“.”
+        /// </summary>
+        /// <param name="filepath">文件全名称</param>
+        /// <returns>string</returns>
+        public static string GetFileExt(string filepath)
+        {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return "";
+            }
+            return filepath.LastIndexOf(".", System.StringComparison.Ordinal) > 0 ? filepath.Substring(filepath.LastIndexOf(".", System.StringComparison.Ordinal) + 1) : "";
+        }
+        /// <summary>
+        /// 将单引号替换成双引号
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="def"></param>
+        /// <returns></returns>
+        public static string GetString(object obj, string def)
+        {
+            if (obj != null)
+            {
+                def = obj.ToString().Replace("'", "''");
+            }
+            return def;
+
+        }
+        /// <summary>
+        /// 检测是否有Sql危险字符
+        /// </summary>
+        /// <param name="str">要判断字符串</param>
+        /// <returns>判断结果</returns>
+        public static bool IsSafeSqlString(string str)
+        {
+            return !Regex.IsMatch(str, @"[-|;|,|\/|\(|\)|\[|\]|\}|\{|%|@|\*|!|\']");
+        }
+
+        /// <summary>
+        /// 返回指定IP是否在指定的IP数组所限定的范围内, IP数组内的IP地址可以使用*表示该IP段任意, 例如192.168.1.*
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="iparray"></param>
+        /// <returns></returns>
+        public static bool InIPArray(string ip, string[] iparray)
+        {
+
+            string[] userip = SplitString(ip, @".");
+            foreach (string t in iparray)
+            {
+                string[] tmpip = SplitString(t, @".");
+                int r = 0;
+                for (int i = 0; i < tmpip.Length; i++)
+                {
+                    if (tmpip[i] == "*")
+                    {
+                        return true;
+                    }
+
+                    if (userip.Length > i)
+                    {
+                        if (tmpip[i] == userip[i])
+                        {
+                            r++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
+                if (r == 4)
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        /// <returns></returns>
+        public static string[] SplitString(string strContent, string strSplit, int p_3)
+        {
+            string[] result = new string[p_3];
+
+            string[] splited = SplitString(strContent, strSplit);
+
+            for (int i = 0; i < p_3; i++)
+            {
+                if (i < splited.Length)
+                    result[i] = splited[i];
+                else
+                    result[i] = string.Empty;
+            }
+
+            return result;
+        }
+        /// <summary>
+        /// 分割字符串
+        /// </summary>
+        public static string[] SplitString(string strContent, string strSplit)
+        {
+            if (strContent.IndexOf(strSplit) < 0)
+            {
+                string[] tmp = { strContent };
+                return tmp;
+            }
+            return Regex.Split(strContent, Regex.Escape(strSplit), RegexOptions.IgnoreCase);
+        }
+
+        /// <summary>
+        /// 写cookie值
+        /// </summary>
+        /// <param name="strName">名称</param>
+        /// <param name="strValue">值</param>
+        public static void WriteCookie(string strName, string strValue)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[strName] ?? new HttpCookie(strName);
+            cookie.Value = strValue;
+            HttpContext.Current.Response.AppendCookie(cookie);
+        }
+
+        /// <summary>
+        /// 写cookie值
+        /// </summary>
+        /// <param name="strName">名称</param>
+        /// <param name="strValue">值</param>
+        public static void WriteCookie(string strName, string key, string strValue)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[strName] ?? new HttpCookie(strName);
+            cookie[key] = strValue;
+            HttpContext.Current.Response.AppendCookie(cookie);
+        }
+
+        /// <summary>
+        /// 写cookie值
+        /// </summary>
+        /// <param name="strName">名称</param>
+        /// <param name="strValue">值</param>
+        /// <param name="expires">过期时间(分钟)</param>
+        public static void WriteCookie(string strName, string strValue, int expires)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[strName] ?? new HttpCookie(strName);
+            cookie.Value = strValue;
+            cookie.Expires = DateTime.Now.AddMinutes(expires);
+            HttpContext.Current.Response.AppendCookie(cookie);
+        }
+
+        /// <summary>
+        /// 读cookie值
+        /// </summary>
+        /// <param name="strName">名称</param>
+        /// <returns>cookie值</returns>
+        public static string GetCookie(string strName)
+        {
+            return HttpContext.Current.Request.Cookies[strName] != null ? HttpContext.Current.Request.Cookies[strName].Value.ToString(CultureInfo.InvariantCulture) : "";
+        }
+
+        /// <summary>
+        /// 读cookie值
+        /// </summary>
+        /// <param name="strName">名称</param>
+        /// <param name="key">cooke关键字</param>
+        /// <returns>cookie值</returns>
+        public static string GetCookie(string strName, string key)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+            if (HttpContext.Current.Request.Cookies[strName] != null && HttpContext.Current.Request.Cookies[strName][key] != null)
+                return HttpContext.Current.Request.Cookies[strName][key].ToString(CultureInfo.InvariantCulture);
+
+            return "";
+        }
+        
+        /// <summary>
+        /// 获取一个目标的匹配结果
+        /// </summary>
+        /// <param name="input">要匹配的字符串</param>
+        /// <param name="pattern"></param>
+        /// <param name="find"></param>
+        /// <returns></returns>
+        public static Match GetMatch(string input, string pattern, string find)
+        {
+            string pattn = Regex.Escape(pattern);
+            pattn = pattn.Replace(@"\[变量]", @"[\s\S]*?");
+            pattn = Regex.Replace(pattn, @"((\\r\\n)|(\\ ))+", @"\s*", RegexOptions.Compiled);
+            if (Regex.Match(pattern.TrimEnd(), Regex.Escape(find) + "$", RegexOptions.Compiled).Success)
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[\s\S]+)");
+            else
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[\s\S]+?)");
+            Regex r = new Regex(pattn, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Match m = r.Match(input);
+            return m;
+        }
+
+        /// 按严格的匹配方式获取一个目标的匹配结果
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="pattern"></param>
+        /// <param name="find"></param>
+        /// <returns></returns>
+        public static Match GetMatchRigid(string input, string pattern, string find)
+        {
+            string pattn = Regex.Escape(pattern);
+            pattn = pattn.Replace(@"\[变量]", @"[\s\S]*?");
+            if (Regex.Match(pattern.TrimEnd(), Regex.Escape(find) + "$", RegexOptions.Compiled).Success)
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[\s\S]+)");
+            else
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[\s\S]+?)");
+            Regex r = new Regex(pattn, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Match m = r.Match(input);
+            return m;
+        }
+
+        /// <summary>
+        /// 匹配超级链接地址
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="pattern"></param>
+        /// <param name="find"></param>
+        /// <returns></returns>
+        public static Match GetMatchUrl(string input, string pattern, string find)
+        {
+            string pattn = Regex.Escape(pattern);
+            pattn = pattn.Replace(@"\[变量]", @"[\s\S]*?");
+            if (Regex.Match(pattern.TrimEnd(), Regex.Escape(find) + "$", RegexOptions.Compiled).Success)
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[^'""\ >]+)");
+            else
+                pattn = pattn.Replace(@"\" + find, @"(?<TARGET>[^'""\ >]+?)");
+            Regex r = new Regex(pattn, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Match m = r.Match(input);
+            return m;
+        }
+
+        private static string UrlPlus(string front, string tail)
+        {
+            if (Regex.Match(front, "(http|https|ftp|rtsp|mms)://[^/]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                return front + "/" + tail;
+            }
+            else if (Regex.Match(front, "(http|https|ftp|rtsp|mms)://[^/]+/$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                return front + tail;
+            }
+            else if (Regex.Match(front, "(http|https|ftp|rtsp|mms)://.+/$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                return front + tail;
+            }
+            else if (Regex.Match(front, @"/[^/\.]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                return front + "/" + tail;
+            }
+            else if (Regex.Match(front, @"/[^/\.]+\.[^/]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Success)
+            {
+                return Regex.Replace(front, @"/[^/\.]+\.[^/]+$", "", RegexOptions.IgnoreCase | RegexOptions.Compiled) + "/" + tail;
+            }
+            else
+            {
+                return front + "/" + tail;
+            }
+        }
+        private static string GetLastUrl(string baseUrl, string branchUrl)
+        {
+            branchUrl = branchUrl.TrimStart('/');
+            var starUrl = "";
+            var endUrl = baseUrl;
+            if (baseUrl.IndexOf("//", System.StringComparison.Ordinal) > 0)
+            {
+                baseUrl = baseUrl.Replace("//", "|");
+                var urlArr = baseUrl.Split('|');
+                starUrl = urlArr[0].ToString(CultureInfo.InvariantCulture);
+                endUrl = urlArr[1].ToString(CultureInfo.InvariantCulture);
+            }
+            if (endUrl.IndexOf("/", System.StringComparison.Ordinal) > 0)
+            {
+                var endArr = endUrl.Split('/');
+                endUrl = endArr[0].ToString(CultureInfo.InvariantCulture);
+                if (starUrl != string.Empty)
+                {
+                    return starUrl + "//" + endUrl + "/" + branchUrl;
+                }
+                else
+                {
+                    return endUrl + "/" + branchUrl;
+                }
+            }
+            else
+            {
+                if (starUrl != string.Empty)
+                {
+                    return starUrl + "//" + endUrl + "/" + branchUrl;
+                }
+                else
+                {
+                    return endUrl + "/" + branchUrl;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 处理URL地址，当BranchUrl为一个全名的URL时则返回本身，否则恰当的衔接到BaseUrl后面
+        /// </summary>
+        /// <param name="baseUrl">完整的URL</param>
+        /// <param name="branchUrl">分支URL</param>
+        /// <returns></returns>
+        public static string StickUrl(string baseUrl, string branchUrl)
+        {
+            if (Regex.Match(branchUrl, @"^(http|https|ftp|rtsp|mms)://", RegexOptions.IgnoreCase | RegexOptions.Compiled).Success)
+            {
+                return branchUrl;
+            }
+            else
+            {
+                baseUrl = baseUrl.Replace("\\", "/");
+                branchUrl = branchUrl.Replace("\\", "/");
+
+                if (GetSubString(branchUrl, 1).ToString() == "/")
+                {
+                    return GetLastUrl(baseUrl, branchUrl);
+                }
+                //--------------------------
+                branchUrl = branchUrl.TrimStart('/');
+                if (branchUrl.IndexOf("../", System.StringComparison.Ordinal) != 0)
+                {
+                    return UrlPlus(baseUrl, branchUrl);
+                }
+                else
+                {
+                    if (Regex.Match(baseUrl, @"/$", RegexOptions.Compiled).Success)
+                    {
+                        baseUrl = baseUrl.TrimEnd('/');
+                    }
+                    else if (Regex.Match(baseUrl, @"/[^\./]+\.[^/]+$", RegexOptions.Compiled).Success)
+                    {
+                        baseUrl = Regex.Replace(baseUrl, @"/[^\./]+\.[^/]+$", "", RegexOptions.Compiled);
+                    }
+                    while (branchUrl.IndexOf("../", System.StringComparison.Ordinal) >= 0)
+                    {
+                        branchUrl = Regex.Replace(branchUrl, @"^\.\./", "", RegexOptions.Compiled);
+                        baseUrl = Regex.Replace(baseUrl, @"/[^/]*$", "", RegexOptions.Compiled);
+                    }
+                    return baseUrl + "/" + branchUrl;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 截取字符串函数
+        /// </summary>
+        /// <param name="str">所要截取的字符串</param>
+        /// <param name="num">截取字符串的长度</param>
+        /// <returns></returns>
+        public static string GetSubString(string str, int num)
+        {
+            if (string.IsNullOrEmpty(str))
+                return "";
+            var outstr = "";
+            var n = 0;
+            foreach (var ch in str)
+            {
+                n += System.Text.Encoding.Default.GetByteCount(ch.ToString(CultureInfo.InvariantCulture));
+                if (n > num)
+                    break;
+                else
+                    outstr += ch;
+            }
+            return outstr;
+        }
+
+        /// <summary>
+        /// 取得网站根目录的物理路径
+        /// </summary>
+        /// <returns></returns>
+        public static string GetRootPath()
+        {
+            var appPath = "";
+            var httpCurrent = HttpContext.Current;
+            if (httpCurrent != null)
+            {
+                appPath = httpCurrent.Server.MapPath("~");
+            }
+            else
+            {
+                appPath = AppDomain.CurrentDomain.BaseDirectory;
+                if (Regex.Match(appPath, @"\\$", RegexOptions.Compiled).Success)
+                    appPath = appPath.Substring(0, appPath.Length - 1);
+            }
+            return appPath;
+        }
+
+        #region 生成指定长度的字符串
+        /// <summary>
+        /// 生成指定长度的字符串,即生成strLong个str字符串
+        /// </summary>
+        /// <param name="strLong">生成的长度</param>
+        /// <param name="str">以str生成字符串</param>
+        /// <returns></returns>
+        public static string StringOfChar(int strLong, string str)
+        {
+            var returnStr = "";
+            for (var i = 0; i < strLong; i++)
+            {
+                returnStr += str;
+            }
+
+            return returnStr;
+        }
+        #endregion
+
+        /// <summary>
+        /// 获得远程字符串
+        /// </summary>
+        /// <param name="key">在配置文件中查询Key</param>
+        /// <param name="uriPath">远程地址</param>
+        /// <returns></returns>
+        public static string GetDomainStr(string key, string uriPath)
+        {
+            var result = CacheHelper.Get(key) as string;
+            if (result != null) return result;
+            var client = new System.Net.WebClient();
+            try
+            {
+                client.Encoding = System.Text.Encoding.UTF8;
+                result = client.DownloadString(uriPath);
+            }
+            catch
+            {
+                result = "暂时无法连接!";
+            }
+            CacheHelper.Insert(key, result, 60);
+
+            return result;
+        }
+
+        /// <summary>
+        /// string型转换为decimal型
+        /// </summary>
+        /// <param name="expression">要转换的字符串</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>转换后的decimal类型结果</returns>
+        public static decimal StrToDecimal(string expression, decimal defValue)
+        {
+            if ((expression == null) || (expression.Length > 10))
+                return defValue;
+
+            var intValue = defValue;
+            var isDecimal = Regex.IsMatch(expression, @"^([-]|[0-9])[0-9]*(\.\w*)?$");
+            if (isDecimal)
+                decimal.TryParse(expression, out intValue);
+            return intValue;
+        }
+
+        /// <summary>
+        /// string型转换为float型
+        /// </summary>
+        /// <param name="expression">要转换的字符串</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>转换后的int类型结果</returns>
+        public static float StrToFloat(string expression, float defValue)
+        {
+            if ((expression == null) || (expression.Length > 10))
+                return defValue;
+
+            var intValue = defValue;
+            var isFloat = Regex.IsMatch(expression, @"^([-]|[0-9])[0-9]*(\.\w*)?$");
+            if (isFloat)
+                float.TryParse(expression, out intValue);
+            return intValue;
+        }
+        /// <summary>
+        /// 将字符串转换为Int32类型
+        /// </summary>
+        /// <param name="expression">要转换的字符串</param>
+        /// <param name="defValue">缺省值</param>
+        /// <returns>转换后的int类型结果</returns>
+        public static int StrToInt(string expression, int defValue)
+        {
+            if (string.IsNullOrEmpty(expression) || expression.Trim().Length >= 11 || !Regex.IsMatch(expression.Trim(), @"^([-]|[0-9])[0-9]*(\.\w*)?$"))
+                return defValue;
+
+            int rv;
+            return Int32.TryParse(expression, out rv) ? rv : Convert.ToInt32(StrToFloat(expression, defValue));
+        }
+        
+    }
+}

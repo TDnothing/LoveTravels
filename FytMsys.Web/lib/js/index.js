@@ -1,0 +1,109 @@
+$(function(){
+	$(".hot-lv-bg").css({'width':$(window).width()/2+300});
+	hot_lv();
+	$(".b-adv a").mouseover(function(e) {
+        $(".b-adv a span").show();
+        $(this).find("span").hide();
+    });
+    $('.b-adv a').mouseout(function(e) {
+        $(".b-adv a span").hide();
+    });
+    
+    orderDown();
+    payTab();
+
+    $("#upHface").click(function () {
+        //$("#fileUrl").unbind();
+        //$("#fileUrl").click();
+        $("#fileUrl").change(function () {
+            alert("aaa");
+            upHead();
+        });
+    });
+    
+    //查看会员信息
+    $("a.look-users").click(function () {
+        layer.open({
+            type: 2,
+            title: '',
+            shadeClose: true,
+            shade: 0.5,
+            scrollbar: false,
+            area: ['780px', '80%'],
+            content: '/users/detail/' + $(this).attr("data-uid")
+        });
+    });
+
+});
+
+
+var payTab=function(){
+	$(".tc-ckb a").click(function(){
+		$(".tc-ckb a i").removeClass("cur");
+		$(this).find("i").addClass("cur");
+		var info = $(this).find("i").parent().attr("class");
+		$("#payType").val(info);
+	});
+	$(".tc-pay a.close").click(function(){
+		$(".cover,.tc-pay").hide();
+	});
+	$(".btn-yy").click(function(){
+		$(".cover").css({'height':$(document).height()});
+		$(".cover,.tc-pay").show();
+	});
+};
+
+var hot_lv=function(){
+	var l=$(".hot-s-img a").length;
+	for(var i=0; i<l; i++){
+		if(i==0){$(".hot-ck").append('<span class="cur"></span>');}
+		else{$(".hot-ck").append('<span></span>');}
+	}
+	$(".hot-s-img a").eq(0).fadeIn();
+	$(".hot-ck span").click(function(){
+		var ins=$(this).index();
+		$(".hot-s-img a").hide();
+		$(".hot-s-img a").eq(ins).fadeIn();
+		$(this).addClass("cur").siblings().removeClass('cur');
+		$(".hot-s-item").addClass("hidden");
+		$(".hot-s-item").eq(ins).removeClass("hidden");
+	});
+};
+
+var orderDown=function(){
+	$(".pub-o-wall>ul").click(function(){
+		$(this).find("li").removeClass("hidden");
+	});
+	var $menu = $('.pub-o-wall');
+	$(document).click(function(e) {
+		if(!(e.target == $menu[0] || $.contains($menu[0], e.target))) {
+			$('.pub-o-wall').find("li").not($('.pub-o-wall').find("li").eq(0)).addClass("hidden");
+		}
+	});
+};
+
+var upHead = function () {
+    var subUrl = "/Account/UpHeadPic/?upFiles=fileUrl&isImg=1&isThum=0&isWater=0";
+    $("#forms").ajaxSubmit({
+        beforeSubmit: function () {
+            //$(".sign-up").attr("disabled", "disabled").html(" 正在上传...");
+        },
+        success: function (data) {
+            if (data.Status == "y") {
+                $("#himg").attr("src",data.Data);
+            } else {
+                swal('消息', data.Msg, 'error');
+            }
+            //$(".sign-up").attr("disabled", false).html(" 单文件上传");
+            $("#fileUrl").unbind();
+        },
+        error: function (e) {
+            //$(".sign-up").attr("disabled", false).html(" 单文件上传");
+            console.log(e);
+        },
+        url: subUrl,
+        type: "post",
+        dataType: "json",
+        timeout: 600000
+    });
+};

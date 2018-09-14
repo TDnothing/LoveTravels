@@ -1,0 +1,67 @@
+﻿@using Domain.Entity
+@using Domain.ViewModel
+@using FytMsys.Common
+@using FytMsys.Helper
+@{
+    ViewBag.Title = "搜索结果";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<div class="hr"></div>
+<div class="ibox-content">
+    <h2>
+        为您找到相关结果约@(ViewBag.rows)个： <span class="text-navy">“@(FytRequest.GetQueryString("key"))”</span>
+    </h2>
+    <small>搜索用时  (@ViewBag.seconds 秒)</small>
+    <div class="search-form">
+        <form action="/search/" method="get">
+            <div class="input-group">
+                <input type="text" placeholder="请输入要搜索的内容" name="key" autocomplete="off" value="@(FytRequest.GetQueryString("key"))" class="form-control input-lg">
+                <div class="input-group-btn">
+                    <button class="btn btn-lg btn-primary" type="submit">
+                        搜索
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+<div class="wdn-w wdn-ui-w clearfix">
+    @{
+        if (list != null)
+        {
+            var i = 1;
+            foreach (var item in list)
+            {
+                <div class="wdn-item @(i%5 == 0 ? "last" : "")">
+                    <div class="wdn-img">
+                        <a href="/project/detail/@item.ID" title="@item.Title"><img alt="@item.Title" src="@item.CoverImg" width="215" height="180" /></a>
+                        <div class="u-face"><a href="" title="@item.Title"><img alt="" src="@item.HeadPic" width="62" height="62" /></a></div>
+                    </div>
+                    <div class="wdn-info">
+                        <div class="wdn-l"><span>@item.NickName</span><i class="@(item.Types == 0 ? "no" : "")"></i></div>
+                        <div class="wdn-r">@item.Region</div>
+                    </div>
+                    <div class="wdn-p">@item.Title</div>
+                    <div class="wdn-btn">
+                        <div class="star"><span class="s@(item.StarNum)"></span></div>
+                        <div class="btns"><a href="/project/detail/@item.ID">预订</a></div>
+                    </div>
+                </div>
+                <!-- end -->
+                i++;
+            }
+            if (i == 1)
+            {
+                <p style="text-align: center">暂无搜索到您要参加的活动，请换个关键词试试...</p>
+            }
+        }
+    }
+    <div class="clear"></div>
+
+    <div class="page">
+        @Html.Raw(WebSiteHelper.GetPage(pageModel.PageSize, pageModel.PageIndex, pageModel.Rows, pageModel.Urls))
+    </div>
+</div>

@@ -1,0 +1,215 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    public class HomeController : Controller
+    {
+        /// <summary>
+        /// 首页加载
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            var sysModel = SysBasicHelper.GetCacheSysBasic();
+            if (sysModel.webstatus == 0)
+            {
+                //关闭网站，直接跳转
+                return RedirectToAction("Default");
+            }
+            ViewBag.sysModel = sysModel;
+            //查询站点基本信息
+            var siteModel = WebSiteHelper.GetSite(1);
+
+            #region 首页幻灯片 ==缓存
+            List<tb_AdvList> advBigList;
+            if (CacheHelper.Get("bannerList") != null)
+            {
+                advBigList = CacheHelper.Get("bannerList") as List<tb_AdvList>;
+            }
+            else
+            {
+                advBigList = OperateContext<tb_AdvList>.SetServer.GetList(
+                    PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1).And(m => m.Status),
+                    m => m.Sort, true).ToList();
+                CacheHelper.Insert("bannerList", advBigList, 10000);
+            }
+            ViewBag.Banner = advBigList;
+            #endregion
+
+            #region 根据栏目的父ID查询新闻栏目列表（增加到缓存内）
+            List<tb_Column> dtNav;
+            if (CacheHelper.Get("CaseNav") != null)
+            {
+                dtNav = CacheHelper.Get("CaseNav") as List<tb_Column>;
+            }
+            else
+            {
+                dtNav = OperateContext<tb_Column>.SetServer.GetList(
+                    PredicateBuilder.True<tb_Column>().And(m => m.ParentId == 4).And(m => m.TypeID == 1),
+                    m => m.Sort, true).ToList();
+                CacheHelper.Insert("CaseNav", dtNav, 10000);
+            }
+            ViewBag.dtNav = dtNav;
+            #endregion
+
+            #region 查询新闻与媒体的每个栏目前5条,使用linq查询新闻每个栏目下面的前4条数据，并根据日期排序，最后在根据父栏目的ID进行排序
+
+            dynamic inList = null;
+            if (CacheHelper.Get("IndexNList") != null)
+            {
+                inList = CacheHelper.Get("IndexNList") as dynamic;
+            }
+            else
+            {
+                var q = ((from a in OperateSession.SetContext.tb_Article
+                          where a.ClassID == 15
+                          orderby a.EditDate descending
+                          select new { ID = a.ID, Title = a.Title, ImgUrl = a.ImgUrl, ClassID = a.ClassID, EditDate = a.EditDate }).Take(5)).Union(
+                (from b in OperateSession.SetContext.tb_Article
+                 where b.ClassID == 16
+                 orderby b.EditDate descending
+                 select new { ID = b.ID, Title = b.Title, ImgUrl = b.ImgUrl, ClassID = b.ClassID, EditDate = b.EditDate }).Take(5)).Union(
+                (from c in OperateSession.SetContext.tb_Article
+                 where c.ClassID == 17
+                 orderby c.EditDate descending
+                 select new { ID = c.ID, Title = c.Title, ImgUrl = c.ImgUrl, ClassID = c.ClassID, EditDate = c.EditDate }).Take(5)).Union(
+                (from d in OperateSession.SetContext.tb_Article
+                 where d.ClassID == 18
+                 orderby d.EditDate descending
+                 select new { ID = d.ID, Title = d.Title, ImgUrl = d.ImgUrl, ClassID = d.ClassID, EditDate = d.EditDate }).Take(5));
+                CacheHelper.Insert("IndexNList", JsonConverter.JsonClass(q.ToList().OrderBy(m => m.ClassID)));
+            }
+            
+            ViewBag.inList = inList;
+            #endregion
+
+            #region 查询前12个作品  增加到缓存内
+            List<tb_Article> inCaseList;
+            if (CacheHelper.Get("inCaseList") != null)
+            {
+                inCaseList = CacheHelper.Get("inCaseList") as List<tb_Article>;
+            }
+            else
+            {
+                var where = PredicateBuilder.True<tb_Article>();
+                where = where.And(m => m.Audit == 1);
+                where = where.And(m => m.IsRecyc == false);
+                if (dtNav != null)
+                {
+                    var result = dtNav.Select(m => m.ID).ToList();
+                    where = where.And(m => result.Contains(m.ClassID));
+                }
+                inCaseList = OperateContext<tb_Article>.SetServer.GetList(where, m => m.EditDate, false).Take(12).ToList();
+                CacheHelper.Insert("inCaseList", inCaseList, 10000);
+            }
+            ViewBag.inCaseList = inCaseList;
+            #endregion
+
+            return View(siteModel);
+        }
+
+        /// <summary>
+        /// 底部的公共
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Footer()
+        {
+            #region 友情链接 ==缓存
+            List<tb_AdvList> linksList;
+            if (CacheHelper.Get("LinksList") != null)
+            {
+                linksList = CacheHelper.Get("LinksList") as List<tb_AdvList>;
+            }
+            else
+            {
+                linksList = OperateContext<tb_AdvList>.SetServer.GetList(
+                    PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId ==2).And(m => m.Status),
+                    m => m.Sort, true).ToList();
+                CacheHelper.Insert("LinksList", linksList, 10000);
+            }
+            ViewBag.LinksList = linksList;
+            #endregion
+            //系统基本配置读取统计代码
+            ViewBag.sysModel = SysBasicHelper.GetCacheSysBasic();
+            //查询站点基本信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            return View(siteModel);
+        }
+
+        /// <summary>
+        /// 网站关闭默认
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Default()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 根据案例的栏目ID，查询案例列表最新的12条
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult GetCaseByClass()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                var pid = FytRequest.GetFormInt("pid");
+                var where = PredicateBuilder.True<tb_Article>();
+                where = where.And(m => m.Audit == 1);
+                where = where.And(m => m.IsRecyc == false);
+                if (pid == 0)
+                {
+                    #region 根据栏目的父ID查询新闻栏目列表（增加到缓存内）
+                    List<tb_Column> dtNav;
+                    if (CacheHelper.Get("CaseNav") != null)
+                    {
+                        dtNav = CacheHelper.Get("CaseNav") as List<tb_Column>;
+                    }
+                    else
+                    {
+                        dtNav = OperateContext<tb_Column>.SetServer.GetList(
+                            PredicateBuilder.True<tb_Column>().And(m => m.ParentId == 4).And(m => m.TypeID == 1),
+                            m => m.Sort, true).ToList();
+                        CacheHelper.Insert("CaseNav", dtNav, 10000);
+                    }
+                    ViewBag.dtNav = dtNav;
+                    #endregion
+                    if (dtNav != null)
+                    {
+                        var result = dtNav.Select(m => m.ID).ToList();
+                        where = where.And(m => result.Contains(m.ClassID));
+                    }
+                }
+                else
+                {
+                    where = where.And(m => m.ClassID == pid);
+                }
+                var list = OperateContext<tb_Article>.SetServer.GetList(where, m => m.EditDate, false).Take(12).ToList().Select(
+                    m => new
+                    {
+                        ID = m.ID,
+                        Title = m.Title,
+                        ImgUrl = m.ImgUrl
+                    });
+                jsonM.Data = list;
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "获取数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(HomeController), ex);
+            }
+            return Json(jsonM);
+        }
+
+    }
+}

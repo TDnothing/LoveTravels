@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4B8CFEED-6AB3-4617-A8DB-80E4ABD9C106}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FytMsys.Logic.Admin</RootNamespace>
+    <AssemblyName>FytMsys.Logic.Admin</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\FytMsys.Web\bin\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AdvManageController.cs" />
+    <Compile Include="BaseController.cs" />
+    <Compile Include="ColumnController.cs" />
+    <Compile Include="ContentController.cs" />
+    <Compile Include="DataBaseController.cs" />
+    <Compile Include="DownLoadController.cs" />
+    <Compile Include="FileMiamController.cs" />
+    <Compile Include="FytAdminAreaRegistration.cs" />
+    <Compile Include="FytCommentController.cs" />
+    <Compile Include="FytJobController.cs" />
+    <Compile Include="FytProductController.cs" />
+    <Compile Include="博客\BlogManController.cs" />
+    <Compile Include="商城\ReturnGoodsOrderController.cs" />
+    <Compile Include="商城\RegionController.cs" />
+    <Compile Include="商城\ReserveOrderController.cs" />
+    <Compile Include="商城\GoodsBrandController.cs" />
+    <Compile Include="IndexController.cs" />
+    <Compile Include="KeyTagController.cs" />
+    <Compile Include="LoginApiController.cs" />
+    <Compile Include="LoginController.cs" />
+    <Compile Include="MemberController.cs" />
+    <Compile Include="MessageController.cs" />
+    <Compile Include="商城\GoodsController.cs" />
+    <Compile Include="商城\OrderManController.cs" />
+    <Compile Include="MoneyLogController.cs" />
+    <Compile Include="PictureController.cs" />
+    <Compile Include="PointLogController.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopAttrController.cs" />
+    <Compile Include="ShopController.cs" />
+    <Compile Include="SiteSetController.cs" />
+    <Compile Include="SysAdminController.cs" />
+    <Compile Include="SysBasicController.cs" />
+    <Compile Include="ToJsonResult.cs" />
+    <Compile Include="VoteController.cs" />
+    <Compile Include="WebUploadController.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessLogic.Server\BusinessLogic.Server.csproj">
+      <Project>{B57EA6A2-6DEE-4514-A6BD-C832E28D543F}</Project>
+      <Name>BusinessLogic.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain.Entity\Domain.Entity.csproj">
+      <Project>{6c309f6c-6a30-4d3c-913f-49560b3a7905}</Project>
+      <Name>Domain.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Domain.ViewModel\Domain.ViewModel.csproj">
+      <Project>{a24829c7-211d-49c0-873e-d1fbb2a479d9}</Project>
+      <Name>Domain.ViewModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FytMsys.Common\FytMsys.Common.csproj">
+      <Project>{5a2a5705-79ac-41d0-893c-2ffce8d200ec}</Project>
+      <Name>FytMsys.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FytMsys.Helper\FytMsys.Helper.csproj">
+      <Project>{a749693f-a74f-4269-b792-10e14edb0efd}</Project>
+      <Name>FytMsys.Helper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,282 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@{
+    ViewBag.Title = "爱旅途";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：banner
+        -->
+
+    <div class="banner">
+
+        @* <img   class = "thumb" alt="Bootstrap Image Preview" src="D:\我爱旅游\FytMsys.Web\upload\image\20160517\201605171432289303.jpg">*@
+        @{
+            var advList = ViewBag.advList as List<tb_AdvList>;
+            if (advList != null && advList.Count > 0)
+            {
+                foreach (var item in advList)
+                {
+                    <a class="mySlides" href="@item.LinkUrl" target="_blank" title="@item.Title"><img src="@item.ImgUrl" class="thumb" alt="@item.Title" /></a>
+                }
+            }
+        }
+
+        @*<div class="helper">
+                <a href="#" class="prev icon-arrow-a-left"></a>
+                <a href="#" class="next icon-arrow-a-right"></a>
+            </div>*@
+    </div>
+
+    @*<div class="b-adv">
+            @{
+                var advRList = ViewBag.advRightList as List<tb_AdvList>;
+                if (advRList != null && advRList.Count > 0)
+                {
+                    foreach (var item in advRList)
+                    {
+                        <a href="@item.LinkUrl" target="_blank" title="@item.Title"><img src="@item.ImgUrl" width="265" style="height: 208.5px" alt="@item.Title" /><span></span></a>
+                    }
+                }
+            }
+        </div>*@
+
+    <script type="text/javascript">
+        $.foucs({ direction: 'left' });
+    </script>
+
+    <!--
+        作者：715515390@qq.com
+        时间：2015-12-07
+        描述：我等你
+    -->
+<div class="wdn-w">
+   
+        <div class="i-title">
+            <span>伴迷<samp>·</samp>这片沙和我是你等待的传说，我等你</span><a href="/project/index/0-1">more <tt>>></tt></a>
+        </div>
+
+    <div class="row" style="margin: 0">
+        @{
+            var pjlist = ViewBag.pjlist as dynamic;
+            if (pjlist != null)
+            {
+                var i = 1;
+                foreach (var item in pjlist)
+                {
+
+                    <div class="col-md-3 col-xs-12" style="padding: 5px">
+                        <div class="wdn-img">
+                            <div class="u-img">
+                                <a href="/project/detail/@item.ID" title="@item.Title"><img class="testtt" alt="@item.Title" src="@item.ShowImg" /></a>
+                            </div>
+                            <div class="u-face">
+                                <a href="/project/detail/@item.ID" title="@item.Title"><img alt="" src="@item.HeadPic" width="62" height="62" /></a>
+                            </div>
+                        </div>
+                        <div class="wdn-info">
+                            <div class="wdn-l">
+                                <span>@item.NickName</span><i class="@(item.Types == 0 ? "no" : "")"></i>
+                            </div>
+                            <div class="wdn-r">@item.Region</div>
+                        </div>
+                        <div class="wdn-p">@item.Title</div>
+                        <div class="wdn-btn">
+                            <div class="star"><span class="s@(item.StarNum)"></span></div>
+                            <div class="btns">
+                                <a href="/project/detail/@item.ID">预订</a>
+                            </div>
+                        </div>
+
+                    </div><!-- end -->
+                    i++;
+                }
+            }
+        }
+
+    </div>
+        </div>
+
+    <div class="clear"></div>
+    <!--
+        作者：715515390@qq.com
+        时间：2015-12-07
+        描述：我要去看看
+    -->
+<div class="qkk-w">
+    <div class="row" style="margin: 0">
+        <div class="i-title">
+            <hr>
+            <span style="vertical-align: text-bottom;">途迷<samp>·</samp>世界辣么大，我要去看看</span><a href="/golook/index/0-1">more <tt>>></tt></a>
+        </div>
+        @{
+            var gllist = ViewBag.gllist as dynamic;
+            if (gllist != null)
+            {
+                int i = 0;
+                foreach (var item in gllist)
+                {
+                    <div class="qkk-item">
+                        <div class="col-sm-2 col-xs-8" style="padding: 5px">
+
+                            <div class="qkk-img">
+                                <a href="/golook/detail/@item.ID" title="@item.Title"><img class="golookimg" alt="@item.Title" src="@item.CoverImg" /></a>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-10 col-xs-4">
+                            <div class="qkk-info">
+
+                                <span class="tag">@(item.Flags == 0 ? "求带" : "组团")</span>
+
+                                <div class="qkk-btn @(i == 0 ? "hot" : "")">
+                                    <span>@(Convert.ToDateTime(item.ArriveTime) > DateTime.Now ? "有效" : "无效")</span>
+                                    <samp>
+                                        <a href="/golook/detail/@item.ID">报名</a><tt style="display: none"></tt><a style="display: none" href="/golook/detail/@item.ID">预约</a>
+                                    </samp>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-10 col-xs-12">
+                            <div class="qkk-info">
+                                <div class="qkk-qgo">愿望地：@item.GoAddress 人数:@(item.Rsum)人 预计抵达时间：@(item.ArriveTime) 发布时间：@Convert.ToDateTime(item.AddTime).ToShortDateString()</div>
+                                <div class="qkk-p">
+                                    @(UtilsHelper.CutString(UtilsHelper.DropHTML(item.Centents), 200))<a href="/golook/detail/@item.ID">>></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- end -->
+                    i++;
+                }
+            }
+        }
+    </div>
+    </div>
+
+    <!--
+    作者：715515390@qq.com
+    时间：2015-12-07
+    描述：推荐的旅程故事
+    -->
+    @*<div class="hot-lv-w">
+        <div class="hot-lv-bg"></div>*@
+    <div class="hot-wz clearfix">
+
+            <div class="col-md-5 hidden-xs">
+
+                <div class="hot-s-img">
+                    @{
+                        var slist = ViewBag.iStory as List<lv_Story>;
+                        if (slist != null && slist.Count > 0)
+                        {
+                            foreach (var item in slist)
+                            {
+                                <a href="/story/detail/@item.ID"><img src="@item.CoverImg" width="375" height="375" /></a>
+                            }
+                        }
+                    }
+                </div>
+
+            </div>
+            <div class="col-md-7" style="padding: 0;margin-top: 10px">
+                <div class="hot-s-txt">
+                    @{
+
+                        if (slist != null && slist.Count > 0)
+                        {
+                            var index = 0;
+                            foreach (var item in slist)
+                            {
+                                index++;
+                                <div class="hot-s-item @Html.Raw(index == 1 ? "" : "hidden")">
+
+                                    <h2>@item.Title</h2>
+                                    <h3></h3>
+                                    <div class="hot-s-info">
+                                        <p>
+                                            @Html.Raw(UtilsHelper.DropHTML(item.Centents, 300))
+                                        </p>
+
+                                    </div>
+                                    <div class="row" style="margin: 0">
+                                        <div class="hot-s-btn">
+                                            <a href="/story/detail/@item.ID">进入旅程故事</a>
+                                        </div>
+                                        </div>
+
+                                    </div><!-- end -->
+                            }
+                            <div class="hot-ck"></div>
+                        }
+                    }
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+<!--
+作者：715515390@qq.com
+时间：2015-12-07
+描述：特色旅程
+-->
+
+<div class="ts-lc-w clearfix">
+    <div class="i-title">
+        <span style="font-size: 40px; font-weight: 300">特色旅程</span><a href="/home/specialvacation/1" style="padding-top: 25px;">more <tt>>></tt></a>
+    </div>
+    <div class="w3-col m3 l12">
+        @{
+            var splist = ViewBag.splist as dynamic;
+            if (splist != null)
+            {
+                foreach (var item in splist)
+                {
+                    <div class="col-md-3" style="padding: 0">
+                        <div class="ts-item">
+                            <div class="ts-img">
+                                <a href="@(item.Types == 1 ? "/project/detail/" + item.ID : "/golook/detail/" + item.ID)" title="@item.Title"><img class="lvtuimg" alt="@item.Title" src="@item.CoverImg" /></a>
+                            </div>
+                            <div class="ts-info">
+                                <a href="@(item.Types == 1 ? "/project/detail/" + item.ID : "/golook/detail/" + item.ID)" title="@item.Title">@item.Title</a>
+                            </div>
+                        </div><!-- end -->
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="/lib/js/jquery.foucs.js"></script>
+
+}
+<script>
+        $(document).ready(function () {
+            carousel();
+        });
+        var myIndex = 0;
+
+
+        function carousel() {
+            var i;
+            var x = document.getElementsByClassName("mySlides");
+            for (i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+            myIndex++;
+            if (myIndex > x.length) {myIndex = 1}
+            x[myIndex-1].style.display = "block";
+            setTimeout(carousel, 3000); // Change image every 3 seconds
+        }
+</script>
+<link rel="stylesheet" href="/lib/css/w1000.css">

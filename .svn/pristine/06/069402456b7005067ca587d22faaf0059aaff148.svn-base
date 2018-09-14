@@ -1,0 +1,60 @@
+﻿@model Domain.Entity.tb_Blog
+@{
+    Layout = "~/Views/Shared/_LayoutBlog.cshtml";
+}
+<div class="fluid-container">
+
+    <div class="content-wrapper">
+
+        <!-- ABOUT -->
+        <div class="page-section" id="about">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="re-time"><i class="im-link3"></i><a href="">2015年8月17日</a></h3>
+                    <h4 class="widget-title" style="font-size:18px;"><a href="xx.html">压缩文本、字节或者文件的压缩辅助类-GZipHelper</a></h4>
+                    <div class="blog-summ">摘要: 使用环境：在后台管理或者前台有会员中心的情况下使用使用方式：这是一个用户中心的控制器 我给用户中心主页增加一个特性[AccountFilter]这是一个过滤器的名字public class AccountController : Controller { [AccountFilt...<a href="xx.html">阅读全文</a></div>
+                    <div class="foot-tag"><i class="im-eye"></i>阅读（20）　评论（10）　<i class="im-meter"></i>2015-06-28 17:37</div>
+                    <hr>
+                </div>
+            </div> <!-- #about -->
+        </div>
+
+        <div class="page-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="re-time"><i class="im-link3"></i><a href="">2015年8月17日</a></h3>
+                    <h4 class="widget-title">MVC 过滤器 构建会员是否登录</h4>
+                    <div class="blog-summ">摘要: 使用环境：在后台管理或者前台有会员中心的情况下使用使用方式：这是一个用户中心的控制器 我给用户中心主页增加一个特性[AccountFilter]这是一个过滤器的名字public class AccountController : Controller { [AccountFilt...<a href="goxx">阅读全文</a></div>
+                    <div class="foot-tag"><i class="im-eye"></i>阅读（20）　评论（10）　<i class="im-meter"></i>2015-06-28 17:37</div>
+                    <hr>
+                </div>
+            </div>
+        </div><!-- end -->
+
+        <div class="page-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="re-time"><i class="im-link3"></i><a href="">2015年8月17日</a></h3>
+                    <h4 class="widget-title">MVC 过滤器 构建会员是否登录</h4>
+                    <div class="blog-summ">摘要: 使用环境：在后台管理或者前台有会员中心的情况下使用使用方式：这是一个用户中心的控制器 我给用户中心主页增加一个特性[AccountFilter]这是一个过滤器的名字public class AccountController : Controller { [AccountFilt...<a href="goxx">阅读全文</a></div>
+                    <div class="foot-tag"><i class="im-eye"></i>阅读（20）　评论（10）　<i class="im-meter"></i>2015-06-28 17:37</div>
+                    <hr>
+                </div>
+            </div>
+        </div><!-- end -->
+
+        <div class="page-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="re-time"><i class="im-link3"></i><a href="">2015年8月17日</a></h3>
+                    <h4 class="widget-title">MVC 过滤器 构建会员是否登录</h4>
+                    <div class="blog-summ">摘要: 使用环境：在后台管理或者前台有会员中心的情况下使用使用方式：这是一个用户中心的控制器 我给用户中心主页增加一个特性[AccountFilter]这是一个过滤器的名字public class AccountController : Controller { [AccountFilt...<a href="goxx">阅读全文</a></div>
+                    <div class="foot-tag"><i class="im-eye"></i>阅读（20）　评论（10）　<i class="im-meter"></i>2015-06-28 17:37</div>
+                    <hr>
+                </div>
+            </div>
+        </div><!-- end -->
+       
+    </div>
+
+</div>

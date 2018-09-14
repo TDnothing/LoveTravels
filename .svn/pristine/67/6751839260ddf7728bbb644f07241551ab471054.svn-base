@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+ <!--<![endif]-->
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/lib/blog/css/icons.css">
+    <link rel="stylesheet" href="/lib/blog/css/normalize.css">
+    <link rel="stylesheet" href="/lib/blog/css/font-awesome.css">
+    <link rel="stylesheet" href="/lib/blog/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/blog/css/fyt-style.css">
+    <script src="/lib/blog/js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+    <body>
+        @Html.Action("LeftNav", "Blog")
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            @RenderBody()
+            <div class="row" id="footer">
+                <div class="col-md-12 text-center">
+                    <p class="copyright-text">Copyright &copy; 2084 Company Name | More Web Site <a href="http://www.feiyit.com/" target="_blank" title="飞易腾">飞易腾</a> - Collect from <a href="http://www.feiyit.com/" title="博客" target="_blank">博客</a></p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="/lib/blog/js/vendor/jquery-1.10.2.min.js"></script>
+<script src="/lib/blog/js/min/plugins.min.js"></script>
+<script src="/lib/blog/js/main.js"></script>
+@RenderSection("scripts", required: false)

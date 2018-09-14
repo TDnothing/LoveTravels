@@ -1,0 +1,139 @@
+﻿@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = Model.SeoTitle;
+    ViewBag.key = Model.SeoKey;
+    ViewBag.desc = Model.SeoDescribe;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：去看看
+        -->
+<div class="hr"></div>
+<div class="adv-1"><a href="" title="" target="_blank"><img src="lib/img/img8.jpg" alt="" /></a></div>
+
+<div class="wdn-w wdn-ui-w">
+    <div class="i-title">
+        <span>途迷行程</span>
+        <div class="pub-order clearfix">
+            <span>排列：</span>
+            <div class="pub-o-wall">
+                <ul class="clearfix">
+                    <li><a href="/golook/index/1-1">久</a><span><tt>发布日期</tt></span><a href="/golook/index/0-1">新</a></li>
+                    <li class="hidden"><a href="/golook/index/3-1">小</a><span><tt>人气</tt></span><a href="/golook/index/2-1">大</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="qkk-d.html" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="qkk-d.html">报名</a><tt></tt><a href="qkk-d.html">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+    <div class="qkk-item clearfix">
+        <div class="qkk-img"><a href="" title=""><img alt="" src="lib/img/img1.jpg" width="100" height="75" /></a></div>
+        <div class="qkk-info">
+            <div><span class="tag">求带</span></div>
+            <div class="qkk-qgo">愿望地：日本  富士山　　　人数:2人 　　　预计抵达时间：2015.11.23　　　发布时间：2015.11.11</div>
+            <div class="qkk-p">说明：一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点有脸、不急看，一直想去外面走走，可是没有合适的人当导游，跟团游，每个景点所以...　　　<a href="">>></a></div>
+            <div class="qkk-btn">
+                <span>有效</span>
+                <samp>
+                    <a href="">报名</a><tt></tt><a href="">预约</a>
+                </samp>
+            </div>
+        </div>
+    </div><!-- end -->
+</div>
+
+
+<div class="page">
+    @Html.Raw(WebSiteHelper.GetPage(pageModel.PageSize, pageModel.PageIndex, pageModel.Rows, pageModel.Urls))
+</div>
+

@@ -1,0 +1,41 @@
+﻿@using FytMsys.Common
+@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = "我的活动";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 9);}
+    <div class="ur-wall">
+        <h2><span>我的活动</span></h2>
+        @{
+            if (list != null && list.Length > 0)
+            {
+                foreach (var item in list)
+                {
+                    <div class="omitem clearfix">
+                        <div class="omimg" style="width:150px;height:100px;"><a href="/project/detail/@item.ID"><img src="@item.ShowImg" /></a></div>
+                        <div class="ominfo">
+                            <p><strong style="font-size:22px;">@item.NickName　</strong>        标题：@(item.Title)</p>
+                            <p>愿望地：@(item.Region)　　人数 : @(item.Rsum)人</p>
+                        </div>
+                        <div class="obtn">
+                            <p style="text-align: right; margin-top: 10px;">预约时间：@(Convert.ToDateTime(item.UpdateTime).ToShortDateString())</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p style="padding-top:20px;text-align: center">暂无数据</p>
+            }
+        }
+    </div><!-- end -->
+    <div class="page">
+        @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+    </div>
+</div>

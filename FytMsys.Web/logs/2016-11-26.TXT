@@ -1,0 +1,42 @@
+????:2016-11-26 08:19:58,377 
+??ID:[8] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : This transaction cannot be processed. The amount to be charged is zero.
+---------------------------------------------------------------
+
+????:2016-11-26 08:19:58,405 
+??ID:[8] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+
+????:2016-11-26 21:58:21,093 
+??ID:[41] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : This transaction cannot be processed. The amount to be charged is zero.
+---------------------------------------------------------------
+
+????:2016-11-26 21:58:21,139 
+??ID:[41] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+
+????:2016-11-26 21:59:29,725 
+??ID:[49] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:API Error Message : This transaction cannot be processed. The amount to be charged is zero.
+---------------------------------------------------------------
+
+????:2016-11-26 21:59:29,755 
+??ID:[49] 
+????:DEBUG 
+???:ExpressCheckout.SetExpressCheckout property:[(null)]  
+????:Error Message : Error executing child request for ~/Response.aspx.
+---------------------------------------------------------------
+

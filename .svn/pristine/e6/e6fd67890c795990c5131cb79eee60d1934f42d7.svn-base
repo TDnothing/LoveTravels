@@ -1,0 +1,95 @@
+﻿$(function() {
+    $("#loadDown a").click(function () {
+        var total = $("#htotal").val();
+        var npage = $("#hpage").val();
+        if ((parseInt(npage) + 1) > parseInt(total)) {
+            return;
+        }
+        $("#hpage").val((parseInt(npage) + 1));
+        story.wheres($("#htj").val(), $("#hkey").val(), (parseInt(npage) + 1));
+    });
+    
+    var w = $("#htj").val(); 
+    story.wheres(w, $("#hkey").val(), 1);
+});
+
+
+var story = {
+    wheres: function (w, k,p) {
+        switch (w) {
+            case "red":
+                story.GetAll(0, 1, 0, k, p);
+                break;
+            case "top":
+                story.GetAll(1, 0, 0, k, p);
+                break;
+            case "time":
+                story.GetAll(0, 0, 1, k, p);
+                break;
+        }
+    },
+    GetAll: function (isTop, isHit, isTime, country, pages) {
+        var $container = $('#masonry');
+        $.ajax({            
+            type: "post",
+            url: "/story/GetAll",
+            dataType:"json",
+            data: { isTop: isTop, isHit: isHit, isTime: isTime, country: country,page:pages },
+            beforeSend: function () {
+                $("#load").show();
+            },
+            success: function (res) {
+                $("#load").hide();
+                if (res.Status == "y") {
+                    var htmls = '';
+                    if (res.Data == "" || res.Data == null) {
+                        $("#loadDown").hide();
+                    } else {
+                        $.each(res.Data, function (i, item) {
+                            htmls += '<div class="box fyts">';
+                            if (item.IsTop == 1) {
+                                htmls += '<ins></ins>';
+                            }
+                            htmls += '<a href="/story/detail/'+item.ID+'"><img src="' + item.CoverImg + '"></a>';
+                            htmls += '<p><a href="/story/detail/' + item.ID + '">' + item.Title + '</a></p>';
+                            htmls += '<div class="us"><img src="' + item.HeadPic + '" width="25" height="25" /><span>' + item.NickName + '</span>';
+                            htmls += '<samp><i class="im-eye3"></i>' + item.Hits + '</samp>';
+                            htmls += '</div><p class="summary">' + item.SubTitle + '</p>';
+                            htmls += '</div><!-- end -->';
+                        });
+                    }
+                    $("#htotal").val(res.PageTotal);
+                    var npage = $("#hpage").val();
+                    if (parseInt(npage) + 1 > parseInt(res.PageTotal)) {
+                        //$("#loadDown a").html("已全部加载完成");
+                        $("#loadDown a").html("");
+                    }
+
+                    if (npage != 1) {
+                        var $newElems = $(htmls).css({ opacity: 0 }).appendTo($container);
+                        $newElems.imagesLoaded(function() {
+                            $newElems.animate({ opacity: 1 }, 800);
+                            $container.masonry('appended', $newElems, true);
+                        });
+                    } else {
+                        $("#masonry").append(htmls);
+                        
+                        $container.imagesLoaded(function () {
+                            $container.masonry({
+                                itemSelector: '.box',
+                                gutterWidth: 25,
+                                isAnimated: true
+                            });
+                        });
+                    }
+                   
+                } else {
+                    alert(res.Msg);
+                }
+            },
+            error: function (e) {
+                alert("错误");
+            }
+        });
+    }
+}

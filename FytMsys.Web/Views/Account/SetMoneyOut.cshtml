@@ -1,0 +1,77 @@
+﻿@using Domain.Entity
+@{
+    ViewBag.Title = "提现";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var user = ViewBag.user as tb_User;
+}
+<style>
+    .selbank {
+        width: 300px;
+        height: 35px;
+    }
+</style>
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 3);}
+    <div class="col-md-9 col-xs-12 ur-wall">
+        <h2><span>提现</span></h2>
+        <div class="ul-uw ul-ureg" style="padding-left: 30px;">
+            @using (Ajax.BeginForm("UserSetMoneyOut", null, new AjaxOptions()
+                {
+                    HttpMethod = "post",
+                    OnSuccess = "fyt.FSuccess",
+                    OnBegin = "fyt.FBegin",
+                }, new { @id = "resetpwd" }))
+            {
+                <div class="ul-form">
+                    <div class="ul-cell clearfix">
+                        <label>账户余额</label><label>@(user.Amount)</label>
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>提现金额</label><input type="text" id="setmoney" name="setmoney" value="" placeholder="请输入提现金额" datatype="n" />
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>联系电话</label><input style="width:10%;display:initial;margin-right:10px;" type="text" value="@user.Province" id="areanum" datatype="n" name="areanum" class="form-control" placeholder="区号"> - <input type="text" id="mobile" name="mobile" value="@user.Mobile" placeholder="请输入联系电话" datatype="n" />
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>提现账户</label>@Html.DropDownList("bankId", ViewBag.selBank as IEnumerable<SelectListItem>,
+                                                new { @class = "selbank" })
+                    </div>
+                    <div class="ul-btns"><button class="btn">保存</button></div>
+                </div>
+                @Html.AntiForgeryToken()
+            }
+        </div>
+    </div><!-- end -->
+</div>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#resetpwd").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "提现成功",
+                    text: "您已申请提现，请等待!",
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "去登录",
+                    closeOnConfirm: false
+                }, function () { window.location = res.BackUrl; });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+
+</script>

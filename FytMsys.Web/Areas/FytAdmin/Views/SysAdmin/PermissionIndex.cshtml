@@ -1,0 +1,88 @@
+﻿@using System.Diagnostics
+@using Domain.Entity
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    .tcbk ul li{width:160px; float: left}
+</style>
+@using (Ajax.BeginForm("PermissionModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new {@class = "", @id = "forms"}))
+{
+    @Html.Hidden("roleId","0")
+    <!-- box star -->
+    <div class="row pt10  animated fadeInUp">
+        <div class="col-lg-3 col-sm-3 pr0">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <a class="btn btn-block btn-primary compose-mail">角色列表</a>
+                    <div class="space-25"></div>
+                    <ul class="folder-list category-list m-b-md boxs" style="padding: 0">
+                        @{
+                            var list = ViewBag.list as List<tb_AdminRole>;
+                            if (list != null && list.Count > 0)
+                            {
+                                foreach (var site in list)
+                                {
+                                    <li>
+                                        <a href="javascript:void(0)" class="rolemenu" data-id="@site.ID"> <i class="fa fa-circle text-navy"></i> <span>@site.RoleName</span></a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-sm-9">
+            <!-- table star -->
+            <div class="row col-lg-12 clearfix">
+                <div class="wrapper">
+                    <div class="alert alert-danger" style="padding:10px;"><i class="im-bullhorn"></i> <span id="phtml">请选择对应角色</span></div>
+                    @{
+                        var mlist = ViewBag.menuList as List<tb_AdminMenu>;
+                        Debug.Assert(mlist != null, "菜单为空");
+                        foreach (var item in mlist.FindAll(p => p.ParentID == 0).ToList())
+                        {
+                            <div class="ibox col-lg-12 col-sm-12 mt10 munu-wall">
+                                <div class="ibox-content tcbk">
+                                    <div class="tree-one"><label><input type="checkbox" name="cbk-menu" value="@item.ID"> @item.Name</label></div>
+                                    <div class="tree-ul">
+                                        <ul class="clearfix">
+                                            @{
+                                                foreach (var menu in mlist.FindAll(m => m.ParentID == item.NodeID))
+                                                {
+                                                    <li><label><input type="checkbox" name="cbk-menu" value="@menu.ID" /> @menu.Name</label></li>
+                                                }
+                                            }
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end -->
+                        }
+                    }
+                </div>
+            </div>
+            <!-- table end -->
+            <div class="hr-line-dashed clearfix">
+                <div class="form-group m20 clearfix" style="padding-top: 100px">
+                    <div class="col-sm-4 col-sm-offset-2">
+                        <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定提交</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- box end -->
+}
+@section scripts
+{
+    <script type="text/javascript" src="/assets/js/table/sys-permiss.js"></script>
+}

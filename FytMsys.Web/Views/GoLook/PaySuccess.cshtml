@@ -1,0 +1,26 @@
+﻿@using Domain.Entity
+@model lv_GoLookOrder
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pay-succ">
+    <h2>恭喜您，成功支付</h2>
+    <p><label>您的支付方式：</label>@Model.PayName</p>
+    <p><label>您的订单号：</label>@Model.Number</p>
+    @if (Model.PayName == "PayPal")
+    {
+        <p><label>PayPal订单号：</label>@(Session["Transaction_Id"])</p>
+    }
+    <p><label>您的支付金额：</label><strong>@{
+        if (Model.PayName == "支付宝")
+        {
+            @Html.Raw("￥" + Model.PayPrice)
+        }
+        else
+        {
+            @Html.Raw("$" + Model.PayPrice)
+        }
+    }</strong></p>
+    <p style="text-align: center;"><a href="/" class="btn">返回首页</a></p>
+</div>

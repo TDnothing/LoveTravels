@@ -1,0 +1,45 @@
+﻿@{
+    Layout =null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-agent" content="format=html5;url=http://www.feiyit.com">
+    <title>发布</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="/lib/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/lib/css/font-awesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="/lib/css/icons.css" />
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/lib/css/font-awesome-ie7.min.css">
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="/lib/css/animate.css" />
+    <link rel="stylesheet" href="/lib/css/index.css">
+    <script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/lib/js/index.js"></script>
+</head>
+<body>
+    <div class="fb-w">
+        <div class="mbx">我爱旅途><span>发布</span></div>
+        @Html.Action("Treaty", "Home")
+        <hr>
+        <div class="fb-par"><strong>发布</strong>>填写表单>预览信息>审核>发布</div>
+        <h3><a href="">伴迷行程</a></h3>
+        <h3><a href="">途迷行程</a></h3>
+        <ul>
+            <li><a href="/golook/publish?flag=crry">求带</a></li>
+            <li><a href="/golook/publish?flag=group">组团</a></li>
+        </ul>
+        <h3><a href="">旅途故事</a></h3>
+        <ul>
+            <li><a href="/story/release?tag=original">原创</a></li>
+            <li><a href="/story/release?tag=reprint">转载</a></li>
+        </ul>
+    </div>
+</body>
+</html>

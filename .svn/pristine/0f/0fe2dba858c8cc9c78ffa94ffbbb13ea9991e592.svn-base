@@ -1,0 +1,188 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 个人中心
+    /// </summary>
+    [AccountFilter]
+    public class AccountController:Controller
+    {
+        /// <summary>
+        /// 个人中心主页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index()
+        {
+            return View(GetSession());
+        }
+
+        /// <summary>
+        /// 上传认证资料
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult AuthUser()
+        {
+            return View(GetSession());
+        }
+
+        /// <summary>
+        /// 获得登录用户模型
+        /// </summary>
+        /// <returns></returns>
+        public tb_User GetSession()
+        {
+            var user = new tb_User();
+            if (HttpContext.Session != null)
+            {
+                user = HttpContext.Session["FytUser"] as tb_User;
+            }
+            return user;
+        }
+
+        /// <summary>
+        /// 编辑用户基本信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditUser(tb_User parModel)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "用户数据修改成功！", BackUrl = "/" };
+            try
+            {
+                var temo = GetSession();
+                var user = OperateContext<tb_User>.SetServer.GetModel(m=>m.ID==temo.ID);
+                user.NickName = parModel.NickName;
+                user.TrueName = parModel.TrueName;
+                user.Sex = parModel.Sex;
+                user.Mobile = parModel.Mobile;
+                user.SafeAnswer = parModel.SafeAnswer;
+                user.SafeQuestion = parModel.SafeQuestion;
+                user.QQ = parModel.QQ;
+                OperateContext<tb_User>.SetServer.Update(user);
+
+                if (HttpContext.Session != null) HttpContext.Session["FytUser"] = user;
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(AccountController), ex);
+            }
+            return Json(jsonM);
+        }
+
+        /// <summary>
+        /// 退出账户
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult SignOut()
+        {
+            if (HttpContext.Session != null) HttpContext.Session["FytUser"] = null;
+            UtilsHelper.WriteCookie("FytUserId","");
+            return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// 头像上传
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult UpHeadPic()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+
+            string upFiles = FytRequest.GetQueryString("upFiles");
+            HttpPostedFileBase pfb = Request.Files[upFiles];
+            var jsFile =UpLoadHelper.SavePicture(pfb,150,150, "HW");
+            jsonM.Status = jsFile.Status;
+            jsonM.Msg = jsFile.Msg;
+            jsonM.Data = jsFile.ImgUrl;
+            //更新数据库
+            var temo = GetSession();
+            var user = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == temo.ID);
+            user.HeadPic = jsFile.ImgUrl;
+            OperateContext<tb_User>.SetServer.Update(user);
+            if (HttpContext.Session != null) HttpContext.Session["FytUser"] = user;
+            return Json(jsonM);
+        }
+
+        /// <summary>
+        /// 资料上传
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult UpAuthDocs()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+
+            string upFiles = FytRequest.GetQueryString("upFiles");
+            HttpPostedFileBase pfb = Request.Files[upFiles];
+            var jsFile = UpLoadHelper.SavePicture(pfb, 500, 300, "HW");
+            jsonM.Status = jsFile.Status;
+            jsonM.Msg = jsFile.Msg;
+            jsonM.Data = jsFile.ImgUrl;
+            //更新数据库
+            var temo = GetSession();
+            var user = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == temo.ID);
+            user.Address = jsFile.ImgUrl;
+            OperateContext<tb_User>.SetServer.Update(user);
+            if (HttpContext.Session != null) HttpContext.Session["FytUser"] = user;
+            return Json(jsonM);
+        }
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult EditPwd()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 用户修改密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPwd()
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success", BackUrl = "/Account/" };
+            try
+            {
+                string oldPwd = FytRequest.GetFormString("LoginPwd");
+                var temo = GetSession();
+                var user = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == temo.ID);
+                user.LoginPwd = UtilsHelper.MD5(oldPwd,true);
+                OperateContext<tb_User>.SetServer.Update(user);
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(AccountController), ex);
+            }
+            return Json(jsonM);
+        }
+
+
+        /// <summary>
+        /// 左侧导航
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult LeftNav()
+        {
+            return View();
+        }
+    }
+}

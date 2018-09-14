@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "修改密码";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 3);}
+        <div class="ur-wall">
+            <h2><span>修改密码</span></h2>
+            <div class="ul-uw ul-ureg" style="padding-left: 30px;">
+                @using (Ajax.BeginForm("ResetPwd", null, new AjaxOptions()
+                {
+                    HttpMethod = "post",
+                    OnSuccess = "fyt.FSuccess",
+                    OnBegin = "fyt.FBegin",
+                }, new {@id = "resetpwd"}))
+                {
+                    <div class="ul-form">
+                        <div class="ul-cell clearfix">
+                            <label>输入新密码</label><input type="password" id="LoginPwd" name="LoginPwd" plugin="passwordStrength" value="" placeholder="" datatype="*6-20" nullmsg="6-16位，英文（区分大小写）、数字或常用符号" /><span class="Validform_checktip">6-16位，英文（区分大小写）、数字或常用符号</span>
+                            <div class="pwd-par passwordStrength"><span></span><span></span><span></span></div>
+                            <i class="im-eye3"></i>
+                        </div>
+                        <div class="ul-cell clearfix">
+                            <label>确认新密码</label><input type="password" id="okpwd" name="okpwd" value="" placeholder="" datatype="*6-20" recheck="LoginPwd" nullmsg="请再次输入密码" errormsg="两次输入的密码不一致" /><span class="Validform_checktip">请再次输入密码</span>
+                            <i class="im-eye3"></i>
+                        </div>
+                        <div class="ul-btns"><button class="btn">保存</button></div>
+                    </div>
+                     @Html.AntiForgeryToken()
+                }
+            </div>
+        </div><!-- end -->
+</div>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#resetpwd").Validform({
+            tiptype: 3,
+            showAllError: true
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "变更成功",
+                    text: "您的密码重置成功，请牢记!",
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "去登录",
+                    closeOnConfirm: false
+                }, function () { window.location = res.BackUrl; });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+
+</script>

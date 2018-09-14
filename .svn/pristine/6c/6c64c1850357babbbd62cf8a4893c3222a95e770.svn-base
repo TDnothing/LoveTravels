@@ -1,0 +1,98 @@
+﻿@model Domain.Entity.tb_GoodsMess
+@{
+    Layout = "../shared/_Layout.cshtml";
+    var member = ViewBag.member as Domain.Entity.tb_User;
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+@using (Ajax.BeginForm("Modify", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.AddDate)
+    <!-- form star -->
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">会员名称:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @member.TrueName
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">用户名称:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.UserName)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">商品信息:</label>
+                            <div class="col-sm-5 col-md-5 input-group pl15">
+                                @Html.DisplayFor(model => model.GoodsInfo)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">商品数量:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.GoodsNum)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">收货地址:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.SendAddress)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">手机:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Mobile)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">固话:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Tel)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">客户要求:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Requirement)
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-lg-3 control-label">备注:</label>
+                            <div class="col-sm-10 col-md-6">
+                                @Html.DisplayFor(model => model.Summary)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+        })
+    </script>
+}

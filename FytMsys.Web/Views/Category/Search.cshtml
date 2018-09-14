@@ -1,0 +1,69 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@{
+    ViewBag.Title = "帮助搜索";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="help-sew">
+    <div class="w1200">
+        <div class="h-search clearfix">
+            <form action="/category/search" method="GET">
+                <input type="search" id="key" name="key" placeholder="在下面输入您问题关键词" /><button class="btn">搜索</button>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .search-results-item {
+        margin-top: 10px;margin-bottom: 20px;
+    }
+
+        .search-results-item .search-results-item-name {
+            margin-bottom: 2px;
+            color: #1bbc9b;
+        }
+
+            .search-results-item .search-results-item-name a {
+                color: #1bbc9b;
+            }
+
+        .search-results-item .search-results-item-url a {
+            color: #3fc380;
+        }
+</style>
+<div class="w1200 clearfix" style="padding:20px;">
+    @{
+        var list = ViewBag.list as dynamic;
+        if (list != null)
+        {
+            int i = 0;
+            foreach (var item in list)
+            {
+                i++;
+                <div class="search-results-item">
+                    <h4 class="search-results-item-name">
+                        <a href="#">@item.Title </a>
+                    </h4>
+                    <div class="search-results-item-url">
+                        <a href="http://www.51voy.com/category/@(item.ParentId == 27 ? "about" : "help")/@item.EnTitle">
+                            http://www.51voy.com/category/@(item.ParentId == 27 ? "about" : "help")/@item.EnTitle
+                            <i class="im-link"></i>
+                        </a>
+                    </div>
+                    <p>
+                        @UtilsHelper.DropHTML(item.Content, 200)
+                    </p>
+                </div>
+            }
+            if (i == 0)
+            {
+                <p style="text-align: center">没有搜索到您的信息</p>
+            }
+        }
+        else
+        {
+            <p>没有搜索到您的信息</p>
+        }
+    }
+    
+</div>

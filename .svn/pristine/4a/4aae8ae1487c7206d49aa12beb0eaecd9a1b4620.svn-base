@@ -1,0 +1,73 @@
+﻿@using Domain.Entity
+@using FytMsys.Helper
+
+@{
+    Layout = null;
+    var basicSite = WebSiteHelper.GetSite(1);
+    var Info = SysBasicHelper.GetCacheSysBasic();
+}
+<!--
+            作者：715515390@qq.com
+            时间：2015-12-07
+            描述：底部
+        -->
+<footer>
+    <div class="w1200 clearfix">
+        <div class="lan-fa">
+            <select>
+                <option value="cn">中文 | Chinese</option>
+            </select>
+            <div class="f-fas">
+                <span>联系：</span>
+                <a href="http://www.weibo.com/p/@(Info.vipmoney)/home?from=page_100606&amp;mod=TAB#place" title="" target="_blank"><samp><img src="/lib/img/icon/iconfont-xinlang.png" width="30" /></samp></a>
+                <a href="javascript:void(0)" title="" target="_blank"><samp><img src="/lib/img/icon/iconfont-weibiaoti1.png" width="30" /></samp></a>
+                <a href="http://wpa.qq.com/msgrd?v=3&amp;uin=@(Info.vipSummary)&amp;site=qq&amp;menu=yes" title="" target="_blank"><samp><img src="/lib/img/icon/iconfont-qq (2).png" width="30" /></samp></a>
+            </div>
+        </div>
+        <div class="fnav">
+            <h2>关于我们</h2>
+            @{
+                var about = ViewBag.aboutList as List<tb_Column>;
+    if (about != null && about.Count > 0)
+    {
+        foreach (var item in about)
+        {
+            <a href="/category/about/@item.EnTitle">@item.Title</a>
+        }
+    }
+}
+        </div>
+        <div class="fnav">
+            <h2>帮助中心</h2>
+            @{
+                var list = ViewBag.helpList as List<tb_Column>;
+                if (list != null && list.Count > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <a href="/category/help/@item.EnTitle">@item.Title</a>
+                    }
+                }
+            }
+        </div>
+        <div class="f-wx">
+            <div style="float: left; margin-right: 30px;">
+                <img src="@(Info.wxewcode)" />
+                <p>微信公众号</p>
+            </div>
+            <div style="float: left;">
+                <img src="@(Info.serverline)" />
+                <p>微信服务号</p>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <p style="margin-top: 40px;">@*@Html.Raw(basicSite.SiteCopyright)*@
+            ©2015-2016 纽约人科技（北京）有限公司  京ICP备16002668号-1<br />北京西红门CDD创意港嘉悦广场7-409    电话：400-816-0806</p>
+    </div>
+</footer>
+
+
+
+
+
+

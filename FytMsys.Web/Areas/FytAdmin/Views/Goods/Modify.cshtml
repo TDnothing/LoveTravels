@@ -1,0 +1,279 @@
+﻿@using Domain.Entity
+@model Domain.Entity.tb_Goods
+@{
+    Layout = "../shared/_Layout.cshtml";
+    var himList = "|";
+    var tmList = ViewBag.imgList as List<tb_ImageLibrary>;
+}
+<link href="/webuploader/webuploader.css" rel="stylesheet" />
+<!-- head star -->
+<div class="tnav row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2 class="fl">商品</h2>
+        <ol class="breadcrumb fl">
+            <li><a href="/FytAdmin/Goods/Index">主页</a></li>
+            <li><strong>添加/编辑商品</strong></li>
+        </ol>
+    </div>
+</div>
+<!-- head end -->
+@using (Ajax.BeginForm("Modify", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal", @id = "forms" }))
+{
+    <!-- form star -->
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.ClassId)
+    @Html.HiddenFor(m => m.AddDate)
+    @Html.HiddenFor(m=>m.ShopId)
+     @Html.HiddenFor(m => m.Hits)
+    <div class="row white-bg animated fadeInRight">
+        <div class="wrapper-content">
+            <div class="panel-options">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-1">基本信息</a></li>
+                    <li><a data-toggle="tab" href="tabs_panels.html#tab-2">其他信息</a></li>
+                </ul>
+            </div>
+            <div class="form-horizontal mform tip-wal">
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane active">
+                            <div class="ibox col-lg-12 col-sm-12 mt10 munu-wall">
+                                <div class="ibox-content">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品编号</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.GoodsNum, new { @class = "form-control", @datatype = "*" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品名称</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.GoodsName, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入商品名称", @placeholder = "请输入商品名称" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">促销信息</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.SubTitle, new { @class = "form-control", @placeholder = "如：低价促销" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品关键字</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.Tags, new { @class = "form-control", @placeholder = "可作为搜索以及SEO关键字展示" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品品牌</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.DropDownListFor(m => m.Brands, ViewBag.selBrank as IEnumerable<SelectListItem>,
+new { @class = "form-control select2", @multiple = "multiple", @datatype = "*", @nullmsg = "请选择商品品牌" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">简介</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品价格</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.Price, new { @class = "form-control", @datatype = "am", @placeholder = "请输入商品价格" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品原价格</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.OriginalPrice, new { @class = "form-control", @datatype = "am", @placeholder = "请输入商品原价格" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品库存</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.Stock, new { @class = "form-control", @datatype = "n", @placeholder = "请输入商品库存" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品销售数</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.SoldNum, new { @class = "form-control", @datatype = "n", @placeholder = "请输入商品销售额" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品限购数</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.LimitNum, new { @class = "form-control", @datatype = "n", @placeholder = "请输入商品限购额0等于不限制" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">分类属性</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsList, new { @class = "i-checks" }) 是否上架</label>
+                                            <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsTop, new { @class = "i-checks" }) 是否推荐</label>
+                                            <label class="checkbox-inline">@Html.CheckBoxFor(model => model.IsSlide, new { @class = "i-checks" }) 是否左侧推荐</label>
+                                            <label class="checkbox-inline hidden">@Html.CheckBoxFor(model => model.IsDel, new { @class = "i-checks" }) 是否删除</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group hidden" id="div_lk">
+                                        <label class="col-sm-1 control-label">左侧推荐图</label>
+                                        <div class="col-sm-5 col-md-5 input-group pl15">
+                                            @Html.TextBoxFor(model => model.GoodsImage,
+                                        new Dictionary<string, object>()
+                                        {
+                                            {"class", "input-sm form-control"}, {"data-toggle", "tooltip"}, {"data-placement", "top"}, {"title", "商品图片大小270×360像素"}
+                                        })
+                                            <span class="input-group-btn"><button type="button" data-text="GoodsImage" class="btn btn-sm btn-primary select-img"> 选择图片</button> </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ibox col-lg-12 col-sm-12 mt10 munu-wall">
+                                <div class="ibox-content">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品规格</label>
+                                        <div class="col-sm-10 col-md-6">
+                                            @Html.TextBoxFor(model => model.Specification, new { @class = "form-control", @datatype = "*", @placeholder = "请输入商品规格 如1000mg×60片/瓶" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ibox col-lg-12 col-sm-12 mt10 munu-wall">
+                                <div class="ibox-content">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">图片列表</label>
+                                        <div class="col-sm-10 col-md-10">
+                                            <div id="uploader-demo">
+                                                <!--用来存放item-->
+                                                <div id="filePicker"><i class="im-upload2"></i> 本地批量上传(单张限制2MB) 大小为800×800像素</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label"></label>
+                                        <div class="col-sm-10 col-md-10">
+                                            <div id="fileList" class="uploader-list">
+                                                @{
+    if (tmList != null && tmList.Count > 0)
+    {
+        var n = 10;
+        foreach (tb_ImageLibrary item in tmList)
+        {
+            n--;
+            himList += n + "|";
+                    <div id="WU_FILE_@n" class="file-item thumbnail">
+                        <img src="@item.ImgUrl" style="width: 155px; height: 120px">
+                        <div>
+                            <input type="radio" name="file_summary" @Html.Raw(item.IsCover ? "checked=checked" : "") class="input-sm form-control" style="float:left;margin-top:9px;" value="@n">
+                            <span style="display:block; float:left;width:95px; margin-top:8px;">设置为主图</span>
+                            <input type="text" name="file_sort_@n" class="input-sm form-control" style="width:26px; text-align:center; float:left; margin-left:-1px; padding:0px 3px;" value="@n" data-placement="top" data-toggle="tooltip" title="排序，数字越大越靠前">
+                        </div><a href="javascript:void(0)" data-src="" data-file-id="WU_FILE_0" onclick="delFile(@n,'WU_FILE_@n')" data-id="15" class="pldel">×</a>
+                        <input type="hidden" name="file_name_@n" value="@item.ImgUrl">
+                    </div>
+        }
+    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ibox col-lg-12 col-sm-12 mt10 munu-wall">
+                                <div class="ibox-content">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">商品介绍</label>
+                                        <div class="col-sm-10 col-md-10">
+                                            <script id="Content" name="Content" type="text/plain" style="width:100%;height:160px;">@Html.Raw(Model.Content)</script>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                        <div id="tab-2" class="tab-pane">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">服务保障</label>
+                                <div class="col-sm-10 col-md-10">
+                                    <script id="Notice" name="Notice" type="text/plain" style="width:100%;height:160px;">@Html.Raw(Model.Notice)</script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <a class="btn btn-warning" href="javascript:history.go(-1)"><i class="im-undo2"></i> 取消返回</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("imlist", himList)
+    @Html.Hidden("brank", Model.Brands)
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript" charset="utf-8" src="/assets/js/files/file.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/webuploader/webuploader.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/webuploader/getting-shop.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#Brands").select2({
+                placeholder: "品牌可多选",
+                maximumSelectionLength: 10
+            });
+            $("#forms").initValidform();
+            UE.getEditor('Notice', {
+                toolbars: fyt.uEditors(),
+                elementPathEnabled: false
+            });
+            UE.getEditor('Content', { initialFrameHeight:300,autoHeightEnabled: false });
+            $("#IsSlide").click(function() {
+                if ($(this).is(':checked')) {
+                    $("#div_lk").removeClass("hidden");
+                } else {
+                    $("#div_lk").addClass("hidden");
+                }
+            });
+            $('.tip-wal').tooltip({
+                selector: "[data-toggle=tooltip]",
+                container: "body"
+            });
+            if ("@Model.IsSlide" == "True") {
+                $("#div_lk").removeClass("hidden");
+            }
+            var v = $('#brank').val();
+            if (v) {
+                v = v.split(',');
+                var objJson = []; //构造数据
+                for (var i = 0; i < v.length; i++) {
+                    var tname;
+                    $("#Brands option").each(function() {
+                        if ($(this).val() == v[i]) {
+                            tname = $(this).text();
+                        }
+                    });
+                    objJson.push(jQuery.parseJSON('{"id":"' + v[i] + '", "text":"' + tname + '"}')); //构造json字符串并存入数组objJson
+                }
+                $("#Brands").select2("data", objJson);
+            }
+
+
+        });
+    </script>
+}

@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using Domain.Entity;
+using FytMsys.Common;
+using FytMsys.Helper;
+
+namespace FytMsys.Web.Controllers
+{
+    public class LvMessController : Controller
+    {
+        /// <summary>
+        /// 消息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Index()
+        {
+            var ss = Request.QueryString["oid"];
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(lv_Message model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "发送成功" };
+            try
+            {
+                model.AddTime = DateTime.Now;
+                model.IsRead = false;
+                OperateContext<lv_Message>.SetServer.Add(model);
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "发生错误！消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(lv_Message), ex);
+            }
+            return Json(jsonM);
+        }
+    }
+}

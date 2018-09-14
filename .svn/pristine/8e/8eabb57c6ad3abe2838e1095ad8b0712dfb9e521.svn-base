@@ -1,0 +1,97 @@
+﻿@model Domain.Entity.tb_AdvClass
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<!-- form star -->
+@using (Ajax.BeginForm("ClassModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    @Html.HiddenFor(model => model.ParentId)
+    @Html.HiddenFor(model => model.Flag)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">广告位名称</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入广告位名称", @placeholder = "请输入广告位名称" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">广告类型</label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.Types, new SelectListItem[]
+                                {
+                                    new SelectListItem{Text = "图片轮播广告",Value = "图片轮播广告"},
+                                    new SelectListItem{Text = "图片列表广告",Value = "图片列表广告"},
+                                    new SelectListItem{Text = "友情链接",Value = "友情链接"},
+                                    new SelectListItem{Text = "对联广告",Value = "对联广告"},
+                                    new SelectListItem{Text = "固定位置",Value = "固定位置"},
+                                    new SelectListItem{Text = "矩形横幅",Value = "矩形横幅"},
+                                    new SelectListItem{Text = "文字广告",Value = "文字广告"},
+                                    new SelectListItem{Text = "HTML代码",Value = "HTML代码"}
+                                }, new { @class = "form-control select2" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">广告位宽度</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Width, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入广告位宽度", @placeholder = "请输入广告位宽度" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">广告位高度</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Height, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入广告位高度", @placeholder = "请输入广告位高度" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">选项</label>
+                            <div class="col-lg-8">
+                                <label class="checkbox-inline">@Html.CheckBoxFor(model => model.Status, new { @class = "i-checks" }) 是否有效</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">广告位说明</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3", @placeholder = "简要说明一下，广告的位置，作用等。" })
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <label class="col-lg-3 control-label"></label>
+                                <div class="col-sm-8">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+            $("#Types").select2();
+        });
+    </script>
+}

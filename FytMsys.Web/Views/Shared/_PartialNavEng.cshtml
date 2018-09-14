@@ -1,0 +1,160 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@using FytMsys.Helper
+
+
+<header>
+    <nav class="navbar" role="navigation" style="height: 120px">
+        <div class="navbar-header">
+            <div class="logo">
+                <a href="/" title=""><img alt="" src="/lib/img/logo.png" width="240" height="90"/></a>
+            </div>
+            <div class="sup-btn">
+                @{
+                    if (UtilsHelper.GetCookie("FytUserId") != "")
+                    {
+                        if (HttpContext.Current.Session["FytUser"] == null)
+                        {
+                            var uId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                            var model = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == uId);
+                            HttpContext.Current.Session["FytUser"] = model;
+                            @Html.Raw("欢迎 <a href='/account/'><font style='color:#337ab7'>" + model.NickName + "！</font></a>")
+                        }
+                        else
+                        {
+                            var model = HttpContext.Current.Session["FytUser"] as tb_User;
+                            @Html.Raw("欢迎 <a href='/account/'><font style='color:#337ab7'>" + model.NickName + "！</font></a>")
+                        }
+                        <div class="u-exit">
+                            <a href="/account/signout"><i class="im-exit"></i>Sign Out</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <span><a href="/users/regEng" class="reg" style="padding: 0 5px">Register</a><a href="/users/loginEng"  style="padding: 0 5px">Log in</a> </span>
+                    }
+                }
+                <a href="/releaseEng/" class="sup-fb" style="padding: 0 5px">Publish</a>
+               
+            </div>
+            <div class="button">
+                <button type="button" class="navbar-toggle" style="margin: 0; padding: 0" data-toggle="modal"  data-target="#myModal">
+                    <span class="sr-only">Toggle navigation</span><span class="icon-bar" style="background-color: black"></span><span class="icon-bar" style="background-color: black"></span><span class="icon-bar" style="background-color: black"></span>
+                </button>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal" role="dialog" >
+           
+
+                <div class="col-xs-12 navmodal" style="padding: 0">
+                    
+                        <ul class="unorderlistmodal">
+                            <li class="col-xs-12"><a href="/" >Home</a></li>
+                            <li class="col-xs-12"><a href="/project/index/0-1" >Guides</a></li>
+                            <li class="col-xs-12"><a href="/golook/index/0-1" >Travelers</a></li>
+                            <li class="col-xs-12"><a href="/story" >Stories</a></li>
+                            <li class="col-xs-12"><a href="/category/help/shouce" >Help Center</a></li>
+                        </ul>
+
+                        <div class="search">
+                            <form action="/search/" method="GET">
+                                <input type="text" class="searchinput" name="key" placeholder="Search Activities" />
+                                <select name="city" >
+                                    <option value="all" >Destination</option>
+                                    @{
+
+                                        #region 首页幻灯片 ==缓存
+
+                                        List<tb_AdvList> advBigListmodal;
+                                        if (CacheHelper.Get("SechSelectList") != null)
+                                        {
+                                            advBigListmodal = CacheHelper.Get("SechSelectList") as List<tb_AdvList>;
+                                        }
+                                        else
+                                        {
+                                            advBigListmodal = OperateContext<tb_AdvList>.SetServer.GetList(
+                                                                            PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1005).And(m => m.Status),
+                                                                            m => m.Sort, true).ToList();
+                                            CacheHelper.Insert("SechSelectList", advBigListmodal, 10000);
+                                        }
+                                        if (advBigListmodal != null && advBigListmodal.Count > 0)
+                                        {
+                                            foreach (var item in advBigListmodal)
+                                            {
+                                                <option value="@item.Title">@item.Title</option>
+                                            }
+                                        }
+
+                                        #endregion
+
+                                    }
+                                </select>
+                                <button><i class="icon-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            
+       
+        <div class="collapse navbar-collapse" style="height: 120px;padding: 0">
+            <div class="col-md-6 col-xs-12" style="padding: 0;float: right">
+                <div class="nav-w">
+                    <ul class="unorderlist">
+                        <li class="col-md-2 col-xs-12"><a href="/" style="margin: 0; ">Home</a></li>
+                        <li class="col-md-2 col-xs-12"><a href="/project/index/0-1" style="margin: 0; ">Guides</a></li>
+                        <li class="col-md-2 col-xs-12"><a href="/golook/index/0-1" style="margin: 0; ">Travelers</a></li>
+                        <li class="col-md-3 col-xs-12"><a href="/story" style="margin: 0; ">Stories</a></li>
+                        <li class="col-md-3 col-xs-12"><a href="/category/help/shouce" style="margin: 0; ">Help Center</a></li>
+                    </ul>
+
+                    <div class="search">
+                        <form action="/search/" method="GET">
+                            <input type="text" class="" name="key" placeholder="Search Activities" />
+                            <select name="city">
+                                <option value="all"> Destination</option>
+                                @{
+
+                                    #region 首页幻灯片 ==缓存
+
+                                    List<tb_AdvList> advBigList;
+                                    if (CacheHelper.Get("SechSelectList") != null)
+                                    {
+                                        advBigList = CacheHelper.Get("SechSelectList") as List<tb_AdvList>;
+                                    }
+                                    else
+                                    {
+                                        advBigList = OperateContext<tb_AdvList>.SetServer.GetList(
+                                            PredicateBuilder.True<tb_AdvList>().And(m => m.ClassId == 1005).And(m => m.Status),
+                                            m => m.Sort, true).ToList();
+                                        CacheHelper.Insert("SechSelectList", advBigList, 10000);
+                                    }
+                                    if (advBigList != null && advBigList.Count > 0)
+                                    {
+                                        foreach (var item in advBigList)
+                                        {
+                                            <option value="@item.Title">@item.Title</option>
+                                        }
+                                    }
+
+                                    #endregion
+
+                                }
+                            </select>
+                            <button><i class="icon-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </nav>
+</header>
+<script type="text/javascript">
+    $(function() {
+        $(".sup-btn").hover(function() {
+            $(".u-exit").show();
+        },function() {
+            $(".u-exit").hide();
+        });
+    });
+</script>

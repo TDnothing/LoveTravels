@@ -1,0 +1,319 @@
+﻿@using FytMsys.Helper
+@using FytMsys.Common
+@using Domain.Entity
+@using Domain.ViewModel
+@model lv_ProJect
+@{
+    ViewBag.Title = Model.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var user = ViewBag.user;
+}
+<script src="/lib/js/laydate/laydate.js"></script>
+
+<div class="pl-bg" style="background: url(@Model.CoverImg) no-repeat center;"></div>
+<div class="pl-det clearfix">
+    <div class="pl-uil">
+        <div class="pl-uinfo clearfix">
+            <div class="pu-lw">
+                <img src="@Model.tb_User.HeadPic" width="150" />
+                <h3>@Model.tb_User.NickName @Html.Raw(Model.tb_User.Types == 0 ? "<img src='/lib/img/icon/1-1.png' />" : "<img src='/lib/img/icon/1.png' />")</h3>
+            </div>
+            <div class="pu-bts">
+                <h2>@Model.Title</h2>
+                <div class="pu-stad">
+                    <span>@Model.Region</span>
+                    <div class="wdn-btn">
+                        <div class="star"><span class="s@(ViewBag.starnum)"></span></div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+                <div class="pl-u-sum">
+                    @Html.Raw(Model.tb_User.SafeAnswer)
+                </div>
+            </div>
+
+            <div class="pu-lw">
+                <h3>TA的旅程</h3>
+            </div>
+            <div class="pu-bts">
+                <div class="pl-u-sum mt0">
+                    @Html.Raw(Model.Centents)
+                    <p>&nbsp;</p>
+                    @{
+                        var imglist = ViewBag.imglist as List<tb_ImageLibrary>;
+                        if (imglist != null && imglist.Count > 0)
+                        {
+                            int i = 1;
+                            foreach (var item in imglist)
+                            {
+                                <p><img src="@item.ImgUrl" style="width: 100%;@(i == 1 ? "" : "margin-Top:-10px")" /></p>
+                                i++;
+                            }
+                        }
+                    }
+                    <div class="pl-foot">Post ID: @Model.Number　　Post: @Model.AddTime.ToString("yyyy-MM-dd")　update：@Model.UpdateTime.ToString("yyyy-MM-dd")<a href="" class="hidden"><img src="/lib/img/fxwx.jpg" /></a></div>
+                    <div class="wdn-fx clearfix">
+                        <span>分享到：</span>
+                        <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a><a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a></div>
+                        <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "32" }, "share": {}, "image": { "viewList": ["fbook", "twi", "tsina", "weixin", "sqq"], "viewText": "分享到：", "viewSize": "16" }, "selectShare": { "bdContainerClass": null, "bdSelectMiniList": ["fbook", "twi", "tsina", "weixin", "sqq"] } }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+                    </div>
+                    <div class="xssj-w clearfix">
+                        @*<span>行程时间：</span>
+                            <div class="t-w"></div>*@
+                        <div class="t-xq">
+                            <p>人数：@Model.Rsum 人</p><p>价格：$@Model.Price/人</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="pu-lw">
+                <h3 style="font-size:16px;">他们已经预约了哦</h3>
+            </div>
+            <div class="pu-bts">
+                <div class="pu-job">
+                    @{
+                        var peoplelist = ViewBag.peoplelist as List<lv_ProjectOrder>;
+                        if (peoplelist != null && peoplelist.Count > 0)
+                        {
+                            foreach (var item in peoplelist)
+                            {
+                                <a href="javascript:void(0)" data-uid="@item.tb_User.ID" class="look-users"><img src="@item.tb_User.HeadPic" /><span>@item.tb_User.NickName</span></a>
+                            }
+                        }
+                    }
+                </div>
+                <div class="pu-btn">
+                    <a href="javascript:void(0)" id="asend" class="btn">发消息</a>
+                    <a href="javascript:void(0)" class="btn btn-yy">预约</a>
+                    <a href="javascript:void(0)" id="acoll" class="btn">收藏</a>
+                </div>
+                @using (Ajax.BeginForm("UserCollect", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "coll.FSuccess",
+    OnBegin = "coll.FBegin",
+}, new { @id = "collect" }))
+                {
+                    @Html.Hidden("proId", Model.ID);
+                    <button id="btncoll" hidden="hidden"></button>
+                }
+            </div>
+        </div>
+    </div><!-- end -->
+
+    <div class="pl-com">
+        <h2>评论</h2>
+        @{
+            var commentlist = ViewBag.commentlist as List<tb_Comment>;
+            if (commentlist != null && commentlist.Count > 0)
+            {
+                foreach (var item in commentlist)
+                {
+        <div class="pl-cm-it clearfix">
+            <div class="pl-u">
+                <a href=""><img src="@item.tb_User.HeadPic" /><span>@item.AddDate.ToString("yyyy.MM.dd")</span></a>
+            </div>
+            <div class="pl-cinfo">
+                <div class="pl-name clearfix"><span>@item.tb_User.NickName</span><div class="wdn-btn"><span class="star"><span class="s@(item.Star)"></span></span></div></div>
+                <div class="clear"></div>
+                <div class="pl-cm-txt">
+                    @Html.Raw(item.Content)
+                </div>
+            </div>
+        </div><!-- end -->
+                }
+            }
+        }
+        <div class="pl-sub-cm">
+            @using (Ajax.BeginForm("UserComment", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "comm.FSuccess",
+    OnBegin = "comm.FBegin",
+}, new { @id = "comment" }))
+            {
+            @Html.Hidden("ClassId", Model.ID)
+            <div class="pl-sub-ss">
+                <span>我也说一句</span><span class="stars s5"></span>
+            </div>
+            <textarea id="Content" name="Content"></textarea>
+            <div class="pl-sb-btn"><a @(user == 0 ? "" : "style=display:none") href="/users/login">请先注册或登录</a><button id="combtn" class="btn">提交</button></div>
+            }
+        </div>
+    </div>
+</div>
+
+<!--
+    作者：715515390@qq.com
+    时间：2015-12-14
+    描述：弹出支付窗口
+-->
+<div class="cover"></div>
+<div class="tc-pay clearfix">
+    <div class="tc-pl">
+        @using (Ajax.BeginForm("ProjectOrder", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+}, new { @id = "forms" }))
+        {
+            @Html.Hidden("projectId", Model.ID);
+            @Html.Hidden("payType", "");
+            <h2>请选择支付方式</h2>
+            <div class="tc-ckb">
+                <a href="javascript:void(0)" class="zfb"><i class="cur"></i><span></span></a>
+                <a href="javascript:void(0)" class="bb"><i></i><span></span></a>
+                <a href="javascript:void(0)" class="xyk"><i></i><span></span></a>
+            </div>
+            <p>点击“支付”即表示您同意支付页面显示的总金额作为本次预约的订金。</p>
+            <p>预约人数：@Html.TextBox("PeopleNum", 1, new { type = "number", required = "required" })</p>
+            <p>预约日期：@Html.TextBox("OrderDate", "", new { required = "required" })</p>
+            <button id="paybtn" data-isexist="@ViewBag.IsExist" class="btn">支付</button>
+        }
+    </div><!-- end -->
+    <div class="tc-pject">
+        <div class="wdn-item">
+            <div class="wdn-img">
+                <a href="/project/detail/@Model.ID" title="@Model.Title"><img alt="@Model.Title" src="@Model.ShowImg" width="215" height="180" /></a>
+                <div class="u-face"><a href="/" title=""><img alt="" src="@Model.tb_User.HeadPic" width="62" height="62" /></a></div>
+            </div>
+            <div class="wdn-info">
+                <div class="wdn-l"><span>@Model.tb_User.NickName</span><i></i></div>
+                <div class="wdn-r">@Model.Region</div>
+            </div>
+            <div class="wdn-p">@(UtilsHelper.CutString(UtilsHelper.DropHTML(Model.Centents), 100))</div>
+            <div class="wdn-btn">
+                <div class="star"><span class="s@(ViewBag.starnum)"></span></div>
+            </div>
+        </div><!-- end -->
+        <div class="clear"></div>
+        <div class="tc-pm">
+            旅程费用：$@Model.Price<br />
+        </div>
+    </div><!-- end -->
+    <a href="javascript:void(0)" class="close"><i class="im-close2"></i></a>
+</div>
+
+@Html.Action("index", "lvmess", new { oid = ViewBag.userId, nid = Model.tb_User.ID })
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.form.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}
+<script>
+    laydate({
+        elem: '#OrderDate',
+        format: 'YYYY.MM.DD',
+        event: 'click', //响应事件。如果没有传入event，则按照默认的click
+        istoday: false,
+        istime: false
+    });
+</script>
+
+<script>
+    //用户收藏操作
+    $(function () {
+        $("#acoll").click(function () {
+            //应该先判断是否登录在执行弹出窗口操作
+            var olId = $("#GoUserId").val();
+            if (olId == 0) {
+                swal({
+                    title: "提示",
+                    text: "您必须登录以后才能收藏",
+                    type: "warning",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false
+                }, function () { window.location = '/users/login/?backurl=' + window.location; });
+                return false;
+            }
+            else {
+                $("#collect").submit();
+            }
+        });
+    });
+    var coll = {
+        FSuccess: function (res) {
+            $("#btncoll").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "提示",
+                    text: res.Msg,
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false
+                }, function () { window.location.reload(); });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $("#btncoll").attr("disabled", "disabled");
+        }
+    };
+    //用户评论操作
+    var comm = {
+        FSuccess: function (res) {
+            $("#combtn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "提示",
+                    text: res.Msg,
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false
+                }, function () { window.location.reload(); });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $("#combtn").attr("disabled", "disabled");
+            if (!$("#Content").val()) {
+                swal('提示', "请输入评论内容", 'error');
+                return false;
+            }
+        }
+    };
+    //用户报名操作
+    var fyt = {
+        FSuccess: function (res) {
+            $("#paybtn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "报名成功",
+                    text: "您已成功报名!",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                }, function (isConfirm) {
+                    if (isConfirm) {
+                        window.location.href = '/project/paysuccess/' + res.Msg;
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $("#paybtn").attr("disabled", "disabled");
+            var isexist = $("#paybtn").attr("data-isexist");
+            if (isexist != 0) {
+                swal('哎呀', "您已经报过名了！", 'error');
+                return false;
+            }
+        }
+    }
+</script>

@@ -1,0 +1,93 @@
+﻿@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<div id="icon-w">
+    <div class="row">
+        <style>
+            body{ background-color: #fff}
+             .panel-body ul li {
+                 width: 33%;
+                 float: left;
+                 font-size: 15px;
+                 margin-bottom: 10px;
+                 cursor: pointer;
+                 list-style-type: none
+             }
+        </style>
+        <div class="wrapper-content">
+            <div class="panel-body" style="padding: 0">
+                <ul>
+                    <li><i class="im-home"></i> im-home</li>
+                    <li><i class="im-office"></i> im-office</li>
+                    <li><i class="im-pencil4"></i> im-pencil4</li>
+                    <li><i class="im-pencil5"></i> im-pencil5</li>
+                    <li><i class="im-image"></i> im-image</li>
+                    <li><i class="im-camera3"></i> im-camera3</li>
+                    <li><i class="im-music2"></i> im-music2</li>
+                    <li><i class="im-new"></i> im-new</li>
+                    <li><i class="im-megaphone"></i> im-megaphone</li>
+                    <li><i class="im-connection"></i> im-connection</li>
+                    <li><i class="im-books"></i> im-books</li>
+                    <li><i class="im-cc"></i> im-cc</li>
+                    <li><i class="im-tags"></i> im-tags</li>
+                    <li><i class="im-cart6"></i> im-cart6</li>
+                    <li><i class="im-coin"></i> im-coin</li>
+                    <li><i class="im-support"></i> im-support</li>
+                    <li><i class="im-phone4"></i> im-phone4</li>
+                    <li><i class="im-envelop2"></i> im-envelop2</li>
+                    <li><i class="im-location2"></i> im-location2</li>
+                    <li><i class="im-location4"></i> im-location4</li>
+                    <li><i class="im-compass"></i> im-compass</li>
+                    <li><i class="im-users"></i> im-users</li>
+                    <li><i class="im-cog5"></i> im-cog5</li>
+                    <li><i class="im-cube3"></i> im-cube3</li>
+                    <li><i class="im-compass2"></i> im-compass2</li>
+                    <li><i class="im-clock5"></i> im-clock5</li>
+                    <li><i class="im-alarm-check"></i> im-alarm-check</li>
+                    <li><i class="im-calendar4"></i> im-calendar4</li>
+                    <li><i class="im-screen4"></i> im-screen4</li>
+                    <li><i class="im-database2"></i> im-database2</li>
+                    <li><i class="im-download"></i> im-download</li>
+                    <li><i class="im-upload"></i> im-upload</li>
+                    <li><i class="im-undo2"></i> im-undo2</li>
+                    <li><i class="im-bubbles"></i> im-bubbles</li>
+                    <li><i class="im-bubbles7"></i> im-bubbles7</li>
+                    <li><i class="im-bubbles9"></i> im-bubbles9</li>
+                    <li><i class="im-user-plus"></i> im-user-plus</li>
+                    <li><i class="im-spinner8"></i> im-spinner8</li>
+                    <li><i class="im-spinner10"></i> im-spinner10</li>
+                    <li><i class="im-search2"></i> im-search2</li>
+                    <li><i class="im-key2"></i> im-key2</li>
+                    <li><i class="im-pie2"></i> im-pie2</li>
+                    <li><i class="im-stats-up"></i> im-stats-up</li>
+                    <li><i class="im-medal3"></i> im-medal3</li>
+                    <li><i class="im-remove4"></i> im-remove4</li>
+                    <li><i class="im-remove7"></i> im-remove7</li>
+                    <li><i class="im-list2"></i> im-list2</li>
+                    <li><i class="im-grid4"></i> im-grid4</li>
+                    <li><i class="im-menu2"></i> im-menu2</li>
+                    <li><i class="im-anchor"></i> im-anchor</li>
+                    <li><i class="im-eye"></i> im-eye</li>
+                    <li><i class="im-thumbs-up2"></i> im-thumbs-up2</li>
+                    <li><i class="im-close4"></i> im-close4</li>
+                    <li><i class="im-checkmark3"></i> im-checkmark3</li>
+                </ul>
+            </div>
+        </div>
+        <input type="hidden" id="icon-val" value="0" />
+    </div>
+</div>
+@section scripts
+{
+    <script>
+        $(function () {
+            var dialog = top.dialog.get(window);
+            $(".panel-body li").click(function () {
+                dialog.close($(this).find("i").attr("class")); // 关闭（隐藏）对话框
+                dialog.remove();				 // 主动销毁对话框
+                return false;
+            });
+            
+        });
+    </script>
+}

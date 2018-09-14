@@ -1,0 +1,88 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>博客注册</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/lib/blog/css/normalize.css">
+    <link rel="stylesheet" href="/lib/blog/css/font-awesome.css">
+    <link rel="stylesheet" href="/lib/blog/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/lib/blog/alert/sweetalert.css">
+    <link rel="stylesheet" href="/lib/blog/css/animate.css">
+    <link rel="stylesheet" href="/lib/blog/css/fyt-style.css">
+    <script src="/lib/blog/js/vendor/modernizr-2.6.2.min.js"></script>
+</head>
+<body class="is-homepage">
+    @using (Ajax.BeginForm("reg", null, new AjaxOptions()
+        {
+            HttpMethod = "post",
+            OnSuccess = "fyt.FSuccess",
+            OnBegin = "fyt.FBegin",
+        }, new { }))
+    {
+        <div class="panel-lite" style="margin-top: 100px;">
+            <div class="thumbur" style="margin-bottom: 10px;">
+                <div class="icon-lock"></div>
+            </div>
+            <div class="form-group">
+                <input required="required" id="LoginName" name="LoginName" class="form-control" pattern="^[a-zA-Z]{6,25}$">
+                <label class="form-label">用户名    </label>
+            </div>
+            <div class="form-group">
+                <input required="required" id="Mobile" name="Mobile" class="form-control">
+                <label class="form-label">手机号码    </label>
+            </div>
+            <div class="form-group">
+                <input type="password" id="LoginPwd" name="LoginPwd" required="required" class="form-control" min="6" max="20" step="10">
+                <label class="form-label">密　码</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="SafeAnswer" name="SafeAnswer" required="required" class="form-control">
+                <label class="form-label">验证码</label>
+                <city style="z-index: 1000;cursor: pointer"><img id="imgVerify" src="/blog/codes" alt="看不清？点击更换" title="看不清？点击更换" /></city>
+            </div>
+            <div class="go"><a href="/blog/login">去登录  </a></div>
+            <button class="floating-btn"><i class="icon-arrow"></i><i class="glyphicon glyphicon-refresh fa-spin" style="display: none;"></i></button>
+        </div>
+        @Html.AntiForgeryToken()
+    }
+</body>
+</html>
+<script type="text/javascript" src="/lib/js/jquery.min.js"></script>
+<script type="text/javascript" src="/lib/blog/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/blog/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#imgVerify").click(function () {
+            this.src = "/blog/codes?t=" + (new Date()).getTime();
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".floating-btn").attr("disabled", false);
+            $(".icon-arrow").show();
+            $(".glyphicon-refresh").hide();
+            if (res.Status == "y") {
+                window.location = res.BackUrl;
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".floating-btn").attr("disabled", "disabled");
+            $(".icon-arrow").hide();
+            $(".glyphicon-refresh").show();
+        }
+    };
+</script>

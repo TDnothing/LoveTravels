@@ -1,0 +1,62 @@
+﻿@using FytMsys.Common
+@using FytMsys.Helper
+@using Domain.Entity
+@using Domain.ViewModel
+@{
+    ViewBag.Title = "我的提现记录";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+    var list = ViewBag.list as dynamic;
+    var pageModel = ViewBag.pageModel as PageHelper;
+}
+<style>
+    .m-tb th {
+        padding: 10px;
+    }
+</style>
+<div class="w1200 clearfix">
+    @{Html.RenderPartial("LeftNav", ViewData["cur"] = 13);}
+    <div class="col-md-9 col-xs-12 ur-wall">
+        <h2><span>我的提现记录</span></h2>
+        <table class="cw-tb">
+            <tr>
+                <th >申请人</th>
+                <th >联系电话</th>
+                <th>提现金额</th>
+                <th>提现账号</th>
+                <th>状态</th>
+            </tr>
+            @{
+                if (list != null && list.Length > 0)
+                {
+                    foreach (var item in list)
+                    {
+                        <tr>
+                            <td width="140">@item.TrueName</td>
+                            <td width="140">@item.Account.ToString()</td>
+                            <td>@item.Price</td>
+                            <td>@item.BankAccont.ToString()</td>
+                            <td>@(item.Status ? "已处理" : "未处理")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align:center">暂无数据</td>
+                    </tr>
+                }
+            }
+        </table>
+    </div><!-- end -->
+    <div class="page">
+        @Html.Raw(WebSiteHelper.WebSitePage(pageModel.PageIndex, pageModel.Counts, pageModel.Urls))
+    </div>
+</div>
+
+
+@section scripts
+{
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript" src="/assets/js/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+}

@@ -1,0 +1,48 @@
+﻿@using Domain.Entity
+@using FytMsys.Common
+@using FytMsys.Helper
+<header>
+    <div class="logo"><a href="/" title=""><img alt="" src="/lib/img/logo.png" width="240" height="90" /></a></div>
+    <div class="sup-btn">
+            @{
+                if (UtilsHelper.GetCookie("FytUserId") != "")
+                {
+                    if (HttpContext.Current.Session["FytUser"] == null)
+                    {
+                        var uId = Convert.ToInt32(DESEncrypt.Decrypt(UtilsHelper.GetCookie("FytUserId")));
+                        var model = OperateContext<tb_User>.SetServer.GetModel(m => m.ID == uId);
+                        HttpContext.Current.Session["FytUser"] = model;
+                        @Html.Raw("欢迎 <font style='color:#337ab7'>" + model.NickName+ "！</font> <a href='/account/'>个人中心</a>")
+                    }
+                    else
+                    {
+                        var model = HttpContext.Current.Session["FytUser"] as tb_User;
+                        @Html.Raw("欢迎 <font style='color:#337ab7'>" + model.NickName + "！</font> <a href='/account/'>个人中心</a>")
+                    }
+                }
+                else
+                {
+                    <span><a href="/users/reg" class="reg">注册</a><a href="/users/login">登录</a> </span>
+                }
+            }
+        <a href="/release/" class="sup-fb">发布</a>
+</div>
+    <div class="nav-w">
+        <nav>
+            <ul>
+                <li><a href="/">首页</a></li>
+                <li><a href="/project/index/0-1">我等你</a></li>
+                <li><a href="/golook/index/0-1">去看看</a></li>
+                <li><a href="/story">旅程故事</a></li>
+                <li><a href="/category/help/shouce" class="last">帮助中心</a></li>
+            </ul>
+        </nav>
+        <div class="search">
+            <form>
+                <input type="text" class="" placeholder="输入你想要参加的活动" />
+                <select><option value="想要去的地方">想要去的地方</option></select>
+                <button><i class="icon-search"></i></button>
+            </form>
+        </div>
+    </div>
+</header>

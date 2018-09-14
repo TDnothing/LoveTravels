@@ -1,0 +1,21 @@
+$(window).load(function () {
+	$('.f-share #weixin').click(weixinclk);
+	$('.erweima').click(weixinclose);
+})
+
+function weixinclk()
+{
+	$('.erweima').css('position','fixed').css('z-index','9').animate({opacity:'1'},200,function(){
+		$('.erweima img').css({'width':'320px'});
+		setTimeout(function(){$('.erweima .close').css({'left':'35px','top':'30px','opacity':'1','z-index':'9'});},500);
+	});
+}
+function weixinclose()
+{
+	$('.erweima').animate({opacity:'0'},500,function(){
+		$('.erweima').css('z-index','-1').css('position','absolute');
+		$('.erweima img').css({'width':'0'});
+		setTimeout(function(){$('.erweima .close').css({'left':'0px','top':'55px','opacity':'0','z-index':'0'});},500);
+	});
+}
+

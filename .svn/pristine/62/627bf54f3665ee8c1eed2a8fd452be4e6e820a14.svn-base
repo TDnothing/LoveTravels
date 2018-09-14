@@ -1,0 +1,60 @@
+﻿@model Int32
+@{
+    var urm = ViewBag.UnReadNum as string;
+}
+<div class="ul-nav">
+    <h2><span>个人中心</span></h2>
+    <div class="lnav-item">
+        <h3>个人资料　　<i class="icon-angle-down"></i></h3>
+        <ul>
+            <li @Html.Raw(Model == 1 ? "class=cur" : "")><a href="/account/">基本信息</a></li>
+            <li @Html.Raw(Model == 2 ? "class=cur" : "")><a href="/account/myfinancial">财务信息</a></li>
+            <li @Html.Raw(Model == 13 ? "class=cur" : "")><a href="/account/mysetmoney">提现记录</a></li>
+            <li @Html.Raw(Model == 12 ? "class=cur" : "")><a href="/account/mybankcard">提现账号管理</a></li>
+            <li @Html.Raw(Model == 3 ? "class=cur" : "")><a href="/account/editpwd/">修改密码</a></li>
+        </ul>
+    </div><div class="lnav-item">
+        <h3>旅行故事　　<i class="icon-angle-down"></i></h3>
+        <ul>
+            <li @Html.Raw(Model == 4 ? "class=cur" : "")><a href="/account/mystory">我的旅行故事</a></li>
+            <li @Html.Raw(Model == 5 ? "class=cur" : "")><a href="/release">记录旅行故事</a></li>
+        </ul>
+    </div>
+    <div class="lnav-item">
+        <h3>我的行程　　<i class="icon-angle-down"></i></h3>
+        <ul>
+            <li @Html.Raw(Model == 6 ? "class=cur" : "")><a href="/account/mycollect">我的收藏</a></li>
+            <li @Html.Raw(Model == 7 ? "class=cur" : "")><a href="/account/myjoin">我参与的</a></li>
+            <li @Html.Raw(Model == 8 ? "class=cur" : "")><a href="/account/myactivity">我发布的</a></li>
+            <li @Html.Raw(Model == 9 ? "class=cur" : "")><a href="/account/myproject">我的活动</a></li>
+        </ul>
+    </div>
+    <div class="lnav-item">
+        <h3>站内消息　　<i class="icon-angle-down"></i></h3>
+        <ul>
+            <li @Html.Raw(Model == 10 ? "class=cur" : "")><a href="/account/message?types=receive">收到的消息 <ins class="msum" style="display: none">1</ins></a></li>
+            <li @Html.Raw(Model == 11 ? "class=cur" : "")><a href="/account/message?types=post">已发送</a></li>
+        </ul>
+    </div>
+</div><!-- end -->
+<style>
+    .msum {
+        display: inline-block;
+        width: 18px;
+        line-height: 17px;
+        height: 18px;
+        background-color: #ff0000;
+        color: #ffffff;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 12px;
+        text-decoration: none;
+    }
+</style>
+<script type="text/javascript">
+    $.post("/account/GetMessCount", null, function (res) {
+        if (res.Data > 0) {
+            $(".msum").show().html(res.Data);
+        }
+    }, "json");
+</script>

@@ -1,0 +1,10 @@
+﻿@using Domain.Entity
+@model lv_ProjectOrder
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pay-fail">
+    <h2>抱歉，支付失败</h2>
+    <p style="text-align: center;"><a href="/" class="btn">返回首页</a></p>
+</div>

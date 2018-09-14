@@ -1,0 +1,83 @@
+﻿@using Domain.Entity
+@using FytMsys.Helper
+
+@{
+    var advModel = ViewBag.adv as tb_AdvList;
+    var basicSite = WebSiteHelper.GetSite(1);
+    ViewBag.Title = "注册-" + basicSite.SeoTitle;
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<div class="log-wall">
+    <div class="u-bg-w clearfix">
+        <div class="ul-uw ul-ureg">
+            <div class="ul-type"><a href="javascript:void(0)" class="cur"><i class="icon-envelope-alt"></i>邮箱注册</a><span>|</span><a href=""><img src="/lib/img/icon/iconfont-weixin.png" width="26" />微信注册</a></div>
+            @using (Ajax.BeginForm("reg", null, new AjaxOptions()
+            {
+                HttpMethod = "post",
+                OnSuccess = "fyt.FSuccess",
+                OnBegin = "fyt.FBegin",
+            }, new {@id="reg"}))
+            {
+                <div class="ul-form">
+                    <div class="ul-cell clearfix">
+                        <label>输入邮箱</label><input type="email" name="Email" id="Email" ajaxurl="/users/isemexist" value="" placeholder="" datatype="e" nullmsg="请输入您的邮箱地址" /><span class="Validform_checktip">注册成功后即可使用邮箱登录</span>
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>设置密码</label><input type="password" id="LoginPwd" name="LoginPwd" plugin="passwordStrength" value="" placeholder="" datatype="*6-20" nullmsg="6-16位，英文（区分大小写）、数字或常用符号" /><span class="Validform_checktip">6-16位，英文（区分大小写）、数字或常用符号</span>
+                        <div class="pwd-par passwordStrength"><span></span><span></span><span></span></div>
+                        <i class="im-eye3"></i>
+                    </div>
+                    <div class="ul-cell clearfix">
+                        <label>确认密码</label><input type="password" id="okpwd" name="okpwd" value="" placeholder="" datatype="*6-20" recheck="LoginPwd" nullmsg="请再次输入密码" errormsg="两次输入的密码不一致" /><span class="Validform_checktip">请再次输入密码</span>
+                        <i class="im-eye3"></i>
+                    </div>
+                    <div class="ul-else"><samp>请登录邮箱，点击激活链接即可登录。</samp></div>
+                    <div class="ul-else"><label><input type="checkbox" value="1" checked="checked" /> <span>同意<a href="/category/about/agreement" target="_blank">《我爱旅途服务协议》</a></span></label></div>
+                    <div class="ul-btns"><button class="btn">立即注册</button></div>
+                </div>
+                @Html.AntiForgeryToken()
+            }
+        </div><!-- end -->
+        <div class="ul-go-log"><span>已有账号？</span><a href="/users/login">直接登录>></a></div>
+    </div>
+    @{ Html.RenderPartial("Footer");}
+</div>
+<script type="text/javascript" src="/lib/js/fytform_min.js"></script>
+<script type="text/javascript" src="/lib/js/jquery.unobtrusive-ajax.min.js"></script>
+<script type="text/javascript" src="/lib/alert/sweetalert.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#reg").Validform({
+            tiptype: 3,
+            showAllError: true,
+            usePlugin: {
+                passwordstrength: {
+                    minLen: 6,
+                    maxLen: 18
+                }
+            }
+        });
+    });
+    var fyt = {
+        FSuccess: function (res) {
+            $(".btn").attr("disabled", false);
+            if (res.Status == "y") {
+                swal({
+                    title: "注册成功",
+                    text: "您已注册成功，您可以浏览或报名、发布旅途信息!",
+                    type: "success",
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确定",
+                    closeOnConfirm: false
+                }, function () { window.location.href = res.BackUrl; });
+            } else {
+                swal('哎呀', res.Msg, 'error');
+            }
+        },
+        FBegin: function () {
+            $(".btn").attr("disabled", "disabled");
+        }
+    };
+    
+</script>
+

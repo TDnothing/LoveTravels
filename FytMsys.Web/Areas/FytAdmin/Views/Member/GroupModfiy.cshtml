@@ -1,0 +1,96 @@
+﻿@model Domain.Entity.tb_UserGroup
+@{
+    Layout = "../shared/_Layout.cshtml";
+}
+<style>
+    body {
+        background-color: white;
+    }
+</style>
+<!-- form star -->
+@using (Ajax.BeginForm("GroupModfiy", null, new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "fyt.FSuccess",
+    OnBegin = "fyt.FBegin",
+    OnComplete = "fyt.FEnd"
+}, new { @class = "form-horizontal mform tip-wal dig-from", @id = "forms" }))
+{
+    @Html.HiddenFor(model => model.ID)
+    <div class="row white-bg animated fadeInUp">
+        <div class="wrapper-content">
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div id="tab-1" class="tab-pane active">
+                        <div class="clearfix f-hafl">
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">会员组名</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @datatype = "*", @nullmsg = "请输入会员组名", @placeholder = "请输入会员组名" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">等级值</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Grade, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入等级值", @placeholder = "请输入等级值" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">初始金额</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", @datatype = "am", @nullmsg = "请输入初始金额", @placeholder = "请输入初始金额" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-hafl">
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">升级所需积分</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.UpgradeExp, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入升级所需积分", @placeholder = "请输入升级所需积分" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">初始积分</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Point, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入初始积分", @placeholder = "请输入初始积分" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-lg-3 control-label">购物折扣</label>
+                                    <div class="col-lg-8">
+                                        @Html.TextBoxFor(model => model.Discount, new { @class = "form-control", @datatype = "n", @nullmsg = "请输入购物折扣", @placeholder = "请输入购物折扣" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-3 control-label">简介</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.Summary, new { @class = "form-control", @rows = "3" })
+                            </div>
+                        </div>
+
+                        <div class="hr-line-dashed">
+                            <div class="form-group m20">
+                                <div class="col-sm-8 col-sm-offset-2">
+                                    <button class="btn btn-primary btn-save" type="submit"><i class="fa fa-check"></i> <span>确定保存</span></button>
+                                    <button class="btn btn-warning" id="btn-dig-close" type="button"><i class="im-undo2"></i> 取消返回</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<!-- form end -->
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#forms").initValidform();
+        });
+    </script>
+}

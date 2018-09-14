@@ -1,0 +1,150 @@
+﻿using Domain.Entity;
+using Domain.ViewModel;
+using FytMsys.Common;
+using FytMsys.Helper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+
+namespace FytMsys.Web.Controllers
+{
+    /// <summary>
+    /// 去看看管理
+    /// </summary>
+    public class GoLookController : Controller
+    {
+        #region 1、[去看看] 列表页 + Index()
+        /// <summary>
+        /// 列表页
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Index(int orderinfo, int page)
+        {
+            int pageSize = 8;
+            var lq = from p in OperateSession.SetContext.lv_GoLook
+                     orderby p.AddTime descending
+                     select new
+                     {
+                         p.ID,
+                         p.UserId,
+                         p.tb_User.NickName,
+                         p.tb_User.TrueName,
+                         p.tb_User.HeadPic,
+                         p.Title,
+                         p.CoverImg,
+                         p.Rsum,
+                         p.GoAddress,
+                         p.ArriveTime,
+                         p.Flags,
+                         p.Hits,
+                         p.Centents,
+                         p.AddTime
+                     };
+            switch (orderinfo)
+            {
+                case 0: lq = lq.OrderByDescending(m => m.AddTime); break;
+                case 1: lq = lq.OrderBy(m => m.AddTime); break;
+                case 2: lq = lq.OrderByDescending(m => m.Hits); break;
+                case 3: lq = lq.OrderBy(m => m.Hits); break;
+            }
+            ViewBag.list = JsonConverter.JsonClass(lq.Skip(pageSize * (page - 1)).Take(pageSize).ToList());
+            //分页控件
+            ViewBag.pageModel = new PageHelper()
+            {
+                PageSize = pageSize,
+                PageIndex = page,
+                Rows = lq.Count(),
+                Counts = Convert.ToInt32(Math.Ceiling((lq.Count() * 1.0) / pageSize)),
+                Urls = "/golook/index/" + orderinfo + "-" + page
+            };
+            //网站信息
+            var siteModel = WebSiteHelper.GetSite(1);
+            //广告位
+            var banner = OperateContext<tb_AdvList>.SetServer.GetList(m => m.ClassId == 6, m => m.Sort, false).Where(m => m.Status).FirstOrDefault();
+            ViewBag.banner = banner;
+            return View(siteModel);
+        }
+        #endregion
+
+        #region 2、[去看看] 发布去看看信息 + Publish()
+        /// <summary>
+        /// 发布去看看信息
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Publish()
+        {
+            return View();
+        }
+        #endregion
+
+        #region 3、[去看看] 发布去看看信息 + Publish() ---缺少当前用户信息
+        /// <summary>
+        /// 发布去看看信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Publish(lv_GoLook model)
+        {
+            var jsonM = new JsonHelper.JsonAjaxModel() { Status = "y", Msg = "success" };
+            try
+            {
+                model.ID = 0;
+                model.Number = UtilsHelper.GetRamCode();
+                model.UserId = 1012;
+                model.AddTime = DateTime.Now;
+                model.UpdateTime = DateTime.Now;
+                var flag = FytRequest.GetFormString("flag");
+                if (flag == "group")
+                {
+                    model.Flags = 1;
+                }
+                else
+                {
+                    model.Flags = 0;
+                }
+                //保存去看看信息
+                OperateContext<lv_GoLook>.SetServer.Add(model);
+                //保存去看看参与记录
+                var go = new lv_GoLookOrder()
+                {
+                    LookId = model.ID,
+                    UserId = model.UserId,
+                    AddTime = DateTime.Now
+                };
+                OperateContext<lv_GoLookOrder>.SetServer.Add(go);
+                #region 多张图片上传
+                var reslist = FytRequest.GetFormString("imlist").Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                var listModel = new List<tb_ImageLibrary>();
+                foreach (string s in reslist)
+                {
+                    var u = FytRequest.GetFormString("file_name_" + s);
+                    if (u != "")
+                    {
+                        listModel.Add(new tb_ImageLibrary()
+                        {
+                            ImgID = model.ID,
+                            ImgType = 3,
+                            ImgUrl = u,
+                            ImgSmall = u,
+                            IsCover = false
+                        });
+                    }
+                }
+                OperateContext<tb_ImageLibrary>.SetServer.AddEntity(listModel);
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                jsonM.Status = "err";
+                jsonM.Msg = "修改数据发生错误！ 消息：" + ex.Message;
+                LogHelper.WriteLog(typeof(GoLookController), ex);
+            }
+            return Json(jsonM);
+        }
+        #endregion
+    }
+}
